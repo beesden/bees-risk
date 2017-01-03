@@ -1,4 +1,4 @@
-package org.beesden.risk.action;
+package org.beesden.risk;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -18,13 +18,14 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.beesden.risk.action.GameCommands;
 import org.beesden.risk.model.GameData;
 import org.beesden.risk.utils.JsonUtils;
 import org.beesden.risk.utils.MessageDecoder;
 import org.beesden.risk.utils.MessageEncoder;
 
 @ServerEndpoint(value = "/game/{id}", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
-public class ServerActions {
+public class Server {
 
 	public static Map<String, GameData> gameList = new ConcurrentHashMap<>();
 	public static Map<String, String> playerGames = new ConcurrentHashMap<>();
@@ -32,52 +33,51 @@ public class ServerActions {
 	public static String lobbyName = "lobby";
 
 	/**
-	 * Disconnect a player from the server
-	 * 
+	 * Catch websocket closing
+	 *
 	 * @param socket Current player session information
-	 * @param request {"gameId": "Test's Game"}
+	 * @param reason disconnection reason
 	 */
 	@OnClose
 	public void onClose(Session socket, CloseReason reason) {
-		 // Check the session username
-		 for (String playerId : playerList.keySet()) {
-			 if (playerList.get(playerId).equals(socket)) {
+		// Check the session username
+		for (String playerId : playerList.keySet()) {
+			if (playerList.get(playerId).equals(socket)) {
 				// Get the game id based on the playerId
-				String gameId = ServerActions.playerGames.get(playerId);
+				String gameId = Server.playerGames.get(playerId);
 				if (gameId == null) {
 					System.out.println("Unable to find a valid game id");
 					return;
 				}
 				// Get the gamedata object using the game id
-				GameData gameData = ServerActions.gameList.get(gameId);
+				GameData gameData = Server.gameList.get(gameId);
 				if (gameData == null) {
 					System.out.println("Unable to find open game session");
 					return;
 				}
-				 GameCommands.leaveGame(gameData, socket, Json.createObjectBuilder().add("close", true).build());
-				 break;
-			 }
-		 }
+				GameCommands.leaveGame(gameData, socket, Json.createObjectBuilder().add("close", true).build());
+				break;
+			}
+		}
 		System.out.println("Connection closed by user");
 	}
 
 	/**
 	 * Was the disconnect expected?
-	 * 
-	 * @param socket Current player session information
-	 * @param request {"gameId": "Test's Game"}
+	 *
+	 * @param socket    Current player session information
+	 * @param throwable throwable
 	 */
 	@OnError
 	public void onError(Session socket, Throwable throwable) {
-		throwable.printStackTrace();
-		System.out.println("Closing a connection due to error");
+		System.out.println("Closing a connection due to error: " + throwable.getMessage());
 	}
 
 	/**
 	 * Run a function on receiving a command from a client
-	 * 
-	 * @param socket Current player session information
-	 * @param request {"gameId": "Test's Game"}
+	 *
+	 * @param socket  Current player session information
+	 * @param message socket command message
 	 */
 	@OnMessage
 	public void onMessage(Session socket, String message) {
@@ -92,13 +92,13 @@ public class ServerActions {
 		JsonObject request = JsonUtils.toObject(input);
 		String action = request.getString("action");
 		// Get the game id based on the username
-		String gameId = ServerActions.playerGames.get(username);
+		String gameId = Server.playerGames.get(username);
 		if (gameId == null) {
 			playerGames.put(username, lobbyName);
 			System.out.println("Unable to find a valid game id - returning to lobby");
 		}
 		// Get the gamedata object using the game id
-		GameData gameData = ServerActions.gameList.get(gameId);
+		GameData gameData = Server.gameList.get(gameId);
 		if (!action.equals("createGame") && !action.equals("joinGame") && gameData == null) {
 			System.out.println("Unable to find open game session");
 			return;
@@ -107,19 +107,17 @@ public class ServerActions {
 		try {
 			Method method = GameCommands.class.getMethod(action, GameData.class, Session.class, JsonObject.class);
 			method.invoke(GameCommands.class, gameData, socket, request);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error running game command: " + action);
+		} catch (Exception e) {
+			System.out.println("Error running game command: " + action + ": " + e.getMessage());
 		}
 	}
 
 	/**
 	 * Add a new player to the server
-	 * 
+	 *
 	 * @param socket Current player session information
-	 * @param String id - ?
-	 * @throws Exception 
+	 * @param id     user id
+	 * @throws Exception
 	 */
 	@OnOpen
 	public void onOpen(Session socket, @PathParam(value = "id") String id) throws Exception {
@@ -134,12 +132,6 @@ public class ServerActions {
 		playerGames.put(username, lobbyName);
 		playerList.put(username, socket);
 		// Create a game if none exists
-		if (gameList.isEmpty()) {
-			GameCommands.createGame(null, socket, null);
-		}
-		// Show the visitor the game list
-		else {
-			GameCommands.viewLobby(null, socket, null);
-		}
+		GameCommands.viewLobby(null, socket, null);
 	}
 }

@@ -8,12 +8,11 @@ import javax.json.Json;
 import javax.json.JsonStructure;
 import javax.websocket.Session;
 
-import org.beesden.risk.action.ServerActions;
+import org.beesden.risk.Server;
 
 public class Utils {
 
-	private static final String BUNDLE_NAME = "messages";
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("messages");
 
 	/**
 	 * Get a message from resource bundles
@@ -43,10 +42,10 @@ public class Utils {
 	 * Send a message to everyone in the same game
 	 **/
 	public static void sendGameMessage(String gameId, String action, JsonStructure message) {
-		for (String key : ServerActions.playerGames.keySet()) {
+		for (String key : Server.playerGames.keySet()) {
 			// Check for each connection user in the game and send the new player
-			if (ServerActions.playerGames.get(key).equals(gameId)) {
-				Session session = ServerActions.playerList.get(key);
+			if (Server.playerGames.get(key).equals(gameId)) {
+				Session session = Server.playerList.get(key);
 				if (session == null || !session.isOpen()) {
 					return;
 				}
@@ -67,8 +66,8 @@ public class Utils {
 		catch (Exception e) {
 			System.out.println("Error when sending message - removing player from server");
 			// Remove if connection unsuccessful
-			ServerActions.playerList.remove(username);
-			ServerActions.playerGames.remove(username);		
+			Server.playerList.remove(username);
+			Server.playerGames.remove(username);
 		}
 	}
 }

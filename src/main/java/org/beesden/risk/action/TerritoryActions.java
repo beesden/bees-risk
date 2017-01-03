@@ -2,6 +2,8 @@ package org.beesden.risk.action;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+
+import org.beesden.risk.Server;
 import org.beesden.risk.model.Configuration;
 import org.beesden.risk.model.GameData;
 import org.beesden.risk.model.Player;
@@ -73,7 +75,7 @@ public class TerritoryActions {
 		String territoryId = request.getString("territory");
 		// Player must use risk cards before they reinforce
 		if (player.getRiskCards().size() > 4) {
-			Utils.sendMessage(ServerActions.playerList.get(player.getPlayerId()), "viewCards", request);
+			Utils.sendMessage(Server.playerList.get(player.getPlayerId()), "viewCards", request);
 			return;
 		}
 		// Otherwise reinforce territory if possible
