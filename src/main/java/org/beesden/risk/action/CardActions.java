@@ -134,11 +134,11 @@ public class CardActions {
 			else {
 				reinforcements = (2 * cardValue) + 2;
 			}
-			removeCard(gameData, player.getUsername(), card1);
-			removeCard(gameData, player.getUsername(), card2);
-			removeCard(gameData, player.getUsername(), card3);
+			removeCard(gameData, player.getPlayerId(), card1);
+			removeCard(gameData, player.getPlayerId(), card2);
+			removeCard(gameData, player.getPlayerId(), card3);
 			// Update player
-			String message = Utils.getBundle("risk.cards.use", player.getUsername(), reinforcements);
+			String message = Utils.getBundle("risk.cards.use", player.getPlayerId(), reinforcements);
 			player.setReinforcements(player.getReinforcements() + reinforcements);
 			// Send game back to deployment phase
 			config.setTurnPhase("reinforce");

@@ -2,6 +2,8 @@ package org.beesden.risk.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -12,10 +14,10 @@ import org.beesden.risk.utils.JsonUtils;
 @Data
 public class GameMap {
 
-	private HashMap<String, Continent> continents;
+	private Map<String, Continent> continents;
 	private Integer[] size;
-	private HashMap<String, Territory> territories;
-	private ArrayList<String> unclaimedTerritories;
+	private Map<String, Territory> territories = new HashMap<>();
+	private List<String> unclaimedTerritories;
 
 	public JsonObject toJson() {
 		JsonObjectBuilder continentList = Json.createObjectBuilder();

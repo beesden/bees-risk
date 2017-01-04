@@ -17,7 +17,7 @@ import org.beesden.risk.utils.MapUtils;
 import org.beesden.risk.utils.Utils;
 
 public class GameActions {
-	
+
 	public static void attackTerritory(GameData gameData, Player player, Territory attacker, Territory defender) {
 		JsonObjectBuilder response = Json.createObjectBuilder();
 		// Attacker must have > 1 battalions to attack
@@ -27,20 +27,20 @@ public class GameActions {
 			return;
 		}
 		// Generate attacker's rolls
-		ArrayList<Integer> attackDice = new ArrayList<Integer>();
+		List<Integer> attackDice = new ArrayList<>();
 		for (int i = 1; i < attacker.getBattalions() && i < 4; i++) {
 			Integer roll = new Random().nextInt(6) + 1;
 			attackDice.add(roll);
 		}
 		// Generate defender's rolls
-		ArrayList<Integer> defendDice = new ArrayList<Integer>();
+		List<Integer> defendDice = new ArrayList<>();
 		for (int i = 0; i < defender.getBattalions() && i < 2; i++) {
 			Integer roll = new Random().nextInt(6) + 1;
 			defendDice.add(roll);
 		}
 		// Calculate results and update territories
 		JsonObjectBuilder results = Json.createObjectBuilder().add("attacker", JsonUtils.toArray(attackDice)).add("defender", JsonUtils.toArray(defendDice));
-		Integer[] combat = {0,0};
+		Integer[] combat = {0, 0};
 		Collections.sort(attackDice);
 		Collections.reverse(attackDice);
 		Collections.sort(defendDice);
@@ -50,7 +50,7 @@ public class GameActions {
 			if (index == 0) {
 				attacker.setBattalions(attacker.getBattalions() - 1);
 			} else {
-				defender.setBattalions(defender.getBattalions() - 1);				
+				defender.setBattalions(defender.getBattalions() - 1);
 			}
 			combat[index]++;
 		}
@@ -61,9 +61,9 @@ public class GameActions {
 			Integer invadeStrength = attacker.getBattalions() - 1;
 			invadeStrength = invadeStrength > 3 ? 3 : invadeStrength;
 			attacker.setBattalions(attacker.getBattalions() - invadeStrength);
-			defender.setBattalions(invadeStrength);	
+			defender.setBattalions(invadeStrength);
 			attacker.getOwner().getTerritories().add(defender);
-			defensivePlayer.getTerritories().remove(defender);	
+			defensivePlayer.getTerritories().remove(defender);
 			defender.setOwner(attacker.getOwner());
 			response.add("conquer", true);
 			// Has the player been defeated
@@ -72,8 +72,8 @@ public class GameActions {
 				response.add("reason", "defeat");
 				response.add("player", defensivePlayer.toJson());
 				// Transfer cards
-				ArrayList<String> cardTransfer = new ArrayList<>(defensivePlayer.getRiskCards().keySet());
-				for (String cardId: cardTransfer) {
+				List<String> cardTransfer = new ArrayList<>(defensivePlayer.getRiskCards().keySet());
+				for (String cardId : cardTransfer) {
 					CardActions.removeCard(gameData, defensivePlayer.getPlayerId(), cardId);
 				}
 				if (cardTransfer.size() > 0) {
@@ -86,7 +86,7 @@ public class GameActions {
 		}
 		// Send results to all players
 		response.add("attacker", attacker.toJson()).add("defender", defender.toJson()).add("results", results);
-		Utils.sendGameMessage(gameData.getGameId(), "attack", response.build());		
+		Utils.sendGameMessage(gameData.getGameId(), "attack", response.build());
 	}
 
 	public static boolean deployTerritory(Player player, String territoryId, GameData gameData) {
@@ -123,17 +123,17 @@ public class GameActions {
 		player.setReinforcements(player.getReinforcements() - 1);
 		return true;
 	}
-	
+
 	public static Integer calculateReinforcemnt(Player player, GameData gameData) {
 		GameMap gameMap = gameData.getGameMap();
 		Integer globalTerritories = 0;
 		Integer bonusReinforcement = 0;
 		// Manually recount territories to allow for continent bonuses
-		for (String c: gameMap.getContinents().keySet()) {
+		for (String c : gameMap.getContinents().keySet()) {
 			Continent cont = gameMap.getContinents().get(c);
 			Integer control = 0;
 			// Calculate how many territories are controlled by the current player
-			for (String t: cont.getTerritories().keySet()) {
+			for (String t : cont.getTerritories().keySet()) {
 				Territory terr = cont.getTerritories().get(t);
 				if (terr.getOwner() == player) {
 					control++;
@@ -165,7 +165,7 @@ public class GameActions {
 		GameMap gameMap = MapUtils.generateMap(mapId);
 		gameData.setGameMap(gameMap);
 		// Generate the risk cards list
-		for (String territoryId: gameMap.getTerritories().keySet()) {
+		for (String territoryId : gameMap.getTerritories().keySet()) {
 			Territory territory = gameMap.getTerritories().get(territoryId);
 			gameData.getRiskCards().add(territory.getId());
 		}
@@ -177,8 +177,8 @@ public class GameActions {
 
 	/**
 	 * Updates the config with the next player's turn
-	 * 
-	 * @param socket Current player session information
+	 *
+	 * @param socket  Current player session information
 	 * @param request {"gameId": "Test's Game"}
 	 */
 	public static void startTurn(GameData gameData) {
@@ -195,7 +195,7 @@ public class GameActions {
 			// If no player, use the first value - this is used to reset to player 1
 			if (config.getPlayerTurn() == null) {
 				config.setPlayerTurn(player.getPlayerId());
-				break;				
+				break;
 			}
 			// If we match the player to the iterator, get the next player		
 			else if (player.getPlayerId().equals(config.getPlayerTurn())) {
@@ -216,7 +216,7 @@ public class GameActions {
 		}
 		// Automatically place starting territories
 		else if (config.getTurnPhase().equals("deploy")) { // TODO - add config option
-			ArrayList<String> unclaimed = gameData.getGameMap().getUnclaimedTerritories();
+			List<String> unclaimed = gameData.getGameMap().getUnclaimedTerritories();
 			String territoryId = unclaimed.get(new Random().nextInt(unclaimed.size()));
 			TerritoryActions.deploy(newTurn, gameData, Json.createObjectBuilder().add("territory", territoryId).build());
 			return;

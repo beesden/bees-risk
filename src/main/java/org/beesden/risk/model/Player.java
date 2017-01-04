@@ -1,19 +1,17 @@
 package org.beesden.risk.model;
 
+import lombok.Data;
+import org.beesden.risk.utils.JsonUtils;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
-import lombok.Data;
-import org.beesden.risk.utils.JsonUtils;
-
 @Data
-public class Player implements ResponseObject {
+public class Player {
 
 	private int reinforcements;
 	private boolean isNeutral;
@@ -30,10 +28,9 @@ public class Player implements ResponseObject {
 	 */
 	public Player(String username, String colour) {
 		this.colour = colour;
-		this.username = username;
+		playerId = username;
 	}
 
-	@Override
 	public JsonObject toJson() {
 		return Json.createObjectBuilder()
 				.add("colour", colour)

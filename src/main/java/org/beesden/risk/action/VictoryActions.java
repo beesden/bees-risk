@@ -21,7 +21,7 @@ public class VictoryActions {
 					JsonObject victoryMessage = Json.createObjectBuilder().add("message", message).build(); 
 					Utils.sendGameMessage(gameData.getGameId(), "victory", victoryMessage);
 					return true;
-				};
+				}
 			}			
 		}		
 		return false;

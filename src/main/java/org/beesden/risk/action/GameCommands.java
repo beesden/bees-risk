@@ -175,7 +175,7 @@ public class GameCommands {
 			}
 		}
 		// If game not started, remove user
-		else if (gameData != null) {
+		else if (gameData.getGameStarted()) {
 			gameData.getPlayerList().remove(username);
 			// If no players left, delete the game
 			if (gameData.getPlayerList().size() == 0) {
@@ -295,7 +295,7 @@ public class GameCommands {
 		Integer transSize = request.getInt("size");
 		Territory fromTerr = gameData.getGameMap().getTerritories().get(fromTerrId);
 		Territory toTerr = gameData.getGameMap().getTerritories().get(toTerrId);
-		if (fromTerr == null || toTerr == null || !fromTerr.getOwner().getPlayerId().equals(toTerr.getOwner().getUsername())) {
+		if (fromTerr == null || toTerr == null || !fromTerr.getOwner().getPlayerId().equals(toTerr.getOwner().getPlayerId())) {
 			System.out.println("Unable to get transfer territories");
 			return;
 		}
