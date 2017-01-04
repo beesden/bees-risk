@@ -71,7 +71,6 @@
                 <configuration>
                     <tomeeVersion>1.7.1</tomeeVersion>
                     <tomeeClassifier>plus</tomeeClassifier>
-                    <tomeeHttpPort>3355</tomeeHttpPort>
                 </configuration>
             </plugin>
 
