@@ -23,7 +23,7 @@ public class CardActions {
 	public static void addCard(GameData gameData, String playerId, List<String> cardIds, Boolean updatePlayer) {
 		// Get the target player object
 		Player player = gameData.getPlayerList().get(playerId);
-		if (player == null || player.getIsNeutral()) {
+		if (player == null || player.isNeutral()) {
 			System.out.println("Active player not found");
 			return;
 		}
@@ -134,11 +134,11 @@ public class CardActions {
 			else {
 				reinforcements = (2 * cardValue) + 2;
 			}
-			removeCard(gameData, player.getPlayerId(), card1);
-			removeCard(gameData, player.getPlayerId(), card2);
-			removeCard(gameData, player.getPlayerId(), card3);
+			removeCard(gameData, player.getUsername(), card1);
+			removeCard(gameData, player.getUsername(), card2);
+			removeCard(gameData, player.getUsername(), card3);
 			// Update player
-			String message = Utils.getBundle("risk.cards.use", player.getPlayerId(), reinforcements);
+			String message = Utils.getBundle("risk.cards.use", player.getUsername(), reinforcements);
 			player.setReinforcements(player.getReinforcements() + reinforcements);
 			// Send game back to deployment phase
 			config.setTurnPhase("reinforce");

@@ -2,6 +2,7 @@ package org.beesden.risk.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -9,39 +10,38 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import lombok.Data;
-import lombok.Getter;
 import org.beesden.risk.utils.JsonUtils;
 
 @Data
-public class Player {
+public class Player implements ResponseObject {
 
-	private Integer battalions;
-	private Boolean isNeutral;
+	private int reinforcements;
+	private boolean isNeutral;
 	private String playerId;
-	private Integer reinforcements;
-	private ArrayList<Territory> territories;
-	private Map<String, Integer> riskCards;
+	private List<Territory> territories = new ArrayList<>();
+	private Map<String, Integer> riskCards = new HashMap<>();
 	private String colour;
 
-	public Player(String username, String playerColour) {
-		battalions = 0;
-		colour = playerColour;
-		isNeutral = false;
-		playerId = username;
-		reinforcements = 0;
-		territories = new ArrayList<>();
-		riskCards = new HashMap<>();
+	/**
+	 * Default constructor.
+	 *
+	 * @param username player username
+	 * @param colour   player colour
+	 */
+	public Player(String username, String colour) {
+		this.colour = colour;
+		this.username = username;
 	}
 
+	@Override
 	public JsonObject toJson() {
-		JsonObjectBuilder jsonObject = Json.createObjectBuilder();
-		jsonObject.add("battalions", battalions);
-		jsonObject.add("colour", colour);
-		jsonObject.add("isNeutral", isNeutral);
-		jsonObject.add("playerId", playerId);
-		jsonObject.add("reinforcements", reinforcements);
-		jsonObject.add("territories", territories.size());
-		jsonObject.add("riskCards", JsonUtils.toArray(riskCards.keySet()));
-		return jsonObject.build();
+		return Json.createObjectBuilder()
+				.add("colour", colour)
+				.add("isNeutral", isNeutral)
+				.add("playerId", playerId)
+				.add("reinforcements", reinforcements)
+				.add("territories", territories.size())
+				.add("riskCards", JsonUtils.toArray(riskCards.keySet()))
+				.build();
 	}
 }

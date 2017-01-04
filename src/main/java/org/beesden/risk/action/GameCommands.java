@@ -158,7 +158,7 @@ public class GameCommands {
 		// If game is started, set player to neutral
 		else if (gameData.getGameReady()) {
 			Player player = gameData.getPlayerList().get(username);
-			player.setIsNeutral(true);
+			player.setNeutral(true);
 			gameData.setPlayersActive(gameData.getPlayersActive() - 1);
 			// Start the next player's turn if current player's turn
 			if (gameData.getConfig().getPlayerTurn().equals(username)) {
@@ -185,7 +185,7 @@ public class GameCommands {
 			else if (gameData.getConfig().getLeadPlayer().equals(username)) {
 				for (String playerId : gameData.getPlayerList().keySet()) {
 					Player player = gameData.getPlayerList().get(playerId);
-					if (!player.getIsNeutral() && !player.getPlayerId().equals(username)) {
+					if (!player.isNeutral() && !player.getPlayerId().equals(username)) {
 						gameData.getConfig().setLeadPlayer(player.getPlayerId());
 						break;
 					}
@@ -216,7 +216,7 @@ public class GameCommands {
 				break;
 			case 2:
 				Player neutral = new Player("Neutral Player", "#555");
-				neutral.setIsNeutral(true);
+				neutral.setNeutral(true);
 				gameData.getPlayerList().put(neutral.getPlayerId(), neutral);
 				break;
 		}
@@ -238,7 +238,7 @@ public class GameCommands {
 		}
 		// Get the actual player object
 		Player player = gameData.getPlayerList().get(username);
-		if (player == null || player.getIsNeutral()) {
+		if (player == null || player.isNeutral()) {
 			System.out.println("Active player not found");
 			return;
 		}
@@ -269,7 +269,7 @@ public class GameCommands {
 		}
 		// Get the actual player object
 		Player player = gameData.getPlayerList().get(username);
-		if (player == null || player.getIsNeutral()) {
+		if (player == null || player.isNeutral()) {
 			System.out.println("Active player not found");
 			return;
 		}
@@ -295,7 +295,7 @@ public class GameCommands {
 		Integer transSize = request.getInt("size");
 		Territory fromTerr = gameData.getGameMap().getTerritories().get(fromTerrId);
 		Territory toTerr = gameData.getGameMap().getTerritories().get(toTerrId);
-		if (fromTerr == null || toTerr == null || !fromTerr.getOwner().getPlayerId().equals(toTerr.getOwner().getPlayerId())) {
+		if (fromTerr == null || toTerr == null || !fromTerr.getOwner().getPlayerId().equals(toTerr.getOwner().getUsername())) {
 			System.out.println("Unable to get transfer territories");
 			return;
 		}

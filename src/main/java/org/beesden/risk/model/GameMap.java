@@ -18,18 +18,16 @@ public class GameMap {
 	private ArrayList<String> unclaimedTerritories;
 
 	public JsonObject toJson() {
-		JsonObjectBuilder object = Json.createObjectBuilder();
 		JsonObjectBuilder continentList = Json.createObjectBuilder();
-		for (String c : continents.keySet()) {
-			continentList.add(c, continents.get(c).toJson());
-		}
+		continents.entrySet().forEach(c -> continentList.add(c.getKey(), c.getValue().toJson()));
+
 		JsonObjectBuilder territoryList = Json.createObjectBuilder();
-		for (String t : territories.keySet()) {
-			territoryList.add(t, territories.get(t).toJson());
-		}
-		object.add("continents", continentList);
-		object.add("size", JsonUtils.toArray(size));
-		object.add("territories", territoryList);
-		return object.build();
+		territories.entrySet().forEach(t -> territoryList.add(t.getKey(), t.getValue().toJson()));
+
+		return Json.createObjectBuilder()
+				.add("continents", continentList)
+				.add("size", JsonUtils.toArray(size))
+				.add("territories", territoryList)
+				.build();
 	}
 }

@@ -59,7 +59,7 @@ public class Server {
 				break;
 			}
 		}
-		System.out.println("Connection closed by user");
+		System.out.println("Connection closed by user: " + reason.getReasonPhrase());
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class Server {
 	 *
 	 * @param socket Current player session information
 	 * @param id     user id
-	 * @throws Exception
+	 * @throws Exception generic exception
 	 */
 	@OnOpen
 	public void onOpen(Session socket, @PathParam(value = "id") String id) throws Exception {
@@ -127,10 +127,14 @@ public class Server {
 		while (playerGames.get(username) != null) {
 			username = id + "-" + i++;
 		}
-		// Add the user to the static variables
+
+		// Add the user into the lobby
 		socket.getUserProperties().put("username", username);
 		playerGames.put(username, lobbyName);
+
+		// Store the player session
 		playerList.put(username, socket);
+
 		// Create a game if none exists
 		GameCommands.viewLobby(null, socket, null);
 	}

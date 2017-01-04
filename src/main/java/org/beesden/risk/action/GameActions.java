@@ -1,10 +1,6 @@
 package org.beesden.risk.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Random;
+import java.util.*;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -71,8 +67,8 @@ public class GameActions {
 			defender.setOwner(attacker.getOwner());
 			response.add("conquer", true);
 			// Has the player been defeated
-			if (defensivePlayer.getTerritories().size() < 1 && !defensivePlayer.getIsNeutral()) {
-				defensivePlayer.setIsNeutral(true);
+			if (defensivePlayer.getTerritories().size() < 1 && !defensivePlayer.isNeutral()) {
+				defensivePlayer.setNeutral(true);
 				response.add("reason", "defeat");
 				response.add("player", defensivePlayer.toJson());
 				// Transfer cards
@@ -104,7 +100,7 @@ public class GameActions {
 			System.out.println("Unable to deploy to requested territory");
 			return false;
 		}
-		target.setBattalions(player.getIsNeutral() ? 2 : 1);
+		target.setBattalions(player.isNeutral() ? 2 : 1);
 		target.setOwner(player);
 		player.setReinforcements(player.getReinforcements() - 1);
 		player.getTerritories().add(target);
@@ -210,7 +206,7 @@ public class GameActions {
 		}
 		// If it's a neutral player, re-iterate the function
 		Player newTurn = playerList.get(config.getPlayerTurn());
-		if (newTurn.getIsNeutral() && !config.getTurnPhase().equals("deploy")) {
+		if (newTurn.isNeutral() && !config.getTurnPhase().equals("deploy")) {
 			startTurn(gameData);
 			return;
 		}
@@ -227,7 +223,7 @@ public class GameActions {
 		}
 		// Automatically place starting battalions
 		else if (config.getTurnPhase().equals("reinforce")) { // TODO - add config option		
-			ArrayList<Territory> territoryList = newTurn.getTerritories();
+			List<Territory> territoryList = newTurn.getTerritories();
 			String territoryId = territoryList.get(new Random().nextInt(territoryList.size())).getId();
 			TerritoryActions.reinforce(newTurn, gameData, Json.createObjectBuilder().add("territory", territoryId).build());
 			return;

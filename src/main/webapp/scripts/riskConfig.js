@@ -17,6 +17,6 @@ risk.gameConfig = {
 	mapSize: [900, 615],
 	mute:0,
 	muteLevel: ['Play all sounds', 'Play sound effects only', 'Mute all sounds'],
-	server: 'ws://192.168.0.12:8080/bees-risk',
+	server: 'ws://localhost:3355/bees-risk',
 	defaultNames: ['Captain Seaman', 'General Surgery', 'Major Pain', 'Private Parts', 'Corporal Punishment']
 }

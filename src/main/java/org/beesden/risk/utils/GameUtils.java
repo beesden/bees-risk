@@ -25,7 +25,7 @@ public class GameUtils {
 		// Get the actual player object
 		String username = (String) socket.getUserProperties().get("username");
 		Player player = gameData.getPlayerList().get(username);
-		if (player == null || player.getIsNeutral()) {
+		if (player == null || player.isNeutral()) {
 			throw new Exception("Active player not found");
 		}
 		// Prevent player interaction when it's not their turn or it's not the reinforcement phase

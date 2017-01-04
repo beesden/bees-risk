@@ -59,7 +59,13 @@ public class Utils {
 	 **/
 	public static void sendMessage(Session socket, String action, JsonStructure message) {
 		String username = (String) socket.getUserProperties().get("username");
-		String response = Json.createObjectBuilder().add("action", action).add("username", username).add("message", message).build().toString();
+		String response = Json.createObjectBuilder()
+				.add("action", action)
+				.add("username", username)
+				.add("message", message)
+				.add("timestamp", System.currentTimeMillis())
+				.build()
+				.toString();
 		try {
 			socket.getBasicRemote().sendText(response);
 		}

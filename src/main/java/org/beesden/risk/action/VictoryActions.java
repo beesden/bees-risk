@@ -12,7 +12,7 @@ public class VictoryActions {
 		// Loop over players
 		for (String playerId: gameData.getPlayerList().keySet()) {
 			Player player = gameData.getPlayerList().get(playerId);
-			if (!player.getIsNeutral()) {
+			if (!player.isNeutral()) {
 				// Test player victory conditions
 				String victoryCondition = "lastPlayerStanding"; // @TOOD - add config option
 				if (testPlayerVictory(player, gameData, victoryCondition)) {
@@ -35,7 +35,7 @@ public class VictoryActions {
 				Integer activePlayers = 0;
 				for (String playerId: gameData.getPlayerList().keySet()) {
 					Player gamePlayer = gameData.getPlayerList().get(playerId);
-					if (!gamePlayer.getIsNeutral()) {
+					if (!gamePlayer.isNeutral()) {
 						++activePlayers;
 					}					
 				}
