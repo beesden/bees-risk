@@ -11,7 +11,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.websocket.Session;
 
-import org.beesden.risk.Server;
+import org.beesden.risk.WebSocketServerConfiguration;
 import org.beesden.risk.model.Configuration;
 import org.beesden.risk.model.GameData;
 import org.beesden.risk.model.Player;
@@ -62,12 +62,12 @@ public class GameCommands {
 		// Prevent two games of the same name being created
 		String gameId = gameName;
 		int i = 1;
-		while (Server.gameList.get(gameId) != null) {
+		while (WebSocketServerConfiguration.gameList.get(gameId) != null) {
 			gameId = gameName + " " + ++i;
 		}
 		gameData = new GameData(gameId);
 		gameData.getConfig().setLeadPlayer(username);
-		Server.gameList.put(gameId, gameData);
+		WebSocketServerConfiguration.gameList.put(gameId, gameData);
 		// If all checks out, add the player to the game
 		joinGame(gameData, socket, Json.createObjectBuilder().add("gameId", gameId).build());
 		viewLobby(gameData, socket, request);
@@ -109,7 +109,7 @@ public class GameCommands {
 		// Joining via socket instead of through classes
 		if (gameData == null) {
 			gameId = request.getString("gameId");
-			gameData = Server.gameList.get(gameId);
+			gameData = WebSocketServerConfiguration.gameList.get(gameId);
 		}
 		// Get the gamedata object using the game id
 		if (gameData == null) {
@@ -118,10 +118,10 @@ public class GameCommands {
 		}
 		gameId = gameData.getGameId();
 		// Provide the game config
-		Server.playerGames.put(username, gameId);
+		WebSocketServerConfiguration.playerGames.put(username, gameId);
 		Utils.sendMessage(socket, "updateConfig", gameData.getConfig().toJson());
 		// If all checks out, add the player to the game
-		Server.playerGames.put(username, gameId);
+		WebSocketServerConfiguration.playerGames.put(username, gameId);
 		Player newPlayer = new Player(username, null);
 		gameData.getPlayerList().put(newPlayer.getPlayerId(), newPlayer);
 		// Generate a player colour and update the session
@@ -141,19 +141,19 @@ public class GameCommands {
 		// Whether player is spectating or completely leaving the game
 		Boolean closeConnection = request.getBoolean("close");
 		if (request.getBoolean("close")) {
-			Server.playerGames.put(username, Server.lobbyName);
+			WebSocketServerConfiguration.playerGames.put(username, WebSocketServerConfiguration.lobbyName);
 			viewLobby(gameData, socket, request);
 		}
 		// Count the number of players left in the session
 		int activePlayers = 0;
-		for (String playerId: Server.playerGames.keySet()) {
-			if (Server.playerGames.get(playerId).equals(gameId)) {
+		for (String playerId: WebSocketServerConfiguration.playerGames.keySet()) {
+			if (WebSocketServerConfiguration.playerGames.get(playerId).equals(gameId)) {
 				activePlayers++;
 			}
 		}
 		// If everyone has left the session, kill it (WITH FIRE)
 		if (activePlayers == 0) {
-			Server.gameList.remove(gameId);
+			WebSocketServerConfiguration.gameList.remove(gameId);
 		}
 		// If game is started, set player to neutral
 		else if (gameData.getGameReady()) {
@@ -179,7 +179,7 @@ public class GameCommands {
 			gameData.getPlayerList().remove(username);
 			// If no players left, delete the game
 			if (gameData.getPlayerList().size() == 0) {
-				Server.gameList.remove(gameId);
+				WebSocketServerConfiguration.gameList.remove(gameId);
 			}
 			// Update lead player if necessary
 			else if (gameData.getConfig().getLeadPlayer().equals(username)) {
@@ -191,7 +191,7 @@ public class GameCommands {
 					}
 				}
 			}
-			Server.playerGames.put(username, Server.lobbyName);
+			WebSocketServerConfiguration.playerGames.put(username, WebSocketServerConfiguration.lobbyName);
 			Utils.sendGameMessage(gameId, "gameSetup", Json.createObjectBuilder().add("config", gameData.getConfig().toJson()).add("playerList", gameData.playerIds()).build());
 		}
 		viewLobby(gameData, socket, request);
@@ -348,22 +348,22 @@ public class GameCommands {
 	public static void viewLobby(GameData gameData, Session socket, JsonObject request) {
 		ArrayList<String> gameList = new ArrayList<>();
 		// Only add games that are not yet started
-		for (String key: Server.gameList.keySet()) {
-			GameData showGame = Server.gameList.get(key);
+		for (String key: WebSocketServerConfiguration.gameList.keySet()) {
+			GameData showGame = WebSocketServerConfiguration.gameList.get(key);
 			if (showGame != null && !showGame.getGameReady()) {
 				gameList.add(key);
 			}
 		}
 		// Count how many players are in the lobby
 		Integer lobbyPlayers = 0;
-		for (String player: Server.playerGames.keySet()) {
-			if (Server.playerGames.get(player).equals(Server.lobbyName)) {
+		for (String player: WebSocketServerConfiguration.playerGames.keySet()) {
+			if (WebSocketServerConfiguration.playerGames.get(player).equals(WebSocketServerConfiguration.lobbyName)) {
 				lobbyPlayers++;
 			}
 		}
 		JsonObjectBuilder response = Json.createObjectBuilder();
 		response.add("gameList", JsonUtils.toArray(gameList)).add("activePlayers", lobbyPlayers);
-		Utils.sendGameMessage(Server.lobbyName, "gameLobby", response.build());
+		Utils.sendGameMessage(WebSocketServerConfiguration.lobbyName, "gameLobby", response.build());
 	}
 
 }

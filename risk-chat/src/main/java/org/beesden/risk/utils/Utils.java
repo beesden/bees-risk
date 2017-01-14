@@ -8,7 +8,7 @@ import javax.json.Json;
 import javax.json.JsonStructure;
 import javax.websocket.Session;
 
-import org.beesden.risk.Server;
+import org.beesden.risk.WebSocketServerConfiguration;
 
 public class Utils {
 
@@ -42,10 +42,10 @@ public class Utils {
 	 * Send a message to everyone in the same game
 	 **/
 	public static void sendGameMessage(String gameId, String action, JsonStructure message) {
-		for (String key : Server.playerGames.keySet()) {
+		for (String key : WebSocketServerConfiguration.playerGames.keySet()) {
 			// Check for each connection user in the game and send the new player
-			if (Server.playerGames.get(key).equals(gameId)) {
-				Session session = Server.playerList.get(key);
+			if (WebSocketServerConfiguration.playerGames.get(key).equals(gameId)) {
+				Session session = WebSocketServerConfiguration.playerList.get(key);
 				if (session == null || !session.isOpen()) {
 					return;
 				}
@@ -72,8 +72,8 @@ public class Utils {
 		catch (Exception e) {
 			System.out.println("Error when sending message - removing player from server");
 			// Remove if connection unsuccessful
-			Server.playerList.remove(username);
-			Server.playerGames.remove(username);
+			WebSocketServerConfiguration.playerList.remove(username);
+			WebSocketServerConfiguration.playerGames.remove(username);
 		}
 	}
 }

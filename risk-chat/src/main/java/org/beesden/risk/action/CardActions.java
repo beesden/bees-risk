@@ -10,7 +10,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.websocket.Session;
 
-import org.beesden.risk.Server;
+import org.beesden.risk.WebSocketServerConfiguration;
 import org.beesden.risk.model.Configuration;
 import org.beesden.risk.model.GameData;
 import org.beesden.risk.model.Player;
@@ -45,7 +45,7 @@ public class CardActions {
 		}
 		// Show cards to the player
 		if (updatePlayer) {
-			Session playerSession = Server.playerList.get(playerId);
+			Session playerSession = WebSocketServerConfiguration.playerList.get(playerId);
 			Utils.sendMessage(playerSession, "viewCards", Json.createObjectBuilder().add("addCards", true).add("riskCards", JsonUtils.toArray(cardIds)).build());
 		}
 	}
