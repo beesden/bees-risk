@@ -6,22 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class Player {
+public class GamePlayer {
 
 	private int reinforcements;
-	private boolean isNeutral;
+	private boolean isSpectating;
 	private String playerId;
 	private Map<String, Integer> riskCards = new HashMap<>();
 	private String colour;
+	private String currentGame;
 
 	/**
 	 * Default constructor.
 	 *
-	 * @param username player username
-	 * @param colour   player colour
+	 * @param playerId player username
 	 */
-	public Player(String username, String colour) {
-		this.colour = colour;
-		playerId = username;
+	public GamePlayer(String playerId) {
+		this.playerId = playerId;
 	}
 }

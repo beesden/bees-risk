@@ -45,7 +45,7 @@ public class GameMap {
 		private String id;
 		private String name;
 		private Collection<Territory> neighbours;
-		private Player owner;
+		private GamePlayer owner;
 		private String path;
 	}
 }

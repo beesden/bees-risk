@@ -1,27 +1,46 @@
 package org.beesden.risk.model;
 
 import lombok.Data;
+import org.beesden.risk.service.MapService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 
 @Data
 public class GameData {
 
-	private int playersReady;
-	private int playersActive;
+	private static final int[] DEFAULT_CARD_BONUS = { 4, 6, 8, 10, 12, 15 };
+	private static final int[] DEFAULT_START_STRENGTH = { 0, 40, 35, 30, 25, 20 };
 
-	private Configuration config = new Configuration();
-	private String gameId;
-	private GameMap gameMap;
-	private Boolean gameReady = false;
-	private Boolean gameFinished = false;
-	private Boolean gameStarted = false;
-	private Boolean cardEarned = false;
-	private LinkedHashMap<String, Player> playerList = new LinkedHashMap<>();
-	private ArrayList<String> riskCards = new ArrayList<>();
-	private String[] colours = new String[]{"#33c", "#3c3", "#c33", "#c3c", "#3cc", "#cc3"};
-	private HashMap<String, String> playerColours = new LinkedHashMap<>();
+	public enum GameState {
+		SETUP, READY, STARTED, ENDED
+	}
+
+	private int cardPlayCount = 0;
+	private int[] startForces = DEFAULT_START_STRENGTH;
+	private int[] cardBonus = DEFAULT_CARD_BONUS;
+
+	private GameConfig config;
+	private GameMap map;
+	private GameState state = GameState.SETUP;
+	private List<GamePlayer> players = new ArrayList<>();
+	private List<String> cards;
+	private String name;
+	private String owner;
+
+	/**
+	 * Create a new game
+	 *
+	 * @param playerId game create ID
+	 * @param gameName game name
+	 * @param config   game config
+	 */
+	public GameData(String playerId, String gameName, GameConfig config) {
+		this.owner = playerId;
+		this.name = gameName;
+		this.config = config;
+
+		this.map = MapService.getMapById(config.getGameMap());
+	}
 
 }

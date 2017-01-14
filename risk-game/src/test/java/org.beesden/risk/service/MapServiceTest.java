@@ -1,4 +1,4 @@
-package org.beesden.risk.utils;
+package org.beesden.risk.service;
 
 import org.beesden.risk.data.GameMapDTO;
 import org.beesden.risk.model.GameMap;
@@ -9,23 +9,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MapUtilsTest {
+public class MapServiceTest {
 
 	@Test
 	public void testMapList() {
-		List<String> mapList = MapUtils.getAvailableMaps();
+		List<String> mapList = MapService.getAvailableMaps();
 		Assert.assertEquals(2, mapList.size());
 	}
 
 	@Test
 	public void testGetFromFileInvalid() {
-		GameMap gameMap = MapUtils.generateMapFromFile("_INVALID");
+		GameMap gameMap = MapService.getMapById("_INVALID");
 		Assert.assertNull(gameMap);
 	}
 
 	@Test
 	public void testAfricaMapFile() {
-		GameMap gameMap = MapUtils.generateMapFromFile("africa");
+		GameMap gameMap = MapService.getMapById("africa");
 
 		Assert.assertNotNull(gameMap);
 		Assert.assertEquals(1, gameMap.getContinents().size());
@@ -34,7 +34,7 @@ public class MapUtilsTest {
 
 	@Test
 	public void testRiskMapFile() {
-		GameMap gameMap = MapUtils.generateMapFromFile("risk");
+		GameMap gameMap = MapService.getMapById("risk");
 
 		Assert.assertNotNull(gameMap);
 		Assert.assertEquals(6, gameMap.getContinents().size());
@@ -55,7 +55,7 @@ public class MapUtilsTest {
 		mapDto.setTerritories(Arrays.asList(territory1Dto, territory2Dto));
 
 		// Build map
-		GameMap riskMap = MapUtils.generateMap((mapDto));
+		GameMap riskMap = MapService.generateMap((mapDto));
 
 		// Run tests
 		Assert.assertNotNull(riskMap);

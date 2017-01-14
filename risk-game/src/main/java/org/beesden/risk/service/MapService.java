@@ -1,4 +1,4 @@
-package org.beesden.risk.utils;
+package org.beesden.risk.service;
 
 import com.google.gson.Gson;
 import org.beesden.risk.data.GameMapDTO;
@@ -11,9 +11,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MapUtils {
+public class MapService {
 
-	private static final ClassLoader CLASS_LOADER = MapUtils.class.getClassLoader();
+	private static final ClassLoader CLASS_LOADER = MapService.class.getClassLoader();
 	private static final Gson GSON_READER = new Gson();
 	private static final String MAP_FOLDER = "maps";
 	private static final String MAP_SUFFIX = ".map.json";
@@ -38,12 +38,13 @@ public class MapUtils {
 	}
 
 	/**
-	 * Build a map from a file
+	 * Get a map by ID.
+	 * This is currently from a file, but could be extended to use a DB.
 	 *
 	 * @param mapId map file ID
 	 * @return game map
 	 */
-	public static GameMap generateMapFromFile(String mapId) {
+	public static GameMap getMapById(String mapId) {
 
 		try {
 
