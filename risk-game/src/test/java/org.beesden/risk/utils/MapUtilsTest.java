@@ -24,7 +24,16 @@ public class MapUtilsTest {
 	}
 
 	@Test
-	public void testGetFromFile() {
+	public void testAfricaMapFile() {
+		GameMap gameMap = MapUtils.generateMapFromFile("africa");
+
+		Assert.assertNotNull(gameMap);
+		Assert.assertEquals(1, gameMap.getContinents().size());
+		Assert.assertEquals(6, gameMap.getTerritories().size());
+	}
+
+	@Test
+	public void testRiskMapFile() {
 		GameMap gameMap = MapUtils.generateMapFromFile("risk");
 
 		Assert.assertNotNull(gameMap);
