@@ -28,10 +28,8 @@ public class MapServiceTest {
 		GameMap originalMap = MapService.getMapById("risk");
 
 		int[] altSize = new int[]{ 1, 2 };
-		originalMap.setSize(new GameMap.Axis(altSize));
-
 		GameMap cachedMap = MapService.getMapById("risk");
-		Assert.assertNotEquals(originalMap.getSize(), cachedMap.getSize());
+		Assert.assertNotEquals(originalMap, cachedMap);
 	}
 
 	@Test
@@ -50,6 +48,12 @@ public class MapServiceTest {
 		Assert.assertNotNull(gameMap);
 		Assert.assertEquals(6, gameMap.getContinents().size());
 		Assert.assertEquals(42, gameMap.getTerritories().size());
+	}
+
+	@Test
+	public void testToString() {
+		GameMap gameMap = MapService.getMapById("risk");
+		gameMap.toString();
 	}
 
 	@Test

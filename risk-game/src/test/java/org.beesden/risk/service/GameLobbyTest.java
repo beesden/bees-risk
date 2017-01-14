@@ -40,6 +40,12 @@ public class GameLobbyTest {
 	}
 
 	@Test
+	public void testToString() {
+		GameLobby gameLobby = new GameLobby();
+		gameLobby.toString();
+	}
+
+	@Test
 	public void testJoiningGame() {
 
 		GameLobby lobby = new GameLobby();

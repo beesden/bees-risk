@@ -8,9 +8,25 @@ import java.util.Collection;
 @Data
 public class GameMap {
 
+	private String name;
 	private Axis size;
 	private Collection<Continent> continents;
 	private Collection<Territory> territories;
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		String NEW_LINE = System.getProperty("line.separator");
+
+		result.append(this.getClass().getName() + " Object {" + NEW_LINE);
+		result.append(" Name: " + name + NEW_LINE);
+		result.append(" Number of continents: " + continents.size() + NEW_LINE);
+		result.append(" Number of territories: " + territories.size() + NEW_LINE);
+		result.append(" Size: " + size.x + " x " + size.y + NEW_LINE);
+		result.append("}");
+
+		return result.toString();
+	}
 
 	@Data
 	public static final class Axis {
@@ -26,7 +42,7 @@ public class GameMap {
 	}
 
 	@Data
-	@EqualsAndHashCode(exclude={"territories"})
+	@EqualsAndHashCode(exclude = { "territories" })
 	public static final class Continent {
 		private String id;
 		private String name;
@@ -36,7 +52,7 @@ public class GameMap {
 	}
 
 	@Data
-	@EqualsAndHashCode(exclude={"neighbours"})
+	@EqualsAndHashCode(exclude = { "neighbours" })
 	public static final class Territory {
 		private int battalions;
 		private int cardValue;
