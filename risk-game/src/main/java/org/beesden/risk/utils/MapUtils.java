@@ -83,7 +83,7 @@ public class MapUtils {
 
 			return continent;
 
-		}).collect(Collectors.toMap(c -> c.getId(), c -> c));
+		}).collect(Collectors.toMap(GameMap.Continent::getId, c -> c));
 
 		// Add the territories into the map
 		Map<String, GameMap.Territory> territoryList = mapData.getTerritories().stream().map(territoryData -> {
@@ -92,13 +92,9 @@ public class MapUtils {
 			territory.setId(territoryData.getId());
 			territory.setCardValue(territoryData.getCardValue());
 			territory.setName(territoryData.getName());
-			territory.setCenter(new GameMap.Location(territoryData.getCenter()));
+			territory.setCenter(new GameMap.Axis(territoryData.getCenter()));
 			territory.setPath(territoryData.getPath());
 			territory.setNeighbours(new HashSet<>());
-
-			GameMap.Continent continent = continentList.get(territoryData.getContinentId());
-			territory.setContinent(continent);
-			continent.getTerritories().add(territory);
 
 			return territory;
 		}).collect(Collectors.toMap(GameMap.Territory::getId, t -> t));
@@ -113,13 +109,17 @@ public class MapUtils {
 				GameMap.Territory neighbour = territoryList.get(neighbourId);
 				territory.getNeighbours().add(neighbour);
 			}
+
+			GameMap.Continent continent = continentList.get(territoryData.getContinentId());
+			territory.setContinent(continent);
+			continent.getTerritories().add(territory);
 		});
 
-		// Contruct and return the game map object
+		// Construct and return the game map object
 		GameMap gameMap = new GameMap();
 		gameMap.setContinents(continentList.values());
 		gameMap.setTerritories(territoryList.values());
-		gameMap.setSize(new GameMap.Location(mapData.getSize()));
+		gameMap.setSize(new GameMap.Axis(mapData.getSize()));
 		return gameMap;
 	}
 

@@ -34,20 +34,42 @@ public class MapUtilsTest {
 
 	@Test
 	public void testGenerateMap() {
-		GameMapDTO mapData = new GameMapDTO();
 
-		GameMapDTO.Continent continent = new GameMapDTO.Continent("europe", "Europe", 5, "red");
-		mapData.setContinents(Collections.singletonList(continent));
+		// Build sample data
+		GameMapDTO mapDto = new GameMapDTO();
 
-		GameMapDTO.Territory territory1 = new GameMapDTO.Territory("england", 5, new int[]{ 1, 2 }, "europe", "France", new String[]{ "england" }, "path");
-		GameMapDTO.Territory territory2 = new GameMapDTO.Territory("france", 4, new int[]{ 3, 4 }, "europe", "England", new String[]{ "france" }, "path");
-		mapData.setTerritories(Arrays.asList(territory1, territory2));
+		GameMapDTO.Continent continentDto = new GameMapDTO.Continent("europe", "Europe", 5, "red");
+		mapDto.setContinents(Collections.singletonList(continentDto));
 
-		GameMap riskMap = MapUtils.generateMap((mapData));
+		GameMapDTO.Territory territory1Dto = new GameMapDTO.Territory("france", 5, new int[]{ 1, 2 }, "europe", "France", new String[]{ "england" }, "path");
+		GameMapDTO.Territory territory2Dto = new GameMapDTO.Territory("england", 4, new int[]{ 3, 4 }, "europe", "England", new String[]{ "france" }, "path");
+		mapDto.setTerritories(Arrays.asList(territory1Dto, territory2Dto));
 
+		// Build map
+		GameMap riskMap = MapUtils.generateMap((mapDto));
+
+		// Run tests
 		Assert.assertNotNull(riskMap);
+
 		Assert.assertEquals(1, riskMap.getContinents().size());
+		GameMap.Continent continent = riskMap.getContinents().iterator().next();
+		Assert.assertEquals("europe", continent.getId());
+		Assert.assertEquals("Europe", continent.getName());
+		Assert.assertEquals("red", continent.getColor());
+		Assert.assertEquals(5, continent.getBonusReinforcements());
+		Assert.assertEquals(2, continent.getTerritories().size());
+
 		Assert.assertEquals(2, riskMap.getTerritories().size());
+		for (GameMap.Territory territory : riskMap.getTerritories()) {
+			Assert.assertNotNull(territory.getId());
+			Assert.assertNotNull(territory.getName());
+			Assert.assertNotEquals(0, territory.getCenter().getX());
+			Assert.assertNotEquals(0, territory.getCenter().getY());
+			Assert.assertNotEquals(0, territory.getCardValue());
+			Assert.assertEquals(1, territory.getNeighbours().size());
+			Assert.assertEquals("europe", territory.getContinent().getId());
+		}
+
 	}
 
 }
