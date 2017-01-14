@@ -1,6 +1,7 @@
 package org.beesden.risk.service;
 
 import com.google.gson.Gson;
+import org.beesden.risk.Exception.MapException;
 import org.beesden.risk.data.GameMapDTO;
 import org.beesden.risk.model.GameMap;
 
@@ -55,20 +56,17 @@ public class MapService {
 
 			InputStream input = CLASS_LOADER.getResourceAsStream(MAP_FOLDER + "/" + mapId + MAP_SUFFIX);
 			if (input == null) {
-				throw new NullPointerException("Unable to locate map file: " + mapId);
+				throw new MapException("Unable to locate map file", mapId);
 			}
 
 			String mapJson = new BufferedReader(new InputStreamReader(input)).lines().collect(Collectors.joining("\n"));
 			GameMapDTO mapData = GSON_READER.fromJson(mapJson, GameMapDTO.class);
 			MAP_CACHE.put(mapId, mapData);
-			GameMap gameMap = generateMap(mapData);
-			return gameMap;
+			return generateMap(mapData);
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			throw new MapException(e.getMessage(), mapId);
 		}
-
-		return null;
 	}
 
 	/**

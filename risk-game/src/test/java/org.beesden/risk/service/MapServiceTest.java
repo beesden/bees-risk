@@ -19,15 +19,16 @@ public class MapServiceTest {
 
 	@Test
 	public void testGetInvalidMap() {
-		GameMap gameMap = MapService.getMapById("_INVALID");
-		Assert.assertNull(gameMap);
+		try {
+			GameMap gameMap = MapService.getMapById("_INVALID");
+			Assert.fail("Service should error if map not found");
+		} catch (Exception e) {
+		}
 	}
 
 	@Test
 	public void testMapCache() {
 		GameMap originalMap = MapService.getMapById("risk");
-
-		int[] altSize = new int[]{ 1, 2 };
 		GameMap cachedMap = MapService.getMapById("risk");
 		Assert.assertNotEquals(originalMap, cachedMap);
 	}

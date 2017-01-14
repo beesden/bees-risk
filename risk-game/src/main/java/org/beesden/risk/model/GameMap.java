@@ -18,12 +18,24 @@ public class GameMap {
 		StringBuilder result = new StringBuilder();
 		String NEW_LINE = System.getProperty("line.separator");
 
-		result.append(this.getClass().getName() + " Object {" + NEW_LINE);
-		result.append(" Name: " + name + NEW_LINE);
-		result.append(" Number of continents: " + continents.size() + NEW_LINE);
-		result.append(" Number of territories: " + territories.size() + NEW_LINE);
-		result.append(" Size: " + size.x + " x " + size.y + NEW_LINE);
-		result.append("}");
+		result.append(this.getClass().getName())
+				.append(" Object {")
+				.append(NEW_LINE)
+				.append(" Name: ")
+				.append(name)
+				.append(NEW_LINE)
+				.append(" Number of continents: ")
+				.append(continents.size())
+				.append(NEW_LINE)
+				.append(" Number of territories: ")
+				.append(territories.size())
+				.append(NEW_LINE)
+				.append(" Size: ")
+				.append(size.x)
+				.append(" x ")
+				.append(size.y)
+				.append(NEW_LINE)
+				.append("}");
 
 		return result.toString();
 	}

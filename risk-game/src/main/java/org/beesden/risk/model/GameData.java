@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 public class GameData {
 
-	private static final int[] DEFAULT_CARD_BONUS = { 4, 6, 8, 10, 12, 15 };
 	private static final int[] DEFAULT_START_STRENGTH = { 0, 40, 35, 30, 25, 20 };
 
 	public enum GameState {
@@ -18,8 +17,6 @@ public class GameData {
 
 	private int cardPlayCount = 0;
 	private int[] startForces = DEFAULT_START_STRENGTH;
-	private int[] cardBonus = DEFAULT_CARD_BONUS;
-
 	private GameConfig config;
 	private GameMap map;
 	private GameState state = GameState.SETUP;
