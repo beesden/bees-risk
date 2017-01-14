@@ -33,7 +33,7 @@ public class GameCommands {
 //	 * @param request null
 //	 */
 //	public static void createGame(GameData gameData, Session socket, JsonObject request) {
-//		// Player is already in a game
+//		// GamePlayer is already in a game
 //		if (gameData != null) {
 //			leaveGame(gameData, socket, request);
 //		}
@@ -63,7 +63,7 @@ public class GameCommands {
 //	public static void playerColour(GameData gameData, Session socket, JsonObject request) {
 //		// Get the game player
 //		String username = (String) socket.getUserProperties().get("username");
-//		Player player = gameData.getPlayerList().get(username);
+//		GamePlayer player = gameData.getPlayerList().get(username);
 //		// Get the current player colour
 //		Integer colourIndex = player.getColour() == null ? 0 : Arrays.asList(gameData.getColours()).indexOf(player.getColour());
 //		String colour;
@@ -103,7 +103,7 @@ public class GameCommands {
 //		Utils.sendMessage(socket, "updateConfig", gameData.getConfig().toJson());
 //		// If all checks out, add the player to the game
 //		WebSocketServerConfiguration.playerGames.put(username, gameId);
-//		Player newPlayer = new Player(username, null);
+//		GamePlayer newPlayer = new GamePlayer(username, null);
 //		gameData.getPlayerList().put(newPlayer.getPlayerId(), newPlayer);
 //		// Generate a player colour and update the session
 //		playerColour(gameData, socket, request);
@@ -138,7 +138,7 @@ public class GameCommands {
 //		}
 //		// If game is started, set player to neutral
 //		else if (gameData.getGameReady()) {
-//			Player player = gameData.getPlayerList().get(username);
+//			GamePlayer player = gameData.getPlayerList().get(username);
 //			player.setNeutral(true);
 //			gameData.setPlayersActive(gameData.getPlayersActive() - 1);
 //			// Start the next player's turn if current player's turn
@@ -165,7 +165,7 @@ public class GameCommands {
 //			// Update lead player if necessary
 //			else if (gameData.getConfig().getLeadPlayer().equals(username)) {
 //				for (String playerId : gameData.getPlayerList().keySet()) {
-//					Player player = gameData.getPlayerList().get(playerId);
+//					GamePlayer player = gameData.getPlayerList().get(playerId);
 //					if (!player.isNeutral() && !player.getPlayerId().equals(username)) {
 //						gameData.getConfig().setLeadPlayer(player.getPlayerId());
 //						break;
@@ -196,7 +196,7 @@ public class GameCommands {
 //				System.out.println("Insufficient players to start a game.");
 //				break;
 //			case 2:
-//				Player neutral = new Player("Neutral Player", "#555");
+//				GamePlayer neutral = new GamePlayer("Neutral GamePlayer", "#555");
 //				neutral.setNeutral(true);
 //				gameData.getPlayerList().put(neutral.getPlayerId(), neutral);
 //				break;
@@ -214,11 +214,11 @@ public class GameCommands {
 //		String username = (String) socket.getUserProperties().get("username");
 //		// Prevent player interaction when it's not their turn
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
-//			System.out.println("Player commands sent out of sequence");
+//			System.out.println("GamePlayer commands sent out of sequence");
 //			return;
 //		}
 //		// Get the actual player object
-//		Player player = gameData.getPlayerList().get(username);
+//		GamePlayer player = gameData.getPlayerList().get(username);
 //		if (player == null || player.isNeutral()) {
 //			System.out.println("Active player not found");
 //			return;
@@ -226,7 +226,7 @@ public class GameCommands {
 //		// Get the turn phase and run a game action from that
 //		String turnPhase = gameData.getConfig().getTurnPhase();
 //		try {
-//			Method method = TerritoryActions.class.getMethod(turnPhase, Player.class, GameData.class, JsonObject.class);
+//			Method method = TerritoryActions.class.getMethod(turnPhase, GamePlayer.class, GameData.class, JsonObject.class);
 //			method.invoke(TerritoryActions.class, player, gameData, request);
 //		}
 //		catch (Exception e) {
@@ -245,11 +245,11 @@ public class GameCommands {
 //		String username = (String) socket.getUserProperties().get("username");
 //		// Prevent player interaction when it's not their turn or it's not the reinforcement phase
 //		if (!gameData.getConfig().getPlayerTurn().equals(username) || !gameData.getConfig().getTurnPhase().equals("reinforce")) {
-//			System.out.println("Player commands sent out of sequence");
+//			System.out.println("GamePlayer commands sent out of sequence");
 //			return;
 //		}
 //		// Get the actual player object
-//		Player player = gameData.getPlayerList().get(username);
+//		GamePlayer player = gameData.getPlayerList().get(username);
 //		if (player == null || player.isNeutral()) {
 //			System.out.println("Active player not found");
 //			return;
@@ -266,7 +266,7 @@ public class GameCommands {
 //		// Prevent player interaction when it's not their turn
 //		String username = (String) socket.getUserProperties().get("username");
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
-//			System.out.println("Player commands sent out of sequence");
+//			System.out.println("GamePlayer commands sent out of sequence");
 //			return;
 //		}
 //		Configuration config = gameData.getConfig();
@@ -302,7 +302,7 @@ public class GameCommands {
 //		// Prevent player interaction when it's not their turn
 //		String username = (String) socket.getUserProperties().get("username");
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
-//			System.out.println("Player commands sent out of sequence");
+//			System.out.println("GamePlayer commands sent out of sequence");
 //			return;
 //		}
 //		// Progress turn if changable phase
@@ -324,27 +324,6 @@ public class GameCommands {
 //			default:
 //				System.out.println("Unable to change turn phase.");
 //		}
-//	}
-//
-//	public static void viewLobby(GameData gameData, Session socket, JsonObject request) {
-//		ArrayList<String> gameList = new ArrayList<>();
-//		// Only add games that are not yet started
-//		for (String key: WebSocketServerConfiguration.gameList.keySet()) {
-//			GameData showGame = WebSocketServerConfiguration.gameList.get(key);
-//			if (showGame != null && !showGame.getGameReady()) {
-//				gameList.add(key);
-//			}
-//		}
-//		// Count how many players are in the lobby
-//		Integer lobbyPlayers = 0;
-//		for (String player: WebSocketServerConfiguration.playerGames.keySet()) {
-//			if (WebSocketServerConfiguration.playerGames.get(player).equals(WebSocketServerConfiguration.lobbyName)) {
-//				lobbyPlayers++;
-//			}
-//		}
-//		JsonObjectBuilder response = Json.createObjectBuilder();
-//		response.add("gameList", JsonUtils.toArray(gameList)).add("activePlayers", lobbyPlayers);
-//		Utils.sendGameMessage(WebSocketServerConfiguration.lobbyName, "gameLobby", response.build());
 //	}
 
 }

@@ -10,7 +10,7 @@ public class TerritoryActions {
 //	 * @param socket Current player session information
 //	 * @param request {"gameId": "Test's Game"}
 //	 */
-//	public static void attack(Player player, GameData gameData, JsonObject request) {
+//	public static void attack(GamePlayer player, GameData gameData, JsonObject request) {
 //		// Get the territory objects
 //		String attackerId = request.getString("attacker");
 //		Territory attacker = gameData.getGameMap().getTerritories().get(attackerId);
@@ -44,7 +44,7 @@ public class TerritoryActions {
 //	 * @param socket Current player session information
 //	 * @param request {"gameId": "Test's Game"}
 //	 */
-//	public static void deploy(Player player, GameData gameData, JsonObject request) {
+//	public static void deploy(GamePlayer player, GameData gameData, JsonObject request) {
 //		String territoryId = request.getString("territory");
 //		if (GameActions.deployTerritory(player, territoryId, gameData)) {
 //			if (gameData.getGameMap().getUnclaimedTerritories().size() < 1) {
@@ -61,9 +61,9 @@ public class TerritoryActions {
 //	 * @param socket Current player session information
 //	 * @param request {"gameId": "Test's Game"}
 //	 */
-//	public static void reinforce(Player player, GameData gameData, JsonObject request) {
+//	public static void reinforce(GamePlayer player, GameData gameData, JsonObject request) {
 //		String territoryId = request.getString("territory");
-//		// Player must use risk cards before they reinforce
+//		// GamePlayer must use risk cards before they reinforce
 //		if (player.getRiskCards().size() > 4) {
 //			Utils.sendMessage(WebSocketServerConfiguration.playerList.get(player.getPlayerId()), "viewCards", request);
 //			return;

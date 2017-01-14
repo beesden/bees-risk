@@ -4,12 +4,11 @@ public class GameLobbyException extends RuntimeException {
 
 	public String playerId;
 	public String gameId;
-	private String message;
 
 	public GameLobbyException(String message, String playerId, String gameId) {
+		super(message);
 		this.playerId = playerId;
 		this.gameId = gameId;
-		this.message = message;
 	}
 
 }

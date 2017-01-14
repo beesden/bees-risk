@@ -18,13 +18,24 @@ public class MapServiceTest {
 	}
 
 	@Test
-	public void testGetFromFileInvalid() {
+	public void testGetInvalidMap() {
 		GameMap gameMap = MapService.getMapById("_INVALID");
 		Assert.assertNull(gameMap);
 	}
 
 	@Test
-	public void testAfricaMapFile() {
+	public void testMapCache() {
+		GameMap originalMap = MapService.getMapById("risk");
+
+		int[] altSize = new int[]{ 1, 2 };
+		originalMap.setSize(new GameMap.Axis(altSize));
+
+		GameMap cachedMap = MapService.getMapById("risk");
+		Assert.assertNotEquals(originalMap.getSize(), cachedMap.getSize());
+	}
+
+	@Test
+	public void testAfricaMap() {
 		GameMap gameMap = MapService.getMapById("africa");
 
 		Assert.assertNotNull(gameMap);
@@ -33,7 +44,7 @@ public class MapServiceTest {
 	}
 
 	@Test
-	public void testRiskMapFile() {
+	public void testRiskMap() {
 		GameMap gameMap = MapService.getMapById("risk");
 
 		Assert.assertNotNull(gameMap);

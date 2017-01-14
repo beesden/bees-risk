@@ -5,7 +5,7 @@ public class VictoryActions {
 //	public static Boolean checkVictoryConditions(GameData gameData) {
 //		// Loop over players
 //		for (String playerId: gameData.getPlayerList().keySet()) {
-//			Player player = gameData.getPlayerList().get(playerId);
+//			GamePlayer player = gameData.getPlayerList().get(playerId);
 //			if (!player.isNeutral()) {
 //				// Test player victory conditions
 //				String victoryCondition = "lastPlayerStanding"; // @TOOD - add config option
@@ -21,14 +21,14 @@ public class VictoryActions {
 //		return false;
 //	}
 //
-//	public static Boolean testPlayerVictory(Player player, GameData gameData, String victoryCondition) {
+//	public static Boolean testPlayerVictory(GamePlayer player, GameData gameData, String victoryCondition) {
 //
 //		switch (victoryCondition) {  //@TODO - add victory conditions
 //			// Last player standing
 //			default:
 //				Integer activePlayers = 0;
 //				for (String playerId: gameData.getPlayerList().keySet()) {
-//					Player gamePlayer = gameData.getPlayerList().get(playerId);
+//					GamePlayer gamePlayer = gameData.getPlayerList().get(playerId);
 //					if (!gamePlayer.isNeutral()) {
 //						++activePlayers;
 //					}

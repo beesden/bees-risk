@@ -4,7 +4,7 @@ public class CardActions {
 
 //	public static void addCard(GameData gameData, String playerId, List<String> cardIds, Boolean updatePlayer) {
 //		// Get the target player object
-//		Player player = gameData.getPlayerList().get(playerId);
+//		GamePlayer player = gameData.getPlayerList().get(playerId);
 //		if (player == null || player.isNeutral()) {
 //			System.out.println("Active player not found");
 //			return;
@@ -34,7 +34,7 @@ public class CardActions {
 //
 //	public static void removeCard(GameData gameData, String playerId, String cardId) {
 //		// Get the target player object
-//		Player player = gameData.getPlayerList().get(playerId);
+//		GamePlayer player = gameData.getPlayerList().get(playerId);
 //		if (player == null) {
 //			System.out.println("Active player not found");
 //			return;
@@ -77,7 +77,7 @@ public class CardActions {
 //		return 0;
 //	}
 //
-//	public static void useCards(GameData gameData, Player player, JsonObject request) {
+//	public static void useCards(GameData gameData, GamePlayer player, JsonObject request) {
 //		// Cards can only be played during the reinforcement phase
 //		if (!gameData.getConfig().getTurnPhase().equals("reinforce")) {
 //			System.out.println("Cards may only be played during the reinforcement phase");

@@ -2,7 +2,7 @@ package org.beesden.risk.action;
 
 public class GameActions {
 
-//	public static void attackTerritory(GameData gameData, Player player, Territory attacker, Territory defender) {
+//	public static void attackTerritory(GameData gameData, GamePlayer player, Territory attacker, Territory defender) {
 //		JsonObjectBuilder response = Json.createObjectBuilder();
 //		// Attacker must have > 1 battalions to attack
 //		if (attacker.getBattalions() < 2) {
@@ -41,7 +41,7 @@ public class GameActions {
 //		results.add("combat", JsonUtils.toArray(combat));
 //		// Change ownership if defender runs out of battalions
 //		if (defender.getBattalions() == 0) {
-//			Player defensivePlayer = defender.getOwner();
+//			GamePlayer defensivePlayer = defender.getOwner();
 //			Integer invadeStrength = attacker.getBattalions() - 1;
 //			invadeStrength = invadeStrength > 3 ? 3 : invadeStrength;
 //			attacker.setBattalions(attacker.getBattalions() - invadeStrength);
@@ -73,7 +73,7 @@ public class GameActions {
 //		Utils.sendGameMessage(gameData.getGameId(), "attack", response.build());
 //	}
 //
-//	public static boolean deployTerritory(Player player, String territoryId, GameData gameData) {
+//	public static boolean deployTerritory(GamePlayer player, String territoryId, GameData gameData) {
 //		GameMap gameMap = gameData.getGameMap();
 //		if (gameMap == null) {
 //			System.out.println("Error retrieving the map object");
@@ -92,7 +92,7 @@ public class GameActions {
 //		return true;
 //	}
 //
-//	public static boolean reinforceTerritory(Player player, String territoryId, GameData gameData) {
+//	public static boolean reinforceTerritory(GamePlayer player, String territoryId, GameData gameData) {
 //		GameMap gameMap = gameData.getGameMap();
 //		if (gameMap == null) {
 //			System.out.println("Error retrieving the map object");
@@ -108,7 +108,7 @@ public class GameActions {
 //		return true;
 //	}
 //
-//	public static Integer calculateReinforcemnt(Player player, GameData gameData) {
+//	public static Integer calculateReinforcemnt(GamePlayer player, GameData gameData) {
 //		GameMap gameMap = gameData.getGameMap();
 //		Integer globalTerritories = 0;
 //		Integer bonusReinforcement = 0;
@@ -140,13 +140,13 @@ public class GameActions {
 //		gameData.setGameReady(true);
 //		Integer startForces = config.getStartForces()[gameData.getPlayersActive()];
 //		for (String playerId : gameData.getPlayerList().keySet()) {
-//			Player player = gameData.getPlayerList().get(playerId);
+//			GamePlayer player = gameData.getPlayerList().get(playerId);
 //			player.setReinforcements(startForces);
 //		}
 //		config.setTurnPhase("deploy");
 //		// Assemble the map
 //		String mapId = request.getString("mapId");
-//		GameMap gameMap = MapUtils.generateMap(mapId);
+//		GameMap gameMap = MapService.generateMap(mapId);
 //		gameData.setGameMap(gameMap);
 //		// Generate the risk cards list
 //		for (String territoryId : gameMap.getTerritories().keySet()) {
@@ -171,11 +171,11 @@ public class GameActions {
 //			return;
 //		}
 //		Configuration config = gameData.getConfig();
-//		LinkedHashMap<String, Player> playerList = gameData.getPlayerList();
+//		LinkedHashMap<String, GamePlayer> playerList = gameData.getPlayerList();
 //		// Update the config with the new player turn
 //		Iterator<String> iter = playerList.keySet().iterator();
 //		while (iter.hasNext()) {
-//			Player player = playerList.get(iter.next());
+//			GamePlayer player = playerList.get(iter.next());
 //			// If no player, use the first value - this is used to reset to player 1
 //			if (config.getPlayerTurn() == null) {
 //				config.setPlayerTurn(player.getPlayerId());
@@ -189,7 +189,7 @@ public class GameActions {
 //			}
 //		}
 //		// If it's a neutral player, re-iterate the function
-//		Player newTurn = playerList.get(config.getPlayerTurn());
+//		GamePlayer newTurn = playerList.get(config.getPlayerTurn());
 //		if (newTurn.isNeutral() && !config.getTurnPhase().equals("deploy")) {
 //			startTurn(gameData);
 //			return;

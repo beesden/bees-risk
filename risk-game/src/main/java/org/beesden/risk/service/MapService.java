@@ -17,6 +17,7 @@ public class MapService {
 	private static final Gson GSON_READER = new Gson();
 	private static final String MAP_FOLDER = "maps";
 	private static final String MAP_SUFFIX = ".map.json";
+	private static final Map<String, GameMapDTO> MAP_CACHE = new HashMap<>();
 
 	/**
 	 * List all available maps
@@ -46,6 +47,10 @@ public class MapService {
 	 */
 	public static GameMap getMapById(String mapId) {
 
+		if (MAP_CACHE.get(mapId) != null) {
+			return generateMap(MAP_CACHE.get(mapId));
+		}
+
 		try {
 
 			InputStream input = CLASS_LOADER.getResourceAsStream(MAP_FOLDER + "/" + mapId + MAP_SUFFIX);
@@ -55,7 +60,9 @@ public class MapService {
 
 			String mapJson = new BufferedReader(new InputStreamReader(input)).lines().collect(Collectors.joining("\n"));
 			GameMapDTO mapData = GSON_READER.fromJson(mapJson, GameMapDTO.class);
-			return generateMap(mapData);
+			MAP_CACHE.put(mapId, mapData);
+			GameMap gameMap = generateMap(mapData);
+			return gameMap;
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
