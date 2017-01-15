@@ -15,7 +15,7 @@ public class GameDataTest {
 
 	@Before
 	public void setup() {
-		gameData = new GameData(PLAYER_1, GAME_NAME, new GameConfig());
+		gameData = new GameData(PLAYER_1, GAME_NAME, new Config());
 	}
 
 	@Test
@@ -49,18 +49,18 @@ public class GameDataTest {
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.startGame();
 		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
-		Assert.assertEquals(3, gameData.getPlayers().getPlayers().size());
+		Assert.assertEquals(3, gameData.getPlayers().getPlayerList().size());
 
-		gameData = new GameData(PLAYER_1, GAME_NAME, new GameConfig());
+		gameData = new GameData(PLAYER_1, GAME_NAME, new Config());
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.getPlayers().add(PLAYER_3);
 		Assert.assertEquals(3, gameData.getPlayers().countActivePlayers());
-		Assert.assertEquals(3, gameData.getPlayers().getPlayers().size());
+		Assert.assertEquals(3, gameData.getPlayers().getPlayerList().size());
 	}
 
 	@Test
 	public void testAutoAssignTerritories() {
-		GameConfig config = new GameConfig();
+		Config config = new Config();
 		config.setAutoAssignTerritories(true);
 
 		gameData = new GameData(PLAYER_1, GAME_NAME, config);
@@ -85,7 +85,7 @@ public class GameDataTest {
 
 	@Test
 	public void testAutoAssignBattalions() {
-		GameConfig config = new GameConfig();
+		Config config = new Config();
 		config.setAutoAssignTerritories(false);
 		config.setAutoPlaceBattalions(true);
 
@@ -112,7 +112,7 @@ public class GameDataTest {
 
 	@Test
 	public void testNextTurn() {
-		GameConfig config = new GameConfig();
+		Config config = new Config();
 		config.setAutoAssignTerritories(true);
 		config.setAutoPlaceBattalions(true);
 

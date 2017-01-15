@@ -25,13 +25,12 @@ public class GameData {
 	private TurnPhase phase;
 
 	// Game data objects
-	private GameConfig config;
+	private Config config;
 	private GameMap map;
 	private CardDeck cards;
 	private GamePlayers players;
 
 	// Game turn data
-	private int cardPlayCount = 0;
 	private String currentTurn = "__INVALID";
 
 	/**
@@ -41,7 +40,7 @@ public class GameData {
 	 * @param gameName game name
 	 * @param config   game config
 	 */
-	public GameData(String playerId, String gameName, GameConfig config) {
+	public GameData(String playerId, String gameName, Config config) {
 		this.name = gameName;
 		this.config = config;
 
@@ -63,7 +62,7 @@ public class GameData {
 		}
 
 		// Assign starting battalions
-		List<Player> playerList = players.getPlayers();
+		List<Player> playerList = players.getPlayerList();
 		int startingForces = startForces[ activePlayerCount - 2 ];
 		for (Player player : playerList) {
 			player.setReinforcements(startingForces);

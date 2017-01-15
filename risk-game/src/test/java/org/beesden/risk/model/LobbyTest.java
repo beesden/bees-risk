@@ -1,29 +1,27 @@
-package org.beesden.risk.service;
+package org.beesden.risk.model;
 
 import org.beesden.risk.Exception.GameLobbyException;
-import org.beesden.risk.model.GameConfig;
-import org.beesden.risk.model.GameData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GameLobbyTest {
+public class LobbyTest {
 
 	private static final String PLAYER_1 = "PLAYER_1";
 	private static final String PLAYER_2 = "PLAYER_2";
 	private static final String GAME_NAME = "GAME";
-	private GameLobby lobby;
+	private Lobby lobby;
 
 	@Before
 	public void setup() {
-		lobby = new GameLobby();
+		lobby = new Lobby();
 	}
 
 	@Test
 	public void testCreateGame() {
 
 		// Player 1 can create a game
-		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new GameConfig());
+		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
 		Assert.assertEquals(1L, gameData.getPlayers().countActivePlayers());
 		Assert.assertEquals(GameData.GameState.SETUP, gameData.getState());
@@ -31,7 +29,7 @@ public class GameLobbyTest {
 
 		// Can't create games with the same name
 		try {
-			lobby.createGame(PLAYER_2, GAME_NAME, new GameConfig());
+			lobby.createGame(PLAYER_2, GAME_NAME, new Config());
 			Assert.fail("Should not be possible to create games with the same name");
 		} catch (GameLobbyException e) {
 			// Yay
@@ -39,7 +37,7 @@ public class GameLobbyTest {
 
 		// Can't create a game if already playing
 		try {
-			lobby.createGame(PLAYER_1, "game2", new GameConfig());
+			lobby.createGame(PLAYER_1, "game2", new Config());
 			Assert.fail("Should not be possible to create games if already in another");
 		} catch (GameLobbyException e) {
 			// Yay
@@ -64,11 +62,11 @@ public class GameLobbyTest {
 			// Yay
 		}
 
-		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new GameConfig());
+		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 
 		// Player 1 can't join another game
 		try {
-			lobby.createGame("player0", invalidGame, new GameConfig());
+			lobby.createGame("player0", invalidGame, new Config());
 			lobby.joinGame(PLAYER_1, "game2");
 			Assert.fail("Should not be possible to join a new game while in another");
 		} catch (GameLobbyException e) {
@@ -109,7 +107,7 @@ public class GameLobbyTest {
 	public void testStartGame() {
 		String game = "game";
 
-		GameData gameData = lobby.createGame(PLAYER_1, game, new GameConfig());
+		GameData gameData = lobby.createGame(PLAYER_1, game, new Config());
 
 		// Can't start game with insufficient players
 		try {
@@ -150,11 +148,11 @@ public class GameLobbyTest {
 		Assert.assertEquals(0, lobby.listGames().size());
 
 		// Can create a game in the lobby
-		lobby.createGame(PLAYER_1, GAME_NAME, new GameConfig());
+		lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 		Assert.assertEquals(1, lobby.listGames().size());
 
 		// Can create a second game
-		lobby.createGame(PLAYER_2, "game2", new GameConfig());
+		lobby.createGame(PLAYER_2, "game2", new Config());
 		Assert.assertEquals(2, lobby.listGames().size());
 
 	}

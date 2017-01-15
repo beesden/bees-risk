@@ -1,15 +1,13 @@
-package org.beesden.risk.service;
+package org.beesden.risk.model;
 
+import lombok.Data;
 import org.beesden.risk.Exception.GameLobbyException;
-import org.beesden.risk.model.GameConfig;
-import org.beesden.risk.model.GameData;
-import org.beesden.risk.model.LobbyGame;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class GameLobby {
+public class Lobby {
 
 	private final ConcurrentHashMap<String, String> ACTIVE_PLAYERS = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
@@ -38,8 +36,8 @@ public class GameLobby {
 	 *
 	 * @return listIds of games
 	 */
-	public List<LobbyGame> listGames() {
-		return SESSION_GAMES.values().stream().map(LobbyGame::new).collect(Collectors.toList());
+	public List<Summary> listGames() {
+		return SESSION_GAMES.values().stream().map(Summary::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class GameLobby {
 	 * @param playerId player id
 	 * @param config   game config
 	 */
-	public GameData createGame(String playerId, String gameId, GameConfig config) {
+	public GameData createGame(String playerId, String gameId, Config config) {
 
 		if (SESSION_GAMES.get(gameId) != null) {
 			throw new GameLobbyException("A game with that name already exists", playerId, gameId);
@@ -135,4 +133,18 @@ public class GameLobby {
 		return getGame(playerId);
 	}
 
+	@Data
+	public static class Summary {
+
+		private String gameName;
+		private GameData.GameState state;
+		private List<String> players;
+
+		public Summary(GameData gameData) {
+			this.gameName = gameData.getName();
+			this.state = gameData.getState();
+			this.players = gameData.getPlayers().listIds();
+		}
+
+	}
 }

@@ -3,7 +3,7 @@ package org.beesden.risk.model;
 import lombok.Data;
 
 @Data
-public class GameConfig {
+public class Config {
 
 	private static final String DEFAULT_MAP = "risk";
 

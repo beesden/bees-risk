@@ -10,7 +10,7 @@ public class GamePlayers {
 	@Getter
 	private String owner;
 	@Getter
-	private List<Player> players;
+	private List<Player> playerList;
 
 	/**
 	 * Default constructor.
@@ -18,7 +18,7 @@ public class GamePlayers {
 	 * @param playerId owner player id
 	 */
 	public GamePlayers(String playerId) {
-		players = new ArrayList<>();
+		playerList = new ArrayList<>();
 		add(playerId);
 		owner = playerId;
 	}
@@ -30,7 +30,7 @@ public class GamePlayers {
 		Player player = get(playerId);
 		if (player == null) {
 			player = new Player(playerId);
-			players.add(player);
+			playerList.add(player);
 		}
 		return player;
 	}
@@ -41,36 +41,36 @@ public class GamePlayers {
 	public Player addNeutralPlayer() {
 		Player player = new Player("Neutral Player");
 		player.setNeutral(true);
-		players.add(player);
+		playerList.add(player);
 		return player;
 	}
 
 	/**
-	 * Count active players.
+	 * Count active playerList.
 	 */
 	public long countActivePlayers() {
-		return players.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).count();
+		return playerList.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).count();
 	}
 
 	/**
-	 * Count active players.
+	 * Count active playerList.
 	 */
 	public List<Player> getActivePlayers() {
-		return players.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).collect(Collectors.toList());
+		return playerList.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).collect(Collectors.toList());
 	}
 
 	/**
 	 * Get a player
 	 */
 	public Player get(String playerId) {
-		return players.stream().filter(p -> playerId.equals(p.getPlayerId())).findFirst().orElse(null);
+		return playerList.stream().filter(p -> playerId.equals(p.getPlayerId())).findFirst().orElse(null);
 	}
 
 	/**
-	 * List all players
+	 * List all playerList
 	 */
 	public List<String> listIds() {
-		return players.stream().map(Player::getPlayerId).collect(Collectors.toList());
+		return playerList.stream().map(Player::getPlayerId).collect(Collectors.toList());
 	}
 
 	/**
@@ -80,18 +80,18 @@ public class GamePlayers {
 
 		// Remove or set inactive if game already started
 		if (gameStarted) {
-			players.stream().filter(player -> playerId.equals(player.getPlayerId())).forEach(player -> {
+			playerList.stream().filter(player -> playerId.equals(player.getPlayerId())).forEach(player -> {
 				player.setNeutral(true);
 				player.setSpectating(true);
 			});
 		} else {
-			players.removeIf(player -> playerId.equals(player.getPlayerId()));
+			playerList.removeIf(player -> playerId.equals(player.getPlayerId()));
 		}
 
 		// Update game owner
 		if (playerId.equals(owner)) {
 			owner = null;
-			players.stream()
+			playerList.stream()
 					.filter(p -> !p.isNeutral())
 					.findFirst()
 					.ifPresent(player1 -> owner = player1.getPlayerId());
