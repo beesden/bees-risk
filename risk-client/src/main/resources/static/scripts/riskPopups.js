@@ -38,8 +38,8 @@ risk.popups = (function (d) {
 		 *  @param {object} content - DOM object
 		 *  @param {string} cancel - message to dispaly for the cancel button - hides if false
 		 *  @param {string} confirm - message to dispaly for the confirm button - hides if false
-		 *  @param {function} success - action to be run on confirm
-		 *  @param {function} failure - action to be run on cancel - overrides the default
+		 *  @param {function} success - command to be run on confirm
+		 *  @param {function} failure - command to be run on cancel - overrides the default
 		 */
 		show: function(content, cancel, confirm, success, failure) {
 			// Only show if there is content and at least one actionable button

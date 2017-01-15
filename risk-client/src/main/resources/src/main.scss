@@ -1,27 +1,34 @@
+$brand: #ce0002 !default;
+
+html {font:14px "Palatino Linotype", "Book Antiqua", Palatino, serif;}
+
+// Global
+@import 'scss/forms';
+
+// Components
+@import 'scss/lobby';
+
 /* Global Typography */
 * {box-sizing:border-box; margin:0; padding:0; -webkit-user-select:none; -moz-user-select:none}
 body {background:#000; font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif; display:inline-block; font-variant:small-caps; min-width:950px; padding: 40px 5px 105px; width:100%;}
 body.select {cursor:pointer;}
 body:before {display:block; content:''; width:100%; position:fixed; left:0; top:0; background:rgba(0,0,0,0.6); z-index:3; height:40px;}
 @font-face {font-family:'Icons';src: url('.//icons.woff') format('woff');font-weight: normal;font-style: normal;}
-input {background:#ffe; border:1px solid #bbb; box-shadow:inset 1px 1px 3px #ccc; font:inherit; padding:9px 15px; text-align:left;}
 input[type='range'] {-webkit-appearance: none;border-radius: 4px;box-shadow:inset 0 0 3px rgba(0,0,0,0.2); background-color: #ddb; outline:none; height: 5px; padding:0 10px; vertical-align: middle;}
 input[type='range']::-moz-range-thumb {-moz-appearance: none;border-radius: 4px;background-color: #FFF;box-shadow:inset 0 0 3px rgba(000,000,000,0.3);border: 1px solid #999;height: 24px;width: 20px;}
 input[type='range']::-moz-range-track {-moz-appearance: none;border-radius: 4px;box-shadow: inset 0 0 5px #333;background-color: #999;height: 10px;}
 input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;border-radius:4px;background-color: #FFF;box-shadow:inset 0 0 3px rgba(0,0,0,0.3);border: 1px solid #999;height:24px;width:20px;}
-.uiButton { background:#304f80; box-shadow:inset 2px 2px 40px rgba(0,0,0,0.4); color:#f5f5f5; display:inline-block; text-align:center; text-shadow:-1px -1px 3px rgba(0,0,0,0.8); }
-.uiButton:hover {background:#405f90; cursor:pointer;}
-.uiButton.disabled {background:#aaa; color:#666; text-shadow:none;}
-#riskMap {background:url('./background.png') top center repeat; box-shadow:inset 0 0 250px 5px rgba(0,0,0,0.2); text-align:center;}
+
+#riskMap {background:url('background.png') top center repeat; box-shadow:inset 0 0 250px 5px rgba(0,0,0,0.2); text-align:center;}
 
 /* Chat box */
 @-webkit-keyframes pending {
-	from {background: rgba(255,255,255,0.1);}
-	to {background: rgba(255,255,255,0.4);}
+  from {background: rgba(255,255,255,0.1);}
+  to {background: rgba(255,255,255,0.4);}
 }
 .chatBox {position:fixed; right:15px; top:0; width: 225px; z-index:5;}
 .chatBox .title {background: rgba(255,255,255,0.1); box-shadow: 0 0 1px #eee; color:#eee; cursor:pointer; display:block; margin: 6px 0; padding:5px;text-align: center;}
-.chatBox .messageList {background:url('./noisy.png') top left repeat; display:none; overflow-y:auto; word-wrap: break-word; height:230px}
+.chatBox .messageList {background:url('noisy.png') top left repeat; display:none; overflow-y:auto; word-wrap: break-word; height:230px}
 .chatBox .title.pending {-webkit-animation: pending 0.75s ease-in-out alternate infinite;}
 .chatBox .message {border-bottom:1px dashed #bbb; color:#555; display:block; font:12px/15px sans-serif; padding:6px 12px;}
 .chatBox .message span {font-size:0.9em; font-weight:700; margin:0 0 5px;}
@@ -46,7 +53,7 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 /* Risk player information */
 .playerInfo { color: #333; position:fixed; margin:auto; left:0; right:0; top:0; width:330px;z-index: 10;}
 .playerInfo .currentPlayer {background:linear-gradient(#e5e5e5, #bfbfbf); border-right:28px solid; cursor:pointer; display:block; font-size: 18px; font-weight:700; line-height:18px; margin: 6px 0; padding:5px;text-align: center; text-shadow:0 1px 0 rgba(255, 255, 255, 0.5);letter-spacing: 1px;}
-.playerInfo .playerList {background:url('./noisy.png') top left repeat; border:2px solid #bbb; border-top:none; display:none; margin:auto; position:fixed; left:0; right:0; list-style:none; width:440px;}
+.playerInfo .playerList {background:url('noisy.png') top left repeat; border:2px solid #bbb; border-top:none; display:none; margin:auto; position:fixed; left:0; right:0; list-style:none; width:440px;}
 .playerInfo .playerList li { margin:5px; display:block; border: 1px solid #bbb; border-radius: 4px; background: rgba(0,0,0,0.1);}
 .playerInfo .playerList li span {display:inline-block; font-size:14px; font-variant: normal; line-height:18px; padding: 4px 5px 2px; margin:5px; vertical-align:top; width:100px;text-align: center;}
 .playerInfo .playerList li .name {border-left:24px solid; font-weight:700; width:190px;text-align: left;}
@@ -56,7 +63,7 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 /* Turn info dialog */
 .turnInfo {list-style:none; position:fixed; border-radius:15px 15px 0 0; bottom:0; right:15px; margin:auto; width: 350px; z-index:10;}
 .turnInfo .turnPhase {border-radius:8px 8px 0 0; float:right; border:2px solid #aaa; font-size:18px; letter-spacing: 1px;  padding:10px 40px; width:100%}
-.turnInfo .message {background:url('./noisy.png') top left repeat; clear:both; line-height:20px; padding:10px 20px; height:60px;}
+.turnInfo .message {background:url('noisy.png') top left repeat; clear:both; line-height:20px; padding:10px 20px; height:60px;}
 .turnInfo .message em {font-style:normal; font-weight:700;}
 
 /* Minimap */
@@ -71,7 +78,7 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 
 /* Basic popup styles */
 .overlay {position:fixed; top:0; left:0; height:100%; width:100%; background:rgba(0,0,0,0.7);  z-index:20;}
-.popup {background:url('./noisy.png') top left repeat; box-shadow:0 0 25px 5px #000; padding:20px 40px 90px; max-height:90%; position:fixed; top:15%; max-height:70%; left:0; right:0; margin:auto; width:600px; text-align:center; z-index:30;}
+.popup {background:url('noisy.png') top left repeat; box-shadow:0 0 25px 5px #000; padding:20px 40px 90px; max-height:90%; position:fixed; top:15%; max-height:70%; left:0; right:0; margin:auto; width:600px; text-align:center; z-index:30;}
 .popup:after {background:rgba(0,0,0,0.1); content:''; position:absolute; bottom:0; left:0; height:77px; border-top:1px dashed #aaa; width:100%;}
 .popup .button {border:2px solid #ddd; font: inherit; background:#fff; color:#666; cursor: pointer; font-size:13px; padding: 15px 15px 13px; display: inline-block; line-height:23px; margin: 0 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; position: relative; transition: all 0.3s;overflow:hidden; position:absolute; bottom:10px; z-index:20;}
 .popup .button:hover{background:#f5f5f5;}
@@ -95,8 +102,8 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 
 /* Attack popup */
 @-webkit-keyframes attack {
-	0% {opacity:1;}
-	100% {opacity:0;}
+  0% {opacity:1;}
+  100% {opacity:0;}
 }
 .popup .attack {list-style:none; padding:0;}
 .popup .attack .title {margin:0 0 18px; color: #444; font-size:18px; font-weight:700; text-shadow: 1px 1px 1px rgba(0,0,0,0.1);}
@@ -126,7 +133,7 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 .popup .cardList {border:none; overflow:auto; min-width:0; width:100%; padding:0 0 12px; white-space:nowrap;}
 .popup .cardList span {display:block; text-shadow: 1px 1px 1px rgba(0,0,0,0.1); font-size:18px; margin:0 0 12px;}
 .popup .cardList label {background:#eed; border:1px solid #dba; border-radius:6px; cursor:pointer; display:inline-block; vertical-align:top; white-space:normal; margin:0 5px; overflow:hidden; position:relative;height:200px; width:125px; padding:5px;}
-.popup .cardList label:before {background:url('./cardLevels.png') top center no-repeat; content:''; display:block; height:60px; margin:0 0 10px;}
+.popup .cardList label:before {background:url('cardLevels.png') top center no-repeat; content:''; display:block; height:60px; margin:0 0 10px;}
 .popup .cardList input {display:none;}
 .popup .cardList input:checked + label:after {background:#998; content:'\f00c'; display:block; font:50px/110px 'Icons'; padding:90px 0 0; position:absolute; top:0; left:0; opacity:0.1; width:100%;}
 .popup .cardList [value="0"] + label:before {height:180px;}

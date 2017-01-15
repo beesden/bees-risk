@@ -99,14 +99,16 @@ public class Lobby {
 	 */
 	public void leaveGame(String playerId) {
 		GameData gameData = getGame(playerId);
-
-		// Remove player if game not yet started
-		gameData.getPlayers().remove(playerId, gameData.getState() != GameData.GameState.SETUP);
 		ACTIVE_PLAYERS.remove(playerId);
 
-		// Close the game if no players remain
-		if (gameData.getPlayers().getOwner() == null) {
-			SESSION_GAMES.remove(gameData.getName());
+		// Remove player if game not yet started
+		if (gameData != null) {
+			gameData.getPlayers().remove(playerId, gameData.getState() != GameData.GameState.SETUP);
+
+			// Close the game if no players remain
+			if (gameData.getPlayers().getOwner() == null) {
+				SESSION_GAMES.remove(gameData.getName());
+			}
 		}
 	}
 

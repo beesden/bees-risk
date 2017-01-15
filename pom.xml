@@ -17,9 +17,9 @@
 
     <modules>
         <module>risk-game</module>
+        <module>risk-client</module>
         <!--
                 <module>risk-chat</module>
-                <module>risk-client</module>
                 -->
     </modules>
 
