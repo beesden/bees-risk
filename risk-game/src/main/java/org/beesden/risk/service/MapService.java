@@ -23,7 +23,7 @@ public class MapService {
 	/**
 	 * List all available maps
 	 *
-	 * @return list of map IDs
+	 * @return listIds of map IDs
 	 */
 	public static List<String> getAvailableMaps() {
 		List<String> mapFiles = new ArrayList<>();
@@ -124,8 +124,8 @@ public class MapService {
 		// Construct and return the game map object
 		GameMap gameMap = new GameMap();
 		gameMap.setName(mapId);
-		gameMap.setContinents(continentList.values());
-		gameMap.setTerritories(territoryList.values());
+		gameMap.setContinents(new ArrayList<>(continentList.values()));
+		gameMap.setTerritories(new ArrayList<>(territoryList.values()));
 		gameMap.setSize(new GameMap.Axis(mapData.getSize()));
 		return gameMap;
 	}

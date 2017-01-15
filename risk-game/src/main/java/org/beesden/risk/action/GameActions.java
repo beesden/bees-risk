@@ -6,7 +6,7 @@ public class GameActions {
 //		JsonObjectBuilder response = Json.createObjectBuilder();
 //		// Attacker must have > 1 battalions to attack
 //		if (attacker.getBattalions() < 2) {
-//			System.out.println("Insufficent force to attack");
+//			System.out.println("insufficient force to attack");
 //			GameActions.updateAll(gameData, false, true, false);
 //			return;
 //		}
@@ -108,32 +108,6 @@ public class GameActions {
 //		return true;
 //	}
 //
-//	public static Integer calculateReinforcemnt(GamePlayers player, GameData gameData) {
-//		GameMap gameMap = gameData.getGameMap();
-//		Integer globalTerritories = 0;
-//		Integer bonusReinforcement = 0;
-//		// Manually recount territories to allow for continent bonuses
-//		for (String c : gameMap.getContinents().keySet()) {
-//			Continent cont = gameMap.getContinents().get(c);
-//			Integer control = 0;
-//			// Calculate how many territories are controlled by the current player
-//			for (String t : cont.getTerritories().keySet()) {
-//				Territory terr = cont.getTerritories().get(t);
-//				if (terr.getGameOwner() == player) {
-//					control++;
-//					globalTerritories++;
-//				}
-//			}
-//			// If the player controls the whole continent, add bonus
-//			if (control == cont.getTerritories().size()) {
-//				bonusReinforcement += cont.getBonus();
-//			}
-//		}
-//		// Ensure a mimumum of three battalions (excluding continent bonus)
-//		globalTerritories = globalTerritories < 9 ? 9 : globalTerritories;
-//		return (int) Math.floor(globalTerritories / 3) + bonusReinforcement;
-//	}
-//
 //	public static void startGame(GameData gameData, JsonObject request) {
 //		Configuration config = gameData.getConfig();
 //		// Start populating the gamedata object
@@ -148,7 +122,7 @@ public class GameActions {
 //		String mapId = request.getString("mapId");
 //		GameMap gameMap = MapService.generateMap(mapId);
 //		gameData.setGameMap(gameMap);
-//		// Generate the risk cards list
+//		// Generate the risk cards listIds
 //		for (String territoryId : gameMap.getTerritories().keySet()) {
 //			Territory territory = gameMap.getTerritories().get(territoryId);
 //			gameData.getRiskCards().add(territory.getId());

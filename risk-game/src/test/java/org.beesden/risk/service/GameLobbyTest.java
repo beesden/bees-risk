@@ -25,7 +25,7 @@ public class GameLobbyTest {
 		// Player 1 can create a game
 		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new GameConfig());
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
-		Assert.assertEquals(1, gameData.getPlayers().count());
+		Assert.assertEquals(1L, gameData.getPlayers().countActivePlayers());
 		Assert.assertEquals(GameData.GameState.SETUP, gameData.getState());
 		Assert.assertNotNull(gameData.getMap());
 
@@ -78,28 +78,28 @@ public class GameLobbyTest {
 		// Player 2 can join
 		lobby.joinGame(PLAYER_2, gameData.getName());
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
-		Assert.assertEquals(2, gameData.getPlayers().count());
+		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
 
 		// Player 1 can leave
 		lobby.leaveGame(PLAYER_1);
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
-		Assert.assertEquals(1, gameData.getPlayers().count());
+		Assert.assertEquals(1, gameData.getPlayers().countActivePlayers());
 
 		// Player 1 can rejoin
 		lobby.joinGame(PLAYER_1, gameData.getName());
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
-		Assert.assertEquals(2, gameData.getPlayers().count());
+		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
 
 		// 4 More players can join
 		for (int i = 3; i <= gameData.getConfig().getMaxPlayers(); i++) {
 			lobby.joinGame("player" + i, gameData.getName());
 		}
-		Assert.assertEquals(6, gameData.getPlayers().count());
+		Assert.assertEquals(6, gameData.getPlayers().countActivePlayers());
 
 		// 7 Players is too many
 		try {
 			lobby.joinGame("player" + (gameData.getConfig().getMaxPlayers() + 1), GAME_NAME);
-			Assert.fail("Player count should not be able to go above the limit");
+			Assert.fail("Player countActivePlayers should not be able to go above the limit");
 		} catch (GameLobbyException e) {
 			// Yay
 		}
@@ -111,7 +111,7 @@ public class GameLobbyTest {
 
 		GameData gameData = lobby.createGame(PLAYER_1, game, new GameConfig());
 
-		// Can't start game with insufficent players
+		// Can't start game with insufficient players
 		try {
 			lobby.startGame(PLAYER_1, game);
 			Assert.fail("Should not be able to start game with insufficient players");
@@ -124,7 +124,7 @@ public class GameLobbyTest {
 		// Player 2 can't start the game
 		try {
 			lobby.startGame(PLAYER_2, game);
-			Assert.fail("Player count should not be able to start the game if not the gameOwner");
+			Assert.fail("Player countActivePlayers should not be able to start the game if not the gameOwner");
 		} catch (GameLobbyException e) {
 			// Yay
 		}

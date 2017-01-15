@@ -1,6 +1,5 @@
 package org.beesden.risk.model;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.*;
@@ -10,20 +9,8 @@ public class GamePlayers {
 
 	@Getter
 	private String owner;
+	@Getter
 	private List<Player> players;
-
-	@Data
-	public class Player {
-		private String playerId;
-		private String colour;
-		private boolean isNeutral;
-		private boolean isSpectating;
-		private int reinforcements;
-
-		public Player(String playerId) {
-			this.playerId = playerId;
-		}
-	}
 
 	/**
 	 * Default constructor.
@@ -40,22 +27,42 @@ public class GamePlayers {
 	 * Add player
 	 */
 	public Player add(String playerId) {
-		Player player = new Player(playerId);
+		Player player = get(playerId);
+		if (player == null) {
+			player = new Player(playerId);
+			players.add(player);
+		}
+		return player;
+	}
+
+	/**
+	 * Add neutral player
+	 */
+	public Player addNeutralPlayer() {
+		Player player = new Player("Neutral Player");
+		player.setNeutral(true);
 		players.add(player);
 		return player;
 	}
 
 	/**
-	 * Count active players
+	 * Count active players.
 	 */
-	public long count() {
+	public long countActivePlayers() {
 		return players.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).count();
+	}
+
+	/**
+	 * Get a player
+	 */
+	public Player get(String playerId) {
+		return players.stream().filter(p -> playerId.equals(p.getPlayerId())).findFirst().orElse(null);
 	}
 
 	/**
 	 * List all players
 	 */
-	public List<String> list() {
+	public List<String> listIds() {
 		return players.stream().map(Player::getPlayerId).collect(Collectors.toList());
 	}
 
@@ -66,9 +73,10 @@ public class GamePlayers {
 
 		// Remove or set inactive if game already started
 		if (gameStarted) {
-			players.stream()
-					.filter(player -> playerId.equals(player.getPlayerId()))
-					.forEach(player -> player.setNeutral(true));
+			players.stream().filter(player -> playerId.equals(player.getPlayerId())).forEach(player -> {
+				player.setNeutral(true);
+				player.setSpectating(true);
+			});
 		} else {
 			players.removeIf(player -> playerId.equals(player.getPlayerId()));
 		}

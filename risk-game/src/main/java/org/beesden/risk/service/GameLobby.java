@@ -36,7 +36,7 @@ public class GameLobby {
 	/**
 	 * List all available games in the lobby
 	 *
-	 * @return list of games
+	 * @return listIds of games
 	 */
 	public List<LobbyGame> listGames() {
 		return SESSION_GAMES.values().stream().map(LobbyGame::new).collect(Collectors.toList());
@@ -82,7 +82,7 @@ public class GameLobby {
 		}
 
 		// Check if player has already joined the game
-		if (gameData.getPlayers().count() >= gameData.getConfig().getMaxPlayers()) {
+		if (gameData.getPlayers().countActivePlayers() >= gameData.getConfig().getMaxPlayers()) {
 			throw new GameLobbyException("No more space in the game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
@@ -125,14 +125,13 @@ public class GameLobby {
 			throw new GameLobbyException("Game cannot be found", playerId, gameId);
 		} else if (!playerId.equals(gameData.getPlayers().getOwner())) {
 			throw new GameLobbyException("Player does not own game", playerId, gameId);
-		} else if (gameData.getPlayers().count() < gameData.getConfig().getMinPlayers()) {
+		} else if (gameData.getPlayers().countActivePlayers() < gameData.getConfig().getMinPlayers()) {
 			throw new GameLobbyException("Insufficient players to start game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
 		}
 
-		gameData.setState(GameData.GameState.READY);
-
+		gameData.startGame();
 		return getGame(playerId);
 	}
 

@@ -8,7 +8,7 @@ public class GameConfig {
 	private static final String DEFAULT_MAP = "risk";
 
 	private boolean autoAssignTerritories;
-	private boolean autoPlaceBatallions;
+	private boolean autoPlaceBattalions;
 	private String gameMap = DEFAULT_MAP;
 	private int maxPlayers = 6;
 	private int minPlayers= 2;

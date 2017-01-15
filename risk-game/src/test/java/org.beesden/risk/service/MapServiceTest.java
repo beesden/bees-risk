@@ -23,12 +23,14 @@ public class MapServiceTest {
 			GameMap gameMap = MapService.getMapById("_INVALID");
 			Assert.fail("Service should error if map not found");
 		} catch (Exception e) {
+			// Yay
 		}
 	}
 
 	@Test
 	public void testMapCache() {
 		GameMap originalMap = MapService.getMapById("risk");
+		originalMap.setSize(new GameMap.Axis(0, 1));
 		GameMap cachedMap = MapService.getMapById("risk");
 		Assert.assertNotEquals(originalMap, cachedMap);
 	}

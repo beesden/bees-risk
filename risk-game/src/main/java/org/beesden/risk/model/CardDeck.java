@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class CardDeck {
 
 	private List<Card> cards;
+	private int cardPlayCount;
 
 	@Data
 	@AllArgsConstructor
@@ -49,10 +50,7 @@ public class CardDeck {
 
 		Optional<Card> card = cards.stream().filter(c -> c.getPlayerId() == null).findFirst();
 		card.ifPresent(c -> c.setPlayerId(playerId));
-		if (card.isPresent()) {
-			return card.get();
-		}
-		return null;
+		return card.orElse(null);
 
 	}
 
@@ -60,7 +58,7 @@ public class CardDeck {
 	 * List all cards for a player
 	 *
 	 * @param playerId player id
-	 * @return list of cards
+	 * @return listIds of cards
 	 */
 	public List<Card> getPlayerCards(String playerId) {
 		return cards.stream()
@@ -73,7 +71,7 @@ public class CardDeck {
 	 *
 	 * @param currentPlayerId current player
 	 * @param targetPlayerId  target player
-	 * @return
+	 * @return list of cards
 	 */
 	public List<Card> transferCards(String currentPlayerId, String targetPlayerId) {
 		List<Card> cards = getPlayerCards(currentPlayerId);

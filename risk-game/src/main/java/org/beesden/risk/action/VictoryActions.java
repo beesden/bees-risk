@@ -8,7 +8,7 @@ public class VictoryActions {
 //			GamePlayers player = gameData.getPlayerList().get(playerId);
 //			if (!player.isNeutral()) {
 //				// Test player victory conditions
-//				String victoryCondition = "lastPlayerStanding"; // @TOOD - add config option
+//				String victoryCondition = "lastPlayerStanding"; // @TODD - add config option
 //				if (testPlayerVictory(player, gameData, victoryCondition)) {
 //					gameData.setGameFinished(true);
 //					String message = Utils.getBundle("risk.victory." + victoryCondition.toLowerCase(), player.getPlayerId());

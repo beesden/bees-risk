@@ -14,7 +14,7 @@ public class LobbyGame {
 	public LobbyGame(GameData gameData) {
 		this.gameName = gameData.getName();
 		this.state = gameData.getState();
-		this.players = gameData.getPlayers().list();
+		this.players = gameData.getPlayers().listIds();
 	}
 
 }
