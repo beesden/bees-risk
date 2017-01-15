@@ -73,7 +73,7 @@ public class GameMap {
 		private String id;
 		private String name;
 		private Collection<Territory> neighbours;
-		private GamePlayer owner;
+		private GamePlayers owner;
 		private String path;
 	}
 }

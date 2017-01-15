@@ -40,6 +40,7 @@ public class MapServiceTest {
 		Assert.assertNotNull(gameMap);
 		Assert.assertEquals(1, gameMap.getContinents().size());
 		Assert.assertEquals(6, gameMap.getTerritories().size());
+		Assert.assertEquals("africa", gameMap.getName());
 	}
 
 	@Test
@@ -49,6 +50,7 @@ public class MapServiceTest {
 		Assert.assertNotNull(gameMap);
 		Assert.assertEquals(6, gameMap.getContinents().size());
 		Assert.assertEquals(42, gameMap.getTerritories().size());
+		Assert.assertEquals("risk", gameMap.getName());
 	}
 
 	@Test
@@ -71,10 +73,11 @@ public class MapServiceTest {
 		mapDto.setTerritories(Arrays.asList(territory1Dto, territory2Dto));
 
 		// Build map
-		GameMap riskMap = MapService.generateMap((mapDto));
+		GameMap riskMap = MapService.generateMap("Test map", mapDto);
 
 		// Run tests
 		Assert.assertNotNull(riskMap);
+		Assert.assertNotNull("Test map", riskMap.getName());
 
 		Assert.assertEquals(1, riskMap.getContinents().size());
 		GameMap.Continent continent = riskMap.getContinents().iterator().next();

@@ -3,7 +3,6 @@ package org.beesden.risk.service;
 import org.beesden.risk.Exception.GameLobbyException;
 import org.beesden.risk.model.GameConfig;
 import org.beesden.risk.model.GameData;
-import org.beesden.risk.model.GamePlayer;
 import org.beesden.risk.model.LobbyGame;
 
 import java.util.List;
@@ -12,8 +11,27 @@ import java.util.stream.Collectors;
 
 public class GameLobby {
 
-	private final ConcurrentHashMap<String, GamePlayer> ACTIVE_PLAYERS = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, String> ACTIVE_PLAYERS = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
+
+	/**
+	 * Get an immutable version of a game
+	 */
+	public GameData getGame(String playerId) {
+		String gameId = ACTIVE_PLAYERS.get(playerId);
+		if (gameId == null) {
+			// Player not currently in a game
+			return null;
+		}
+
+		GameData gameData = SESSION_GAMES.get(gameId);
+		if (gameData == null) {
+			ACTIVE_PLAYERS.remove(playerId);
+			throw new GameLobbyException("Game cannot be found", playerId, gameId);
+		}
+
+		return gameData;
+	}
 
 	/**
 	 * List all available games in the lobby
@@ -40,8 +58,9 @@ public class GameLobby {
 
 		GameData gameData = new GameData(playerId, gameId, config);
 		SESSION_GAMES.put(gameId, gameData);
+		ACTIVE_PLAYERS.put(playerId, gameId);
 
-		return joinGame(playerId, gameId);
+		return gameData;
 	}
 
 	/**
@@ -63,18 +82,16 @@ public class GameLobby {
 		}
 
 		// Check if player has already joined the game
-		if (gameData.getPlayers().size() >= gameData.getConfig().getMaxPlayers()) {
+		if (gameData.getPlayers().count() >= gameData.getConfig().getMaxPlayers()) {
 			throw new GameLobbyException("No more space in the game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
 		}
 
-		GamePlayer player = new GamePlayer(playerId);
-		player.setCurrentGame(gameId);
-		gameData.getPlayers().add(new GamePlayer(playerId));
-		ACTIVE_PLAYERS.put(playerId, player);
+		gameData.getPlayers().add(playerId);
+		ACTIVE_PLAYERS.put(playerId, gameId);
 
-		return gameData;
+		return getGame(playerId);
 	}
 
 	/**
@@ -83,36 +100,15 @@ public class GameLobby {
 	 * @param playerId player
 	 */
 	public void leaveGame(String playerId) {
-		GamePlayer player = ACTIVE_PLAYERS.get(playerId);
-		if (player == null) {
-			throw new GameLobbyException("GamePlayer does not exist", playerId, null);
-		}
-
-		GameData gameData = SESSION_GAMES.get(player.getCurrentGame());
-		if (gameData == null) {
-			throw new GameLobbyException("Game cannot be found", playerId, player.getCurrentGame());
-		}
+		GameData gameData = getGame(playerId);
 
 		// Remove player if game not yet started
-		if (gameData.getState() != GameData.GameState.SETUP) {
-			gameData.getPlayers().stream().filter(player::equals).forEach(gamePlayer -> player.setSpectating(true));
-		}
-		// Set player as inactive if game has started
-		else {
-			gameData.getPlayers().removeIf(gamePlayer -> playerId.equals(gamePlayer.getPlayerId()));
-		}
+		gameData.getPlayers().remove(playerId, gameData.getState() != GameData.GameState.SETUP);
 		ACTIVE_PLAYERS.remove(playerId);
 
-		List<GamePlayer> activePlayers = gameData.getPlayers()
-				.stream()
-				.filter(p -> !p.isSpectating())
-				.collect(Collectors.toList());
-
 		// Close the game if no players remain
-		if (activePlayers.size() == 0) {
+		if (gameData.getPlayers().getOwner() == null) {
 			SESSION_GAMES.remove(gameData.getName());
-		} else {
-			gameData.setOwner(activePlayers.get(0).getPlayerId());
 		}
 	}
 
@@ -127,9 +123,9 @@ public class GameLobby {
 
 		if (gameData == null) {
 			throw new GameLobbyException("Game cannot be found", playerId, gameId);
-		} else if (!playerId.equals(gameData.getOwner())) {
+		} else if (!playerId.equals(gameData.getPlayers().getOwner())) {
 			throw new GameLobbyException("Player does not own game", playerId, gameId);
-		} else if (gameData.getPlayers().size() < gameData.getConfig().getMinPlayers()) {
+		} else if (gameData.getPlayers().count() < gameData.getConfig().getMinPlayers()) {
 			throw new GameLobbyException("Insufficient players to start game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
@@ -137,7 +133,7 @@ public class GameLobby {
 
 		gameData.setState(GameData.GameState.READY);
 
-		return gameData;
+		return getGame(playerId);
 	}
 
 }

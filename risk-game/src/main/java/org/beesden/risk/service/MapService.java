@@ -49,7 +49,7 @@ public class MapService {
 	public static GameMap getMapById(String mapId) {
 
 		if (MAP_CACHE.get(mapId) != null) {
-			return generateMap(MAP_CACHE.get(mapId));
+			return generateMap(mapId, MAP_CACHE.get(mapId));
 		}
 
 		try {
@@ -62,7 +62,7 @@ public class MapService {
 			String mapJson = new BufferedReader(new InputStreamReader(input)).lines().collect(Collectors.joining("\n"));
 			GameMapDTO mapData = GSON_READER.fromJson(mapJson, GameMapDTO.class);
 			MAP_CACHE.put(mapId, mapData);
-			return generateMap(mapData);
+			return generateMap(mapId, mapData);
 
 		} catch (Exception e) {
 			throw new MapException(e.getMessage(), mapId);
@@ -75,7 +75,7 @@ public class MapService {
 	 * @param mapData map data
 	 * @return game map
 	 */
-	public static GameMap generateMap(GameMapDTO mapData) {
+	public static GameMap generateMap(String mapId, GameMapDTO mapData) {
 
 		// Add the continents into the map
 		Map<String, GameMap.Continent> continentList = mapData.getContinents().stream().map(continentData -> {
@@ -123,6 +123,7 @@ public class MapService {
 
 		// Construct and return the game map object
 		GameMap gameMap = new GameMap();
+		gameMap.setName(mapId);
 		gameMap.setContinents(continentList.values());
 		gameMap.setTerritories(territoryList.values());
 		gameMap.setSize(new GameMap.Axis(mapData.getSize()));
