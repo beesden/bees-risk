@@ -95,6 +95,7 @@ public class GameDataTest {
 		gameData.startGame();
 		Assert.assertEquals(0, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
+		Assert.assertNull(gameData.getPhase());
 
 		config.setAutoAssignTerritories(true);
 		config.setAutoPlaceBattalions(true);
@@ -106,6 +107,29 @@ public class GameDataTest {
 		Assert.assertEquals(14, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
 		Assert.assertEquals(40, gameData.getPlayers().get(PLAYER_1).getStrength());
 		Assert.assertEquals(GameData.GameState.STARTED, gameData.getState());
+		Assert.assertEquals(GameData.TurnPhase.REINFORCE, gameData.getPhase());
+	}
+
+	@Test
+	public void testNextTurn() {
+		GameConfig config = new GameConfig();
+		config.setAutoAssignTerritories(true);
+		config.setAutoPlaceBattalions(true);
+
+		// Don't assign battalions if no assigned territories
+		gameData = new GameData(PLAYER_1, GAME_NAME, config);
+		gameData.getPlayers().add(PLAYER_2);
+		gameData.startGame();
+
+		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_1);
+		Assert.assertNotEquals(0, gameData.getPlayers().get(PLAYER_1).getReinforcements());
+
+		gameData.startTurn();
+		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_2);
+		gameData.startTurn();
+		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_1);
+		gameData.startTurn();
+		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_2);
 	}
 
 }

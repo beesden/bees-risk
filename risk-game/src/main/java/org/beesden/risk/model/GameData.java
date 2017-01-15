@@ -32,6 +32,7 @@ public class GameData {
 
 	// Game turn data
 	private int cardPlayCount = 0;
+	private String currentTurn = "__INVALID";
 
 	/**
 	 * Create a new game
@@ -52,11 +53,11 @@ public class GameData {
 	/**
 	 * Starts the game
 	 */
-	public void startGame() {
+	public Player startGame() {
 
 		int activePlayerCount = (int) players.countActivePlayers();
 		if (activePlayerCount < 2) {
-			return;
+			return null;
 		} else if (activePlayerCount == 2) {
 			players.addNeutralPlayer();
 		}
@@ -96,43 +97,39 @@ public class GameData {
 				}
 
 				state = GameState.STARTED;
-				startTurn();
-				return;
+				return startTurn();
 			}
 		}
 
 		state = GameState.READY;
+		return startTurn();
 	}
 
 	/**
 	 * Updates the config with the next player's turn
 	 */
-	public void startTurn() {
+	public Player startTurn() {
 		if (players.countActivePlayers() < 2) {
 			System.out.println("Game won!"); // TODO - replace with victory lookup
-			return;
+			return null; // TODO - return winner!
 		}
-		//		// Update the config with the new player turn
-		//		Iterator<GamePlayers> iter = players.iterator();
-		//		while (iter.hasNext()) {
-		//			GamePlayers player = iter.next();
-		//			// If no player, use the first value - this is used to reset to player 1
-		//			if (config.getPlayerTurn() == null) {
-		//				config.setPlayerTurn(player.getPlayerId());
-		//				break;
-		//			}
-		//			// If we match the player to the iterator, get the next player
-		//			else if (player.getPlayerId().equals(config.getPlayerTurn())) {
-		//				String playerId = iter.hasNext() ? iter.next() : players.get(players.keySet().toArray()[ 0 ])
-		//						.getPlayerId();
-		//				config.setPlayerTurn(playerId);
-		//				break;
-		//			}
-		//		}
-		//		// Generic start turn - e.g. calculate reinforcements
-		//		if (state == GameState.STARTED) {
-		//			newTurn.setReinforcements(map.calculateReinforcements());
-		//		}
+
+		Player currentPlayer = players.get(currentTurn);
+		List<Player> activePlayers = players.getActivePlayers();
+		int playerIndex = activePlayers.indexOf(currentPlayer);
+		if (++playerIndex == activePlayers.size()) {
+			playerIndex = 0;
+		}
+		currentPlayer = activePlayers.get(playerIndex);
+		currentTurn = currentPlayer.getPlayerId();
+
+		// Generic start turn - e.g. calculate reinforcements
+		if (state == GameState.STARTED) {
+			phase = TurnPhase.REINFORCE;
+			currentPlayer.setReinforcements(map.calculateReinforcement(currentTurn));
+		}
+
+		return currentPlayer;
 
 	}
 

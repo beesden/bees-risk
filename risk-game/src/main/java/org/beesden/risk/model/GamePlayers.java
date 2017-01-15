@@ -53,6 +53,13 @@ public class GamePlayers {
 	}
 
 	/**
+	 * Count active players.
+	 */
+	public List<Player> getActivePlayers() {
+		return players.stream().filter(p -> !p.isSpectating() && !p.isNeutral()).collect(Collectors.toList());
+	}
+
+	/**
 	 * Get a player
 	 */
 	public Player get(String playerId) {
