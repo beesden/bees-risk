@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 public class GamePlayersTest {
 
-	private static final String PLAYER_1 = "PLAYER_1";
-	private static final String PLAYER_2 = "PLAYER_2";
-	private static final String PLAYER_3 = "PLAYER_3";
+	private static final Integer PLAYER_1 = 1001;
+	private static final Integer PLAYER_2 = 1002;
+	private static final Integer PLAYER_3 = 1003;
 	private GamePlayers players;
 
 	@Before
@@ -24,13 +24,13 @@ public class GamePlayersTest {
 		// Player added on init
 		Assert.assertEquals(1, players.countActivePlayers());
 
-		// Can add players
+		// Can add playerIds
 		players.add(PLAYER_2);
 		Assert.assertEquals(2, players.countActivePlayers());
 		players.add(PLAYER_3);
 		Assert.assertEquals(3, players.countActivePlayers());
 
-		// Can't add duplicate players
+		// Can't add duplicate playerIds
 		players.add(PLAYER_3);
 		Assert.assertEquals(3, players.countActivePlayers());
 
@@ -43,7 +43,18 @@ public class GamePlayersTest {
 		players.add(PLAYER_3);
 
 		// Player added on init
-		Assert.assertEquals(Arrays.asList(new String[]{ PLAYER_1, PLAYER_2, PLAYER_3 }), players.listIds());
+		Assert.assertEquals(Arrays.asList(new Integer[]{ PLAYER_1, PLAYER_2, PLAYER_3 }), players.listIds());
+	}
+
+	@Test
+	public void iterateActivePlayers() {
+
+		players.add(PLAYER_2);
+
+		Assert.assertEquals(players.nextPlayer().getPlayerId(), PLAYER_1);
+		Assert.assertEquals(players.nextPlayer().getPlayerId(), PLAYER_2);
+		Assert.assertEquals(players.nextPlayer().getPlayerId(), PLAYER_1);
+		Assert.assertEquals(players.nextPlayer().getPlayerId(), PLAYER_2);
 	}
 
 	@Test
@@ -59,7 +70,7 @@ public class GamePlayersTest {
 		players.remove(PLAYER_1, false);
 		Assert.assertEquals(2, players.countActivePlayers());
 		Assert.assertEquals(2, players.listIds().size());
-		Assert.assertNull(players.get(PLAYER_1));
+		Assert.assertNull(players.getByPlayerId(PLAYER_1));
 
 		// Check owner updated
 		Assert.assertEquals(PLAYER_2, players.getOwner());
@@ -70,10 +81,10 @@ public class GamePlayersTest {
 		players.remove(PLAYER_1, true);
 		Assert.assertEquals(2, players.countActivePlayers());
 		Assert.assertEquals(3, players.listIds().size());
-		Assert.assertEquals(true, players.get(PLAYER_1).isNeutral());
-		Assert.assertEquals(true, players.get(PLAYER_1).isSpectating());
+		Assert.assertEquals(true, players.getByPlayerId(PLAYER_1).isNeutral());
+		Assert.assertEquals(true, players.getByPlayerId(PLAYER_1).isSpectating());
 
-		// Remove all players
+		// Remove all playerIds
 		players.remove(PLAYER_1, true);
 		players.remove(PLAYER_2, true);
 		players.remove(PLAYER_3, true);

@@ -2,6 +2,7 @@ package org.beesden.risk.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GameMap {
 	 * @param playerId player id
 	 * @return number of additional reinforcements
 	 */
-	public Integer calculateReinforcement(String playerId) {
+	public Integer calculateReinforcement(Integer playerId) {
 		Integer globalTerritories = 0;
 		Integer bonusReinforcement = 0;
 
@@ -96,10 +97,16 @@ public class GameMap {
 		private int bonusReinforcements;
 		private String color;
 		private Collection<Territory> territories;
+
+		@Override
+		public String toString() {
+			return "{continent: " + name + "}";
+		}
 	}
 
 	@Data
 	@EqualsAndHashCode(exclude = { "neighbours" })
+	@ToString(exclude="neighbours")
 	public static final class Territory {
 		private int battalions;
 		private int cardValue;
@@ -108,7 +115,7 @@ public class GameMap {
 		private String id;
 		private String name;
 		private Collection<Territory> neighbours;
-		private String ownerId;
+		private Integer ownerId;
 		private String path;
 	}
 }

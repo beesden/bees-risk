@@ -16,7 +16,7 @@ public class CardDeck {
 	public class Card {
 		private final int value;
 		private final String cardId;
-		private String playerId;
+		private Integer playerId;
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class CardDeck {
 	 * @param playerId player id
 	 * @return new card
 	 */
-	public Card addCard(String playerId) {
+	public Card addCard(Integer playerId) {
 		shuffleDeck();
 
 		Optional<Card> card = cards.stream().filter(c -> c.getPlayerId() == null).findFirst();
@@ -60,7 +60,7 @@ public class CardDeck {
 	 * @param playerId player id
 	 * @return listIds of cards
 	 */
-	public List<Card> getPlayerCards(String playerId) {
+	public List<Card> getPlayerCards(Integer playerId) {
 		return cards.stream()
 				.filter(card -> card.getPlayerId() != null && playerId.equals(card.getPlayerId()))
 				.collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class CardDeck {
 	 * @param targetPlayerId  target player
 	 * @return list of cards
 	 */
-	public List<Card> transferCards(String currentPlayerId, String targetPlayerId) {
+	public List<Card> transferCards(Integer currentPlayerId, Integer targetPlayerId) {
 		List<Card> cards = getPlayerCards(currentPlayerId);
 		cards.forEach(card -> card.setPlayerId(targetPlayerId));
 		return cards;
@@ -85,7 +85,7 @@ public class CardDeck {
 	 * @param playerId player id
 	 * @param cardId   card id
 	 */
-	public void returnCardToPack(String playerId, String cardId) {
+	public void returnCardToPack(Integer playerId, String cardId) {
 		cards.stream()
 				.filter(card -> playerId.equals(card.getPlayerId()) && cardId.equals(card.getCardId()))
 				.forEach(card -> card.setPlayerId(null));

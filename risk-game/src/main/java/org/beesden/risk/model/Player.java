@@ -1,20 +1,22 @@
 package org.beesden.risk.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
 public class Player {
-	private String playerId;
+	private Integer playerId;
 	private String colour;
 	private boolean isNeutral;
 	private boolean isSpectating;
 	private int reinforcements;
 	private Map<String, GameMap.Territory> territories = new HashMap<>();
 
-	public Player(String playerId) {
+	public Player(Integer playerId) {
 		this.playerId = playerId;
 	}
 

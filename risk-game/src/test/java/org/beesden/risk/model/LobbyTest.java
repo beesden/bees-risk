@@ -7,8 +7,8 @@ import org.junit.Test;
 
 public class LobbyTest {
 
-	private static final String PLAYER_1 = "PLAYER_1";
-	private static final String PLAYER_2 = "PLAYER_2";
+	private static final Integer PLAYER_1 = 1001;
+	private static final Integer PLAYER_2 = 1002;
 	private static final String GAME_NAME = "GAME";
 	private Lobby lobby;
 
@@ -34,14 +34,6 @@ public class LobbyTest {
 		} catch (GameLobbyException e) {
 			// Yay
 		}
-
-		// Can't create a game if already playing
-		try {
-			lobby.createGame(PLAYER_1, "game2", new Config());
-			Assert.fail("Should not be possible to create games if already in another");
-		} catch (GameLobbyException e) {
-			// Yay
-		}
 	}
 
 	@Test
@@ -52,11 +44,9 @@ public class LobbyTest {
 	@Test
 	public void testJoiningGame() {
 
-		String invalidGame = "UNKNOWN_GAME";
-
 		// Player 1 can't join a non-existent game
 		try {
-			lobby.joinGame(PLAYER_1, invalidGame);
+			lobby.joinGame(PLAYER_1, "Unknown Game");
 			Assert.fail("Should not be possible to join a non-existent game");
 		} catch (GameLobbyException e) {
 			// Yay
@@ -64,14 +54,9 @@ public class LobbyTest {
 
 		GameData gameData = lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 
-		// Player 1 can't join another game
-		try {
-			lobby.createGame("player0", invalidGame, new Config());
-			lobby.joinGame(PLAYER_1, "game2");
-			Assert.fail("Should not be possible to join a new game while in another");
-		} catch (GameLobbyException e) {
-			// Yay
-		}
+		// Player 1 can join another game
+		lobby.createGame(0, "Another Game", new Config());
+		lobby.joinGame(PLAYER_1, "Another Game");
 
 		// Player 2 can join
 		lobby.joinGame(PLAYER_2, gameData.getName());
@@ -79,7 +64,7 @@ public class LobbyTest {
 		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
 
 		// Player 1 can leave
-		lobby.leaveGame(PLAYER_1);
+		lobby.leaveGame(PLAYER_1, GAME_NAME);
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
 		Assert.assertEquals(1, gameData.getPlayers().countActivePlayers());
 
@@ -88,15 +73,15 @@ public class LobbyTest {
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
 		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
 
-		// 4 More players can join
+		// 4 More playerIds can join
 		for (int i = 3; i <= gameData.getConfig().getMaxPlayers(); i++) {
-			lobby.joinGame("player" + i, gameData.getName());
+			lobby.joinGame(1000 + i, gameData.getName());
 		}
 		Assert.assertEquals(6, gameData.getPlayers().countActivePlayers());
 
 		// 7 Players is too many
 		try {
-			lobby.joinGame("player" + (gameData.getConfig().getMaxPlayers() + 1), GAME_NAME);
+			lobby.joinGame(gameData.getConfig().getMaxPlayers() + 1, GAME_NAME);
 			Assert.fail("Player countActivePlayers should not be able to go above the limit");
 		} catch (GameLobbyException e) {
 			// Yay
@@ -109,10 +94,10 @@ public class LobbyTest {
 
 		GameData gameData = lobby.createGame(PLAYER_1, game, new Config());
 
-		// Can't start game with insufficient players
+		// Can't start game with insufficient playerIds
 		try {
 			lobby.startGame(PLAYER_1, game);
-			Assert.fail("Should not be able to start game with insufficient players");
+			Assert.fail("Should not be able to start game with insufficient playerIds");
 		} catch (GameLobbyException e) {
 			// Yay
 		}
@@ -122,7 +107,7 @@ public class LobbyTest {
 		// Player 2 can't start the game
 		try {
 			lobby.startGame(PLAYER_2, game);
-			Assert.fail("Player countActivePlayers should not be able to start the game if not the gameOwner");
+			Assert.fail("Player 2 should not be able to start the game if not the gameOwner");
 		} catch (GameLobbyException e) {
 			// Yay
 		}
@@ -138,6 +123,11 @@ public class LobbyTest {
 		} catch (GameLobbyException e) {
 			// Yay
 		}
+
+		// Leaving the game sets player to neutral / spectating
+		lobby.leaveGame(PLAYER_2, game);
+		Assert.assertTrue(gameData.getPlayers().getByPlayerId(PLAYER_2).isNeutral());
+		Assert.assertTrue(gameData.getPlayers().getByPlayerId(PLAYER_2).isSpectating());
 
 	}
 

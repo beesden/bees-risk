@@ -13,15 +13,15 @@ public class TerritoryActions {
 //	public static void attack(GamePlayers player, GameData gameData, JsonObject request) {
 //		// Get the territory objects
 //		String attackerId = request.getString("attacker");
-//		Territory attacker = gameData.getGameMap().getTerritories().get(attackerId);
+//		Territory attacker = gameData.getGameMap().getTerritories().getByPlayerId(attackerId);
 //		String defenderId = request.getString("defender");
-//		Territory defender = gameData.getGameMap().getTerritories().get(defenderId);
+//		Territory defender = gameData.getGameMap().getTerritories().getByPlayerId(defenderId);
 //		// Check if attacker is owned by the current player
 //		if (attacker == null || !attacker.getGameOwner().getPlayerId().equals(player.getPlayerId())) {
 //			System.out.println("Attacker does not own the required territory");
 //		}
 //		// Check if defender is a viable target
-//		if (defender == null || defender.getGameOwner().getPlayerId().equals(player.getPlayerId()) || defender.getNeighbours().get(attackerId) == null) {
+//		if (defender == null || defender.getGameOwner().getPlayerId().equals(player.getPlayerId()) || defender.getNeighbours().getByPlayerId(attackerId) == null) {
 //			System.out.println("Defender is not a viable target");
 //		}
 //		// Get the attack action and display as appropriate
@@ -65,7 +65,7 @@ public class TerritoryActions {
 //		String territoryId = request.getString("territory");
 //		// GamePlayers must use risk cards before they reinforce
 //		if (player.getRiskCards().size() > 4) {
-//			Utils.sendMessage(WebSocketServerConfiguration.playerList.get(player.getPlayerId()), "viewCards", request);
+//			Utils.sendMessage(WebSocketServerConfiguration.playerList.getByPlayerId(player.getPlayerId()), "viewCards", request);
 //			return;
 //		}
 //		// Otherwise reinforce territory if possible

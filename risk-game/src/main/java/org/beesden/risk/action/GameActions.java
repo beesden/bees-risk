@@ -30,7 +30,7 @@ public class GameActions {
 //		Collections.sort(defendDice);
 //		Collections.reverse(defendDice);
 //		for (int i = 0; i < attackDice.size() && i < defendDice.size(); i++) {
-//			Integer index = attackDice.get(i) > defendDice.get(i) ? 1 : 0;
+//			Integer index = attackDice.getByPlayerId(i) > defendDice.getByPlayerId(i) ? 1 : 0;
 //			if (index == 0) {
 //				attacker.setBattalions(attacker.getBattalions() - 1);
 //			} else {
@@ -79,7 +79,7 @@ public class GameActions {
 //			System.out.println("Error retrieving the map object");
 //			return false;
 //		}
-//		Territory target = gameMap.getTerritories().get(territoryId);
+//		Territory target = gameMap.getTerritories().getByPlayerId(territoryId);
 //		if (target == null || target.getGameOwner() != null) {
 //			System.out.println("Unable to deploy to requested territory");
 //			return false;
@@ -98,7 +98,7 @@ public class GameActions {
 //			System.out.println("Error retrieving the map object");
 //			return false;
 //		}
-//		Territory target = gameMap.getTerritories().get(territoryId);
+//		Territory target = gameMap.getTerritories().getByPlayerId(territoryId);
 //		if (target == null || !target.getGameOwner().getPlayerId().equals(gameData.getConfig().getPlayerTurn())) {
 //			System.out.println("Unable to reinforce selected territory");
 //			return false;
@@ -113,8 +113,8 @@ public class GameActions {
 //		// Start populating the gamedata object
 //		gameData.setGameReady(true);
 //		Integer startForces = config.getStartForces()[gameData.getPlayersActive()];
-//		for (String playerId : gameData.getPlayerList().keySet()) {
-//			GamePlayers player = gameData.getPlayerList().get(playerId);
+//		for (Integer playerId : gameData.getPlayerList().keySet()) {
+//			GamePlayers player = gameData.getPlayerList().getByPlayerId(playerId);
 //			player.setReinforcements(startForces);
 //		}
 //		config.setTurnPhase("deploy");
@@ -124,7 +124,7 @@ public class GameActions {
 //		gameData.setGameMap(gameMap);
 //		// Generate the risk cards listIds
 //		for (String territoryId : gameMap.getTerritories().keySet()) {
-//			Territory territory = gameMap.getTerritories().get(territoryId);
+//			Territory territory = gameMap.getTerritories().getByPlayerId(territoryId);
 //			gameData.getRiskCards().add(territory.getId());
 //		}
 //		for (int i = 0; i < 2; i++) { // TODO - add config option

@@ -58,7 +58,9 @@ public class MapServiceTest {
 	@Test
 	public void testToString() {
 		GameMap gameMap = MapService.getMapById("risk");
-		gameMap.toString();
+		Assert.assertNotNull(gameMap.toString());
+		Assert.assertNotNull(gameMap.getContinents().get(0).toString());
+		Assert.assertNotNull(gameMap.getTerritories().get(0).toString());
 	}
 
 	@Test

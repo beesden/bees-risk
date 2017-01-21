@@ -2,10 +2,10 @@ package org.beesden.risk.Exception;
 
 public class GameLobbyException extends RuntimeException {
 
-	public String playerId;
+	public Integer playerId;
 	public String gameId;
 
-	public GameLobbyException(String message, String playerId, String gameId) {
+	public GameLobbyException(String message, Integer playerId, String gameId) {
 		super(message);
 		this.playerId = playerId;
 		this.gameId = gameId;

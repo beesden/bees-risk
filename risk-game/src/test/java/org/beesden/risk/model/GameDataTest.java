@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class GameDataTest {
 
-	private static final String PLAYER_1 = "PLAYER_1";
-	private static final String PLAYER_2 = "PLAYER_2";
-	private static final String PLAYER_3 = "PLAYER_3";
-	private static final String PLAYER_4 = "PLAYER_4";
+	private static final Integer PLAYER_1 = 1001;
+	private static final Integer PLAYER_2 = 1002;
+	private static final Integer PLAYER_3 = 1003;
+	private static final Integer PLAYER_4 = 1004;
 	private static final String GAME_NAME = "GAME";
 	private GameData gameData;
 
@@ -66,9 +66,8 @@ public class GameDataTest {
 		gameData = new GameData(PLAYER_1, GAME_NAME, config);
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.startGame();
-		Assert.assertEquals(14, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
-		Assert.assertEquals(14, gameData.getPlayers().get(PLAYER_2).getTerritories().size());
-		Assert.assertEquals(14, gameData.getPlayers().get("Neutral Player").getTerritories().size());
+		Assert.assertEquals(14, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
+		Assert.assertEquals(14, gameData.getPlayers().getByPlayerId(PLAYER_2).getTerritories().size());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
 
 		gameData = new GameData(PLAYER_1, GAME_NAME, config);
@@ -76,10 +75,10 @@ public class GameDataTest {
 		gameData.getPlayers().add(PLAYER_3);
 		gameData.getPlayers().add(PLAYER_4);
 		gameData.startGame();
-		Assert.assertEquals(11, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
-		Assert.assertEquals(11, gameData.getPlayers().get(PLAYER_2).getTerritories().size());
-		Assert.assertEquals(10, gameData.getPlayers().get(PLAYER_3).getTerritories().size());
-		Assert.assertEquals(10, gameData.getPlayers().get(PLAYER_4).getTerritories().size());
+		Assert.assertEquals(11, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
+		Assert.assertEquals(11, gameData.getPlayers().getByPlayerId(PLAYER_2).getTerritories().size());
+		Assert.assertEquals(10, gameData.getPlayers().getByPlayerId(PLAYER_3).getTerritories().size());
+		Assert.assertEquals(10, gameData.getPlayers().getByPlayerId(PLAYER_4).getTerritories().size());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
 	}
 
@@ -93,7 +92,7 @@ public class GameDataTest {
 		gameData = new GameData(PLAYER_1, GAME_NAME, config);
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.startGame();
-		Assert.assertEquals(0, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
+		Assert.assertEquals(0, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
 		Assert.assertNull(gameData.getPhase());
 
@@ -104,8 +103,8 @@ public class GameDataTest {
 		gameData = new GameData(PLAYER_1, GAME_NAME, config);
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.startGame();
-		Assert.assertEquals(14, gameData.getPlayers().get(PLAYER_1).getTerritories().size());
-		Assert.assertEquals(40, gameData.getPlayers().get(PLAYER_1).getStrength());
+		Assert.assertEquals(14, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
+		Assert.assertEquals(40, gameData.getPlayers().getByPlayerId(PLAYER_1).getStrength());
 		Assert.assertEquals(GameData.GameState.STARTED, gameData.getState());
 		Assert.assertEquals(GameData.TurnPhase.REINFORCE, gameData.getPhase());
 	}
@@ -121,15 +120,15 @@ public class GameDataTest {
 		gameData.getPlayers().add(PLAYER_2);
 		gameData.startGame();
 
-		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_1);
-		Assert.assertNotEquals(0, gameData.getPlayers().get(PLAYER_1).getReinforcements());
+		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getCurrentTurn());
+		Assert.assertNotEquals(0, gameData.getPlayers().getByPlayerId(PLAYER_1).getReinforcements());
 
 		gameData.startTurn();
-		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_2);
+		Assert.assertEquals(gameData.getPlayers().getCurrentTurn(), PLAYER_2);
 		gameData.startTurn();
-		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_1);
+		Assert.assertEquals(gameData.getPlayers().getCurrentTurn(), PLAYER_1);
 		gameData.startTurn();
-		Assert.assertEquals(gameData.getCurrentTurn(), PLAYER_2);
+		Assert.assertEquals(gameData.getPlayers().getCurrentTurn(), PLAYER_2);
 	}
 
 }

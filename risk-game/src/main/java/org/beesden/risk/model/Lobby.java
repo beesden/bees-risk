@@ -4,32 +4,13 @@ import lombok.Data;
 import org.beesden.risk.Exception.GameLobbyException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Lobby {
 
-	private final ConcurrentHashMap<String, String> ACTIVE_PLAYERS = new ConcurrentHashMap<>();
-	private final ConcurrentHashMap<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
-
-	/**
-	 * Get an immutable version of a game
-	 */
-	public GameData getGame(String playerId) {
-		String gameId = ACTIVE_PLAYERS.get(playerId);
-		if (gameId == null) {
-			// Player not currently in a game
-			return null;
-		}
-
-		GameData gameData = SESSION_GAMES.get(gameId);
-		if (gameData == null) {
-			ACTIVE_PLAYERS.remove(playerId);
-			throw new GameLobbyException("Game cannot be found", playerId, gameId);
-		}
-
-		return gameData;
-	}
+	private final Map<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
 
 	/**
 	 * List all available games in the lobby
@@ -46,17 +27,14 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param config   game config
 	 */
-	public GameData createGame(String playerId, String gameId, Config config) {
+	public GameData createGame(Integer playerId, String gameId, Config config) {
 
 		if (SESSION_GAMES.get(gameId) != null) {
 			throw new GameLobbyException("A game with that name already exists", playerId, gameId);
-		} else if (ACTIVE_PLAYERS.get(playerId) != null) {
-			throw new GameLobbyException("Cannot create a game if already in one", playerId, gameId);
 		}
 
 		GameData gameData = new GameData(playerId, gameId, config);
 		SESSION_GAMES.put(gameId, gameData);
-		ACTIVE_PLAYERS.put(playerId, gameId);
 
 		return gameData;
 	}
@@ -67,11 +45,7 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param gameId   game id
 	 */
-	public GameData joinGame(String playerId, String gameId) {
-
-		if (ACTIVE_PLAYERS.get(playerId) != null) {
-			throw new GameLobbyException("Cannot join multiple games", playerId, gameId);
-		}
+	public GameData joinGame(Integer playerId, String gameId) {
 
 		GameData gameData = SESSION_GAMES.get(gameId);
 
@@ -87,9 +61,8 @@ public class Lobby {
 		}
 
 		gameData.getPlayers().add(playerId);
-		ACTIVE_PLAYERS.put(playerId, gameId);
 
-		return getGame(playerId);
+		return gameData;
 	}
 
 	/**
@@ -97,15 +70,14 @@ public class Lobby {
 	 *
 	 * @param playerId player
 	 */
-	public void leaveGame(String playerId) {
-		GameData gameData = getGame(playerId);
-		ACTIVE_PLAYERS.remove(playerId);
+	public void leaveGame(Integer playerId, String gameId) {
+		GameData gameData = SESSION_GAMES.get(gameId);
 
 		// Remove player if game not yet started
 		if (gameData != null) {
 			gameData.getPlayers().remove(playerId, gameData.getState() != GameData.GameState.SETUP);
 
-			// Close the game if no players remain
+			// Close the game if no playerIds remain
 			if (gameData.getPlayers().getOwner() == null) {
 				SESSION_GAMES.remove(gameData.getName());
 			}
@@ -118,7 +90,7 @@ public class Lobby {
 	 * @param playerId player
 	 * @param gameId   game id
 	 */
-	public GameData startGame(String playerId, String gameId) {
+	public GameData startGame(Integer playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		if (gameData == null) {
@@ -126,13 +98,13 @@ public class Lobby {
 		} else if (!playerId.equals(gameData.getPlayers().getOwner())) {
 			throw new GameLobbyException("Player does not own game", playerId, gameId);
 		} else if (gameData.getPlayers().countActivePlayers() < gameData.getConfig().getMinPlayers()) {
-			throw new GameLobbyException("Insufficient players to start game", playerId, gameId);
+			throw new GameLobbyException("Insufficient playerIds to start game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
 		}
 
 		gameData.startGame();
-		return getGame(playerId);
+		return gameData;
 	}
 
 	@Data
@@ -140,12 +112,12 @@ public class Lobby {
 
 		private String gameName;
 		private GameData.GameState state;
-		private List<String> players;
+		private List<Integer> playerIds;
 
 		public Summary(GameData gameData) {
 			this.gameName = gameData.getName();
 			this.state = gameData.getState();
-			this.players = gameData.getPlayers().listIds();
+			this.playerIds = gameData.getPlayers().listIds();
 		}
 
 	}

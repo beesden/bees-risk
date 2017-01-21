@@ -18,6 +18,7 @@ public class GameData {
 		REINFORCE, ATTACK, REDEPLOY
 	}
 
+	private int gameId;
 	private int[] startForces = DEFAULT_START_STRENGTH;
 
 	private String name;
@@ -30,9 +31,6 @@ public class GameData {
 	private CardDeck cards;
 	private GamePlayers players;
 
-	// Game turn data
-	private String currentTurn = "__INVALID";
-
 	/**
 	 * Create a new game
 	 *
@@ -40,13 +38,14 @@ public class GameData {
 	 * @param gameName game name
 	 * @param config   game config
 	 */
-	public GameData(String playerId, String gameName, Config config) {
+	public GameData(Integer playerId, String gameName, Config config) {
 		this.name = gameName;
 		this.config = config;
 
 		this.map = MapService.getMapById(config.getGameMap());
-		this.players = new GamePlayers(playerId);
 		this.cards = new CardDeck(this.map);
+		this.players = new GamePlayers(playerId);
+
 	}
 
 	/**
@@ -113,19 +112,12 @@ public class GameData {
 			return null; // TODO - return winner!
 		}
 
-		Player currentPlayer = players.get(currentTurn);
-		List<Player> activePlayers = players.getActivePlayers();
-		int playerIndex = activePlayers.indexOf(currentPlayer);
-		if (++playerIndex == activePlayers.size()) {
-			playerIndex = 0;
-		}
-		currentPlayer = activePlayers.get(playerIndex);
-		currentTurn = currentPlayer.getPlayerId();
+		Player currentPlayer = players.nextPlayer();
 
 		// Generic start turn - e.g. calculate reinforcements
 		if (state == GameState.STARTED) {
 			phase = TurnPhase.REINFORCE;
-			currentPlayer.setReinforcements(map.calculateReinforcement(currentTurn));
+			currentPlayer.setReinforcements(map.calculateReinforcement(currentPlayer.getPlayerId()));
 		}
 
 		return currentPlayer;

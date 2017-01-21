@@ -20,21 +20,27 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 	private Lobby lobby = new Lobby();
 
+	private Map<Integer, String> usernames = new ConcurrentHashMap<>();
+
 	@Data
-	private class Message  {
+	private class Message {
 		private String username;
 		private GameCommand action;
+		private String description;
+		private String gameId;
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-		lobby.leaveGame(session.getId());
+		// lobby.leaveGame(session.getId());
+		// TODO - leave game(s)
 		System.out.println("Closing a connection due to reason: " + status);
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable throwable) {
-		lobby.leaveGame(session.getId());
+		// .leaveGame(session.getId());
+		// TODO - leave game(s)
 		System.out.println("Closing a connection due to error: " + throwable.getMessage());
 	}
 
@@ -43,21 +49,24 @@ public class GameSocketHandler extends TextWebSocketHandler {
 		try {
 			Message message = GSON_READER.fromJson(jsonTextMessage.getPayload(), Message.class);
 
+			int userId = Integer.valueOf(session.getId());
+			String gameId = message.getGameId();
+
 			switch (message.getAction()) {
 				case login:
 					session.getAttributes().put("username", message.getUsername());
 					sendMessage(session, GameAction.gameLobby, lobby.listGames());
 					break;
 				case createGame:
-					GameData gameData = lobby.createGame(getUsername(session), "Player 1's Game", new Config());
+					GameData gameData = lobby.createGame(userId, getGameName(session), new Config());
 					sendMessage(session, GameAction.gameSetup, new Lobby.Summary(gameData));
 					break;
 				case joinGame:
-					gameData = lobby.joinGame(getUsername(session), "Player 1's Game");
+					gameData = lobby.joinGame(userId, gameId);
 					sendMessage(session, GameAction.gameSetup, new Lobby.Summary(gameData));
 					break;
 				case leaveGame:
-					lobby.leaveGame(getUsername(session));
+					lobby.leaveGame(userId, gameId);
 					sendMessage(session, GameAction.gameLobby, lobby.listGames());
 					break;
 			}
@@ -67,11 +76,21 @@ public class GameSocketHandler extends TextWebSocketHandler {
 		}
 	}
 
-	private String getUsername(WebSocketSession session) {
-		return (String) session.getAttributes().get("user");
+	private String getGameName(WebSocketSession session) {
+		return getUserName(session) + "'s game";
 	}
 
-	private ConcurrentHashMap<String, String> usernames;
+	private Integer getUserId(WebSocketSession session) {
+		return Integer.valueOf(session.getId());
+	}
+
+	private String getUserName(WebSocketSession session) {
+		String username = (String) session.getAttributes().get("username");
+		if (username == null) {
+			username = "guest-" + getUserId(session);
+		}
+		return username;
+	}
 
 	private static final Gson GSON_READER = new Gson();
 
@@ -79,7 +98,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 		Map<String, Object> message = new HashMap<>();
 		message.put("action", action);
 		message.put("message", data);
-		message.put("username", "testUser");
+		message.put("username", getUserName(session));
 		try {
 			session.sendMessage(new TextMessage(GSON_READER.toJson(message)));
 		} catch (Exception e) {

@@ -21,11 +21,11 @@ public class GameCommands {
 	//			Map<String, Territory> territoryList = gameData.getGameMap().getTerritories();
 	//			for (int i = 1; i < 4; i++) {
 	//				String cardId = request.getString("card" + i);
-	//				if (!cardId.startsWith("wild-") && territoryList.get(cardId) == null) {
+	//				if (!cardId.startsWith("wild-") && territoryList.getByPlayerId(cardId) == null) {
 	//					System.out.println("Unable to find card value for cardId " + cardId);
 	//					return;
 	//				}
-	//				cardArray[i - 1] = cardId.startsWith("wild-") ? 0 : territoryList.get(cardId).getCardValue();
+	//				cardArray[i - 1] = cardId.startsWith("wild-") ? 0 : territoryList.getByPlayerId(cardId).getCardValue();
 	//			}
 	//			Integer cardValue = calculateCardValue(gameData, cardArray);
 	//			// Get reinforcement value
@@ -61,15 +61,15 @@ public class GameCommands {
 //	 */
 //	public static void playerColour(GameData gameData, Session socket, JsonObject request) {
 //		// Get the game player
-//		String username = (String) socket.getUserProperties().get("username");
-//		GamePlayers player = gameData.getPlayerList().get(username);
+//		String username = (String) socket.getUserProperties().getByPlayerId("username");
+//		GamePlayers player = gameData.getPlayerList().getByPlayerId(username);
 //		// Get the current player colour
 //		Integer colourIndex = player.getColour() == null ? 0 : Arrays.asList(gameData.getColours()).indexOf(player.getColour());
 //		String colour;
 //		do {
 //			colourIndex = colourIndex < 0 ? 0 : colourIndex > 5 ? 0 : colourIndex;
 //			colour = gameData.getColours()[colourIndex++];
-//		} while (gameData.getPlayerColours().get(colour) != null);
+//		} while (gameData.getPlayerColours().getByPlayerId(colour) != null);
 //		gameData.getPlayerColours().put(colour, username);
 //		gameData.getPlayerColours().remove(player.getColour());
 //		player.setColour(colour);
@@ -85,14 +85,14 @@ public class GameCommands {
 //	 * @param request {"gameId": "Test's Game"}
 //	 */
 //	public static void territoryInteract(GameData gameData, Session socket, JsonObject request) {
-//		String username = (String) socket.getUserProperties().get("username");
+//		String username = (String) socket.getUserProperties().getByPlayerId("username");
 //		// Prevent player interaction when it's not their turn
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
 //			System.out.println("GamePlayers commands sent out of sequence");
 //			return;
 //		}
 //		// Get the actual player object
-//		GamePlayers player = gameData.getPlayerList().get(username);
+//		GamePlayers player = gameData.getPlayerList().getByPlayerId(username);
 //		if (player == null || player.isNeutral()) {
 //			System.out.println("Active player not found");
 //			return;
@@ -116,14 +116,14 @@ public class GameCommands {
 //	 * @param request {"gameId": "Test's Game"}
 //	 */
 //	public static void playCards(GameData gameData, Session socket, JsonObject request) {
-//		String username = (String) socket.getUserProperties().get("username");
+//		String username = (String) socket.getUserProperties().getByPlayerId("username");
 //		// Prevent player interaction when it's not their turn or it's not the reinforcement phase
 //		if (!gameData.getConfig().getPlayerTurn().equals(username) || !gameData.getConfig().getTurnPhase().equals("reinforce")) {
 //			System.out.println("GamePlayers commands sent out of sequence");
 //			return;
 //		}
 //		// Get the actual player object
-//		GamePlayers player = gameData.getPlayerList().get(username);
+//		GamePlayers player = gameData.getPlayerList().getByPlayerId(username);
 //		if (player == null || player.isNeutral()) {
 //			System.out.println("Active player not found");
 //			return;
@@ -138,7 +138,7 @@ public class GameCommands {
 //	 */
 //	public static void redeploy(GameData gameData, Session socket, JsonObject request) {
 //		// Prevent player interaction when it's not their turn
-//		String username = (String) socket.getUserProperties().get("username");
+//		String username = (String) socket.getUserProperties().getByPlayerId("username");
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
 //			System.out.println("GamePlayers commands sent out of sequence");
 //			return;
@@ -148,10 +148,10 @@ public class GameCommands {
 //		String fromTerrId = request.getString("from");
 //		String toTerrId = request.getString("to");
 //		Integer transSize = request.getInt("size");
-//		Territory fromTerr = gameData.getGameMap().getTerritories().get(fromTerrId);
-//		Territory toTerr = gameData.getGameMap().getTerritories().get(toTerrId);
+//		Territory fromTerr = gameData.getGameMap().getTerritories().getByPlayerId(fromTerrId);
+//		Territory toTerr = gameData.getGameMap().getTerritories().getByPlayerId(toTerrId);
 //		if (fromTerr == null || toTerr == null || !fromTerr.getGameOwner().getPlayerId().equals(toTerr.getGameOwner().getPlayerId())) {
-//			System.out.println("Unable to get transfer territories");
+//			System.out.println("Unable to getByPlayerId transfer territories");
 //			return;
 //		}
 //		// Update the territories
@@ -174,7 +174,7 @@ public class GameCommands {
 //	 */
 //	public static void nextPhase(GameData gameData, Session socket, JsonObject request) {
 //		// Prevent player interaction when it's not their turn
-//		String username = (String) socket.getUserProperties().get("username");
+//		String username = (String) socket.getUserProperties().getByPlayerId("username");
 //		if (!gameData.getConfig().getPlayerTurn().equals(username)) {
 //			System.out.println("GamePlayers commands sent out of sequence");
 //			return;

@@ -10,8 +10,8 @@ import java.util.List;
 public class CardDeckTest {
 
 	private static final GameMap GAME_MAP = MapService.getMapById("risk");
-	private static final String PLAYER_1 = "PLAYER_1";
-	private static final String PLAYER_2 = "PLAYER_2";
+	private static final Integer PLAYER_1 = 1001;
+	private static final Integer PLAYER_2 = 1002;
 	private CardDeck deck;
 
 	@Before
@@ -52,7 +52,7 @@ public class CardDeckTest {
 		Assert.assertEquals(3, deck.getPlayerCards(PLAYER_1).size());
 
 		// Don't error if no cards
-		deck.returnCardToPack("player3", "some_card");
+		deck.returnCardToPack(1003, "some_card");
 	}
 
 	@Test
