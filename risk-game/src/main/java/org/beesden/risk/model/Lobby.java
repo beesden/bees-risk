@@ -1,12 +1,10 @@
 package org.beesden.risk.model;
 
-import lombok.Data;
 import org.beesden.risk.Exception.GameLobbyException;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class Lobby {
 
@@ -17,8 +15,8 @@ public class Lobby {
 	 *
 	 * @return listIds of games
 	 */
-	public List<Summary> listGames() {
-		return SESSION_GAMES.values().stream().map(Summary::new).collect(Collectors.toList());
+	public Collection<GameData> listGames() {
+		return SESSION_GAMES.values();
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class Lobby {
 	 *
 	 * @param playerId player
 	 */
-	public void leaveGame(Integer playerId, String gameId) {
+	public GameData leaveGame(Integer playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		// Remove player if game not yet started
@@ -82,6 +80,8 @@ public class Lobby {
 				SESSION_GAMES.remove(gameData.getName());
 			}
 		}
+
+		return gameData;
 	}
 
 	/**
@@ -105,20 +105,5 @@ public class Lobby {
 
 		gameData.startGame();
 		return gameData;
-	}
-
-	@Data
-	public static class Summary {
-
-		private String gameName;
-		private GameData.GameState state;
-		private List<Integer> playerIds;
-
-		public Summary(GameData gameData) {
-			this.gameName = gameData.getName();
-			this.state = gameData.getState();
-			this.playerIds = gameData.getPlayers().listIds();
-		}
-
 	}
 }

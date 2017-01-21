@@ -49,33 +49,6 @@ public class GameMap {
 		return (int) Math.max(3, Math.floor(globalTerritories / 3)) + bonusReinforcement;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder();
-		String NEW_LINE = System.getProperty("line.separator");
-
-		result.append(this.getClass().getName())
-				.append(" Object {")
-				.append(NEW_LINE)
-				.append(" Name: ")
-				.append(name)
-				.append(NEW_LINE)
-				.append(" Number of continents: ")
-				.append(continents.size())
-				.append(NEW_LINE)
-				.append(" Number of territories: ")
-				.append(territories.size())
-				.append(NEW_LINE)
-				.append(" Size: ")
-				.append(size.x)
-				.append(" x ")
-				.append(size.y)
-				.append(NEW_LINE)
-				.append("}");
-
-		return result.toString();
-	}
-
 	@Data
 	public static final class Axis {
 		private int x;

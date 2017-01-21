@@ -149,6 +149,7 @@ risk.game = (function (d) {
                     }
                 }
             });
+            risk.gameConfig.game = data;
             if (data.config) {
                 this.updateConfig(data.config);
             }
@@ -159,7 +160,7 @@ risk.game = (function (d) {
                 }
                 risk.setup.sendCommand({'action': 'startGame', 'mapId': 'risk'});
             }, function () {
-                risk.setup.sendCommand({'action': 'leaveGame', 'close': false, 'username': risk.gameConfig.username});
+                risk.setup.sendCommand({'action': 'leaveGame', 'close': false, 'gameId': risk.gameConfig.game.gameName, 'username': risk.gameConfig.username});
             });
         },
         /**

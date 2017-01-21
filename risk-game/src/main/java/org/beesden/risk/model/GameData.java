@@ -3,6 +3,7 @@ package org.beesden.risk.model;
 import lombok.Getter;
 import org.beesden.risk.service.MapService;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -30,6 +31,9 @@ public class GameData {
 	private GameMap map;
 	private CardDeck cards;
 	private GamePlayers players;
+
+	// Metadata
+	private LocalDateTime created = LocalDateTime.now();
 
 	/**
 	 * Create a new game
