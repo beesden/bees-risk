@@ -2,12 +2,12 @@ package org.beesden.risk.client;
 
 import com.google.gson.Gson;
 import lombok.extern.java.Log;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
+
 import org.beesden.risk.client.Model.LobbyPlayer;
 import org.beesden.risk.client.Model.Message;
 import org.beesden.risk.game.model.GameData;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.HashMap;
 import java.util.Map;

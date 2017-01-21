@@ -11,7 +11,7 @@ public class Config {
 	private boolean autoPlaceBattalions;
 	private String gameMap = DEFAULT_MAP;
 	private int maxPlayers = 6;
-	private int minPlayers= 2;
+	private int minPlayers = 2;
 	private boolean ascendingCardValues;
 
 }

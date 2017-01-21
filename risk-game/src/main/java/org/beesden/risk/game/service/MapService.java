@@ -1,6 +1,7 @@
 package org.beesden.risk.game.service;
 
 import com.google.gson.Gson;
+
 import org.beesden.risk.game.Exception.MapException;
 import org.beesden.risk.game.data.GameMapDTO;
 import org.beesden.risk.game.model.GameMap;
@@ -32,8 +33,8 @@ public class MapService {
 		File directory = new File(CLASS_LOADER.getResource(MAP_FOLDER).getFile());
 
 		Arrays.stream(directory.listFiles())
-				.filter(m -> m.getName().endsWith(MAP_SUFFIX))
-				.forEach(m -> mapFiles.add(m.getName().substring(0, m.getName().length() - MAP_SUFFIX.length())));
+			.filter(m -> m.getName().endsWith(MAP_SUFFIX))
+			.forEach(m -> mapFiles.add(m.getName().substring(0, m.getName().length() - MAP_SUFFIX.length())));
 
 		return mapFiles;
 

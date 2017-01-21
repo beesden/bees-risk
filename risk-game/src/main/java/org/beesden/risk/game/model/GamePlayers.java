@@ -2,7 +2,8 @@ package org.beesden.risk.game.model;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GamePlayers {
@@ -113,9 +114,9 @@ public class GamePlayers {
 		if (playerId.equals(owner)) {
 			owner = null;
 			playerList.stream()
-					.filter(p -> !p.isNeutral())
-					.findFirst()
-					.ifPresent(player1 -> owner = player1.getPlayerId());
+				.filter(p -> !p.isNeutral())
+				.findFirst()
+				.ifPresent(player1 -> owner = player1.getPlayerId());
 		}
 	}
 }

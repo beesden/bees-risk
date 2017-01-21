@@ -79,7 +79,7 @@ public class GameMap {
 
 	@Data
 	@EqualsAndHashCode(exclude = { "neighbours" })
-	@ToString(exclude="neighbours")
+	@ToString(exclude = "neighbours")
 	public static final class Territory {
 		private int battalions;
 		private int cardValue;

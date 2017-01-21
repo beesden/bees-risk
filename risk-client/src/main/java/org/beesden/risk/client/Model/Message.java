@@ -1,6 +1,7 @@
 package org.beesden.risk.client.Model;
 
 import lombok.Data;
+
 import org.beesden.risk.client.GameCommand;
 
 @Data

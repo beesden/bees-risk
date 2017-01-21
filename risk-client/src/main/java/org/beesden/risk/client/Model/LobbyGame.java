@@ -20,10 +20,10 @@ public class LobbyGame {
 		this.gameName = gameData.getName();
 		this.state = gameData.getState();
 		this.players = gameData.getPlayers()
-				.getPlayerList()
-				.stream()
-				.map(player -> LobbyPlayer.lookup(player.getPlayerId()).getUsername())
-				.collect(Collectors.toList());
+			.getPlayerList()
+			.stream()
+			.map(player -> LobbyPlayer.lookup(player.getPlayerId()).getUsername())
+			.collect(Collectors.toList());
 
 		this.created = gameData.getCreated().toInstant(ZoneOffset.UTC).toEpochMilli();
 	}

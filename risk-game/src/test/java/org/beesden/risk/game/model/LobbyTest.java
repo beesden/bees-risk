@@ -1,10 +1,10 @@
 package org.beesden.risk.game.model;
 
-import org.beesden.risk.game.Exception.GameLobbyException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import org.beesden.risk.game.Exception.GameLobbyException;
 
 public class LobbyTest {
 

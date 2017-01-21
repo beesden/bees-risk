@@ -26,9 +26,9 @@ public class CardDeck {
 	 */
 	public CardDeck(GameMap map) {
 		cards = map.getTerritories()
-				.stream()
-				.map(territory -> new Card(territory.getCardValue(), territory.getId(), null))
-				.collect(Collectors.toList());
+			.stream()
+			.map(territory -> new Card(territory.getCardValue(), territory.getId(), null))
+			.collect(Collectors.toList());
 
 	}
 
@@ -62,8 +62,8 @@ public class CardDeck {
 	 */
 	public List<Card> getPlayerCards(Integer playerId) {
 		return cards.stream()
-				.filter(card -> card.getPlayerId() != null && playerId.equals(card.getPlayerId()))
-				.collect(Collectors.toList());
+			.filter(card -> card.getPlayerId() != null && playerId.equals(card.getPlayerId()))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -87,8 +87,8 @@ public class CardDeck {
 	 */
 	public void returnCardToPack(Integer playerId, String cardId) {
 		cards.stream()
-				.filter(card -> playerId.equals(card.getPlayerId()) && cardId.equals(card.getCardId()))
-				.forEach(card -> card.setPlayerId(null));
+			.filter(card -> playerId.equals(card.getPlayerId()) && cardId.equals(card.getCardId()))
+			.forEach(card -> card.setPlayerId(null));
 	}
 
 	/**

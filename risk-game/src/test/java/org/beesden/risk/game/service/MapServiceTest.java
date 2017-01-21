@@ -1,9 +1,10 @@
 package org.beesden.risk.game.service;
 
-import org.beesden.risk.game.data.GameMapDTO;
-import org.beesden.risk.game.model.GameMap;
 import org.junit.Assert;
 import org.junit.Test;
+
+import org.beesden.risk.game.data.GameMapDTO;
+import org.beesden.risk.game.model.GameMap;
 
 import java.util.Arrays;
 import java.util.Collections;

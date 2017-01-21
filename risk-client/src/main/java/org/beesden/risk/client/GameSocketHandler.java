@@ -1,17 +1,18 @@
 package org.beesden.risk.client;
 
 import lombok.extern.java.Log;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
 import org.beesden.risk.client.Model.LobbyGame;
 import org.beesden.risk.client.Model.LobbyPlayer;
 import org.beesden.risk.client.Model.Message;
 import org.beesden.risk.game.model.Config;
 import org.beesden.risk.game.model.GameData;
 import org.beesden.risk.game.model.Lobby;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,25 +48,25 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 			switch (message.getAction()) {
 
-				case GameCommand.login:
+				case login:
 					player.setUsername(message.getUsername());
 					List<LobbyGame> games = lobby.listGames().stream().map(LobbyGame::new).collect(Collectors.toList());
 					MessageService.sendMessage(player, GameAction.gameLobby, games);
 					break;
 
-				case GameCommand.createGame:
+				case createGame:
 					GameData gameData = lobby.createGame(player.getPlayerId(), player.getUsername() + "'s game", new Config());
 					LobbyPlayer.joinGame(player.getPlayerId(), gameData);
 					MessageService.sendMessage(player, GameAction.gameSetup, new LobbyGame(gameData));
 					break;
 
-				case GameCommand.joinGame:
+				case joinGame:
 					gameData = lobby.joinGame(player.getPlayerId(), gameId);
 					LobbyPlayer.joinGame(player.getPlayerId(), gameData);
 					MessageService.sendMessage(gameData, GameAction.gameSetup, new LobbyGame(gameData));
 					break;
 
-				case GameCommand.leaveGame:
+				case leaveGame:
 					gameData = lobby.leaveGame(player.getPlayerId(), gameId);
 					LobbyPlayer.leaveGame(player.getPlayerId(), gameId);
 					MessageService.sendMessage(gameData, GameAction.gameSetup, new LobbyGame(gameData));
