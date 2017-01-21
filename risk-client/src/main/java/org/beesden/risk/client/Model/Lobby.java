@@ -1,6 +1,8 @@
-package org.beesden.risk.game.model;
+package org.beesden.risk.client.Model;
 
 import org.beesden.risk.game.Exception.GameLobbyException;
+import org.beesden.risk.game.model.Config;
+import org.beesden.risk.game.model.GameData;
 
 import java.util.Collection;
 import java.util.Map;
@@ -8,14 +10,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Lobby {
 
-	private final Map<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
+	private static final Map<String, GameData> SESSION_GAMES = new ConcurrentHashMap<>();
+
+	/**
+	 * Clear all games in the lobby
+	 */
+	public static void clear() {
+		SESSION_GAMES.clear();
+	}
 
 	/**
 	 * List all available games in the lobby
 	 *
 	 * @return listIds of games
 	 */
-	public Collection<GameData> listGames() {
+	public static Collection<GameData> listGames() {
 		return SESSION_GAMES.values();
 	}
 
@@ -25,7 +34,7 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param config   game config
 	 */
-	public GameData createGame(Integer playerId, String gameId, Config config) {
+	public static GameData createGame(Integer playerId, String gameId, Config config) {
 
 		if (SESSION_GAMES.get(gameId) != null) {
 			throw new GameLobbyException("A game with that name already exists", playerId, gameId);
@@ -43,7 +52,7 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param gameId   game id
 	 */
-	public GameData joinGame(Integer playerId, String gameId) {
+	public static GameData joinGame(Integer playerId, String gameId) {
 
 		GameData gameData = SESSION_GAMES.get(gameId);
 
@@ -68,7 +77,7 @@ public class Lobby {
 	 *
 	 * @param playerId player
 	 */
-	public GameData leaveGame(Integer playerId, String gameId) {
+	public static GameData leaveGame(Integer playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		// Remove player if game not yet started
@@ -90,7 +99,7 @@ public class Lobby {
 	 * @param playerId player
 	 * @param gameId   game id
 	 */
-	public GameData startGame(Integer playerId, String gameId) {
+	public static GameData startGame(Integer playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		if (gameData == null) {

@@ -1,10 +1,11 @@
-package org.beesden.risk.client;
+package org.beesden.risk.client.service;
 
 import com.google.gson.Gson;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
+import org.beesden.risk.client.GameAction;
 import org.beesden.risk.client.Model.LobbyPlayer;
 import org.beesden.risk.client.Model.Message;
 import org.beesden.risk.game.model.GameData;
