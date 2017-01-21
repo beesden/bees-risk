@@ -11,13 +11,15 @@ import java.util.stream.Collectors;
 @Data
 public class LobbyGame {
 
-	private String gameName;
+	private String id;
+	private String owner;
 	private GameData.GameState state;
 	private List<String> players;
 	private long created;
 
 	public LobbyGame(GameData gameData) {
-		this.gameName = gameData.getName();
+		this.id = gameData.getName();
+		this.owner = LobbyPlayer.lookup(gameData.getPlayers().getOwner()).getUsername();
 		this.state = gameData.getState();
 		this.players = gameData.getPlayers()
 			.getPlayerList()

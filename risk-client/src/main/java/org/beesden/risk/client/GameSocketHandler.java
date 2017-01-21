@@ -7,16 +7,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import org.beesden.risk.client.Model.Lobby;
 import org.beesden.risk.client.Model.LobbyGame;
 import org.beesden.risk.client.Model.LobbyPlayer;
 import org.beesden.risk.client.Model.Message;
 import org.beesden.risk.client.service.MessageService;
 import org.beesden.risk.game.model.Config;
 import org.beesden.risk.game.model.GameData;
-import org.beesden.risk.client.Model.Lobby;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Log
@@ -49,8 +46,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 				case login:
 					player.setUsername(message.getUsername());
-					List<LobbyGame> games = Lobby.listGames().stream().map(LobbyGame::new).collect(Collectors.toList());
-					MessageService.sendMessage(player, GameAction.gameLobby, games);
+					MessageService.sendMessage(player, GameAction.gameLobby, Lobby.listGames());
 					break;
 
 				case createGame:

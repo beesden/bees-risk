@@ -102,66 +102,53 @@ risk.game = (function (d) {
         },
         /**
          *  Display a list of available games on the server
-         *  @param {object} data - array containing list of game IDs
+         *  @param {Array} gameList - array containing list of game IDs
          */
-        gameLobby: function (data) {
-            var gameList = utils.createElement('dl', {'class': 'riskGames'}),
-                gameTitle = utils.createElement('dt', null, gameList),
-                gameSelectWrap,
-                gameSelect;
-            gameTitle.innerHTML = 'Choose a game from the list';
-            // Add available games to the list
-            data.forEach(function (game) {
-                gameSelectWrap = utils.createElement('dd');
-                gameSelect = utils.createElement('button', {'value': game.gameName}, gameSelectWrap);
-                gameSelect.innerHTML = game.gameName;
-                gameSelect.onclick = function (e) {
-                    e.preventDefault();
-                    risk.setup.sendCommand({'action': 'joinGame', 'gameId': this.value});
-                };
-                gameList.appendChild(gameSelectWrap);
+        gameLobby: function (gameList) {
+            gameList = gameList.filter(function (game) {
+                return game.state === 'SETUP';
             });
-            // Display the popup
-            risk.popups.show(gameList, false, 'New Game', function (e) {
-                risk.setup.sendCommand({'action': 'createGame'});
-            });
+
+            var popup = risk.templates.popup('lobby_list', {games: gameList});
+
+            popup
+                .on('click', '[data-action="createGame"]', function () {
+                    risk.setup.sendCommand({'action': 'createGame'});
+                })
+                .on('click', '[data-action="joinGame"]', function (event) {
+                    risk.setup.sendCommand({'action': 'joinGame', gameId: event.target.dataset.value});
+                });
         },
         /**
-         *  Join a specific game
-         *  @param {object} data - object containing config and player information
+         *
+         *  @param {object} gameData game data
          */
-        gameSetup: function (data) {
-            // Create a list of players based on the player data
-            var playerList = utils.createElement('ul', {'class': 'riskPlayers'}),
-                player,
-                playerData,
-                i = 0;
-            // Populate the player list
-            data.players.forEach(function(player) {
-                playerEl = utils.createElement('li');
-                playerEl.style.borderColor = '#000';
-                playerEl.innerHTML = player;
-                playerList.appendChild(playerEl);
-                if (id === config.username) {
-                    config.playerColour = data.playerList[id];
-                    playerEl.onclick = function () {
-                        risk.setup.sendCommand({'action': 'playerColour'});
-                    }
-                }
+        gameSetup: function (gameData) {
+            var popup = risk.templates.popup('lobby_game', {
+                game: gameData,
+                canStart: gameData.owner === config.username && gameData.players.length > 1
             });
-            risk.gameConfig.game = data;
-            if (data.config) {
-                this.updateConfig(data.config);
-            }
-            // Display the popup
-            risk.popups.show(playerList, 'Leave game', risk.config.leadPlayer === risk.gameConfig.username && Object.keys(data.playerList).length > 1 ? 'Start game' : false, function (e) {
-                if (risk.playerData.length < 2) {
-                    return;
+
+            popup
+                .on('click', '[data-action="startGame"]', function () {
+                    risk.setup.sendCommand({'action': 'startGame', gameId: gameData.id});
+                })
+                .on('click', '[data-action="leaveGame"]', function () {
+                    risk.setup.sendCommand({'action': 'leaveGame', gameId: gameData.id});
+                });
+        },
+        /**
+         * Show login form
+         */
+        login: function () {
+            var popup = risk.templates.popup('lobby_login');
+
+            popup.on('click', '[data-action="login"]', function (event, content) {
+                var username = content.querySelector('#username').value;
+                if (username.length > 3) {
+                    risk.setup.sendCommand({action: 'login', username: username});
                 }
-                risk.setup.sendCommand({'action': 'startGame', 'mapId': 'risk'});
-            }, function () {
-                risk.setup.sendCommand({'action': 'leaveGame', 'close': false, 'gameId': risk.gameConfig.game.gameName, 'username': risk.gameConfig.username});
-            });
+            })
         },
         /**
          *  Show player defeated popup

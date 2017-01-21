@@ -1,0 +1,16 @@
+<section class="lobby-game-list">
+
+    <h1>Game Lobby</h1>
+
+    <dl class="riskGames">
+        <dt>Choose a game from the list</dt>
+        {{#each games}}
+            <dd>
+                <button data-action="joinGame" data-value="{{id}}">{{id}}</button>
+            </dd>
+        {{/each}}
+    </dl>
+
+    <button class="button confirm" value="confirm" data-action="createGame">New Game</button>
+
+</section>

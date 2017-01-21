@@ -1,0 +1,17 @@
+<section class="game-setup">
+
+    <h1>{{ game.id }}</h1>
+
+    <ol class="riskPlayers">
+        {{#each game.players }}
+            <li>{{this}}</li>
+        {{/each}}
+    </ol>
+
+    <button class="button cancel" data-action="leaveGame">Leave game</button>
+
+    {{#if canStart}}
+        <button class="button confirm" data-action="startGame">Start game</button>
+    {{/if}}
+
+</section>

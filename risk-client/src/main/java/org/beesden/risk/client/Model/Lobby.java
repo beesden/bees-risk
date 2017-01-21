@@ -7,6 +7,7 @@ import org.beesden.risk.game.model.GameData;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class Lobby {
 
@@ -24,8 +25,8 @@ public class Lobby {
 	 *
 	 * @return listIds of games
 	 */
-	public static Collection<GameData> listGames() {
-		return SESSION_GAMES.values();
+	public static Collection<LobbyGame> listGames() {
+		return SESSION_GAMES.values().stream().map(LobbyGame::new).collect(Collectors.toList());
 	}
 
 	/**

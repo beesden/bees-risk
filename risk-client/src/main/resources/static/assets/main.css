@@ -82,6 +82,7 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 .popup .cancel{left:10px; padding-left:60px;}
 .popup .cancel:before{border-right:2px solid #ddd; content:'\f00d'; left:0;}
 .popup .uiButton {position:absolute; top: 7px; left:7px}
+.popup h1 {margin:0 0 1rem;}
 
 /* Setup popup */
 .popup .riskUser label {color:#555; display:block; font-weight:700; margin:0 auto 9px;}

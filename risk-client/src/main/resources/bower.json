@@ -1,0 +1,7 @@
+{
+  "name": "risk-client",
+  "dependencies": {
+    "handlebars": "4.0.5",
+    "KineticJS": "kineticjs#5.1.0"
+  }
+}
