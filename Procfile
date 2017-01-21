@@ -1,1 +1,1 @@
-web:    java -cp target/classes:target/dependency/* org.apache.tomee.embedded.Main --port=$PORT --as-war
+web java -Dserver.port=$PORT $JAVA_OPTS -jar risk-client/target/app.jar
