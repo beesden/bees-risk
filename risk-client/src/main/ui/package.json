@@ -1,0 +1,22 @@
+{
+  "name": "resources",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm-run-all lib templates",
+    "css": "node-sass --include-path scss src/main.scss ../resources/static/main.css",
+    "lib": "bower install",
+    "templates": "handlebars -m src/templates/ -f ../resources/static/templates.js -e hbs --map ../resources/static/templates.map.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bower": "^1.8.0",
+    "handlebars": "^4.0.6",
+    "node-sass": "^4.3.0",
+    "npm-run-all": "^4.0.1"
+  }
+}

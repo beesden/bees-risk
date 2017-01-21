@@ -3,10 +3,10 @@ $brand: #ce0002 !default;
 html {font:14px "Palatino Linotype", "Book Antiqua", Palatino, serif;}
 
 // Global
-@import 'scss/forms';
+@import 'scss/_forms';
 
 // Components
-@import 'scss/lobby';
+@import 'scss/_lobby';
 
 /* Global Typography */
 * {box-sizing:border-box; margin:0; padding:0; -webkit-user-select:none; -moz-user-select:none}

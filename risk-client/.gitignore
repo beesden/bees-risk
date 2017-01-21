@@ -1,0 +1,9 @@
+# Generated files
+src/main/resources/static/lib
+src/main/resources/static/main.css
+src/main/resources/static/templates*.js
+
+# Lib files
+src/main/ui/node_modules
+src/main/ui/node
+src/main/ui/npm-debug.log
