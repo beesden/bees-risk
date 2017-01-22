@@ -1,7 +1,7 @@
 {
     let config = risk.gameConfig;
 
-     risk.setup = {
+    risk.setup = {
         receiveCommand: function (command) {
             command = JSON.parse(command.data);
 
@@ -30,10 +30,10 @@
 
             console.info("Establishing connection to server...");
 
-            risk.socket = new WebSocket(risk.gameConfig.server + '/game');
-            risk.socket.onmessage = this.receiveCommand;
+            risk.socket = new WebSocket('ws:' + window.location.host + '/game');
+            risk.socket.onmessage = risk.setup.receiveCommand;
             risk.socket.onopen = risk.game.login;
-            risk.socket.onclose = this.start;
+            risk.socket.onclose = risk.setup.start;
         }
     };
 
@@ -41,4 +41,4 @@
         risk.setup.start();
     });
 
-};
+}
