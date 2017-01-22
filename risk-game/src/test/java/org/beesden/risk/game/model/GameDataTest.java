@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class GameDataTest {
 
-	private static final Integer PLAYER_1 = 1001;
-	private static final Integer PLAYER_2 = 1002;
-	private static final Integer PLAYER_3 = 1003;
-	private static final Integer PLAYER_4 = 1004;
+	private static final int PLAYER_1 = 1001;
+	private static final int PLAYER_2 = 1002;
+	private static final int PLAYER_3 = 1003;
+	private static final int PLAYER_4 = 1004;
 	private static final String GAME_NAME = "GAME";
 	private GameData gameData;
 

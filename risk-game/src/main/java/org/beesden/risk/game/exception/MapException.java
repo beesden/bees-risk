@@ -1,4 +1,4 @@
-package org.beesden.risk.game.Exception;
+package org.beesden.risk.game.exception;
 
 public class MapException extends RuntimeException {
 

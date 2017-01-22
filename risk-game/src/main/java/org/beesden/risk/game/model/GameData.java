@@ -20,10 +20,12 @@ public class GameData {
 		REINFORCE, ATTACK, REDEPLOY
 	}
 
-	private int gameId;
 	private int[] startForces = DEFAULT_START_STRENGTH;
 
+	// Metadata
 	private String name;
+	private LocalDateTime created = LocalDateTime.now();
+
 	private GameState state = GameState.SETUP;
 	private TurnPhase phase;
 
@@ -33,8 +35,6 @@ public class GameData {
 	private CardDeck cards;
 	private GamePlayers players;
 
-	// Metadata
-	private LocalDateTime created = LocalDateTime.now();
 
 	/**
 	 * Create a new game
@@ -43,7 +43,7 @@ public class GameData {
 	 * @param gameName game name
 	 * @param config   game config
 	 */
-	public GameData(Integer playerId, String gameName, Config config) {
+	public GameData(int playerId, String gameName, Config config) {
 		this.name = gameName;
 		this.config = config;
 

@@ -4,7 +4,7 @@ public class VictoryActions {
 
 	//	public static Boolean checkVictoryConditions(GameData gameData) {
 	//		// Loop over players
-	//		for (Integer playerId: gameData.getPlayerList().keySet()) {
+	//		for (int playerId: gameData.getPlayerList().keySet()) {
 	//			GamePlayers player = gameData.getPlayerList().getByPlayerId(playerId);
 	//			if (!player.isNeutral()) {
 	//				// Test player victory conditions
@@ -27,7 +27,7 @@ public class VictoryActions {
 	//			// Last player standing
 	//			default:
 	//				Integer activePlayers = 0;
-	//				for (Integer playerId: gameData.getPlayerList().keySet()) {
+	//				for (int playerId: gameData.getPlayerList().keySet()) {
 	//					GamePlayers gamePlayer = gameData.getPlayerList().getByPlayerId(playerId);
 	//					if (!gamePlayer.isNeutral()) {
 	//						++activePlayers;

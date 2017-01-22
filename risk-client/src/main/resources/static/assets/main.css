@@ -47,8 +47,9 @@ input[type='range']::-webkit-slider-thumb {-webkit-appearance: none !important;b
 .playerInfo { color: #333; position:fixed; margin:auto; left:0; right:0; top:0; width:330px;z-index: 10;}
 .playerInfo .currentPlayer {background:linear-gradient(#e5e5e5, #bfbfbf); border-right:28px solid; cursor:pointer; display:block; font-size: 18px; font-weight:700; line-height:18px; margin: 6px 0; padding:5px;text-align: center; text-shadow:0 1px 0 rgba(255, 255, 255, 0.5);letter-spacing: 1px;}
 .playerInfo .playerList {background:url('noisy.png') top left repeat; border:2px solid #bbb; border-top:none; display:none; margin:auto; position:fixed; left:0; right:0; list-style:none; width:440px;}
-.playerInfo .playerList li { margin:5px; display:block; border: 1px solid #bbb; border-radius: 4px; background: rgba(0,0,0,0.1);}
-.playerInfo .playerList li span {display:inline-block; font-size:14px; font-variant: normal; line-height:18px; padding: 4px 5px 2px; margin:5px; vertical-align:top; width:100px;text-align: center;}
+.playerInfo .playerList li { margin:5px; display:flex; border: 1px solid #bbb; border-radius: 4px; background: rgba(0,0,0,0.1);}
+.playerInfo .playerList li span {flex: 100px 0 0 ; font-size:14px; font-variant: normal; line-height:18px; padding: 4px 5px 2px; margin:5px; vertical-align:top; width:100px;text-align: center;}
+.playerInfo .playerList li span:first-child {flex-basis: 190px;}
 .playerInfo .playerList li .name {border-left:24px solid; font-weight:700; width:190px;text-align: left;}
 .playerInfo .playerList li .rank {background: #999; height:2px; padding:0;margin: 0;line-height: 2px;display: block; width:0;}
 .playerInfo:hover .playerList {display:block;}

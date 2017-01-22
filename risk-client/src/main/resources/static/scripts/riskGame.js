@@ -143,12 +143,21 @@ risk.game = (function (d) {
         login: function () {
             var popup = risk.templates.popup('lobby_login');
 
-            popup.on('click', '[data-action="login"]', function (event, content) {
-                var username = content.querySelector('#username').value;
+            popup.on('click', '[data-action="login"]', function (event, popup) {
+                var username = popup.content.querySelector('#username').value;
                 if (username.length > 3) {
                     risk.setup.sendCommand({action: 'login', username: username});
                 }
             })
+        },
+        /**
+         * Build the UI
+         *
+         * @param gameData
+         */
+        gameStart: function (gameData) {
+            risk.gameData = gameData;
+            risk.ui.build(gameData);
         },
         /**
          *  Show player defeated popup

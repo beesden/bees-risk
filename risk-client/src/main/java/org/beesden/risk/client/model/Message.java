@@ -1,4 +1,4 @@
-package org.beesden.risk.client.Model;
+package org.beesden.risk.client.model;
 
 import lombok.Data;
 

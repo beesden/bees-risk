@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
 import org.beesden.risk.client.GameAction;
-import org.beesden.risk.client.Model.LobbyPlayer;
-import org.beesden.risk.client.Model.Message;
+import org.beesden.risk.client.model.lobby.LobbyPlayer;
+import org.beesden.risk.client.model.Message;
 import org.beesden.risk.game.model.GameData;
 
 import java.util.HashMap;

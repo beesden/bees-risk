@@ -8,9 +8,16 @@ public enum GameAction {
 	// Lobby actions
 	gameLobby, gameSetup,
 
-	// Territory actions
-	attack, redeploy, updateAll,
+	// Turn actions
+	startTurn, deploy, attack, redeploy,
 
-	// Unsorted
-	playerOut, updateConfig, updatePlayers, useCards, victory, viewCards;
+	// Card actions
+	viewCards, playCards, getCards,
+
+	// Player actions
+	playersUpdate, playerLeave, playerWin,
+
+	// other
+	updateAll, playerOut, victory, updateConfig, updatePlayers;
+
 }

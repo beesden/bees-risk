@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 public class GamePlayersTest {
 
-	private static final Integer PLAYER_1 = 1001;
-	private static final Integer PLAYER_2 = 1002;
-	private static final Integer PLAYER_3 = 1003;
+	private static final int PLAYER_1 = 1001;
+	private static final int PLAYER_2 = 1002;
+	private static final int PLAYER_3 = 1003;
 	private GamePlayers players;
 
 	@Before
@@ -89,7 +89,7 @@ public class GamePlayersTest {
 		players.remove(PLAYER_2, true);
 		players.remove(PLAYER_3, true);
 		Assert.assertEquals(0, players.countActivePlayers());
-		Assert.assertNull(players.getOwner());
+		Assert.assertEquals(-1, players.getOwner());
 
 	}
 

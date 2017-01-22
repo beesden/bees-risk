@@ -21,7 +21,7 @@ public class GameMap {
 	 * @param playerId player id
 	 * @return number of additional reinforcements
 	 */
-	public Integer calculateReinforcement(Integer playerId) {
+	public Integer calculateReinforcement(int playerId) {
 		Integer globalTerritories = 0;
 		Integer bonusReinforcement = 0;
 
@@ -32,7 +32,7 @@ public class GameMap {
 
 			// Calculate how many territories are controlled by the current player
 			for (Territory terr : continent.getTerritories()) {
-				if (playerId.equals(terr.getOwnerId())) {
+				if (playerId == terr.getOwnerId()) {
 					control++;
 				}
 			}
@@ -88,7 +88,7 @@ public class GameMap {
 		private String id;
 		private String name;
 		private Collection<Territory> neighbours;
-		private Integer ownerId;
+		private int ownerId;
 		private String path;
 	}
 }

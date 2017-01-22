@@ -43,6 +43,7 @@ risk.sfx = (function (d) {
     	toggleMute: function(muteLevel) {
 			config.mute = muteLevel || (config.mute + 1) % 3;
 			risk.sfx.music(config.mute);
+			return config.mute;
     	}
     }
 

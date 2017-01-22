@@ -4,15 +4,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.beesden.risk.client.Model.Lobby;
-import org.beesden.risk.game.Exception.GameLobbyException;
+import org.beesden.risk.client.model.lobby.Lobby;
+import org.beesden.risk.game.exception.GameLobbyException;
 import org.beesden.risk.game.model.Config;
 import org.beesden.risk.game.model.GameData;
 
 public class LobbyTest {
 
-	private static final Integer PLAYER_1 = 1001;
-	private static final Integer PLAYER_2 = 1002;
+	private static final int PLAYER_1 = 1001;
+	private static final int PLAYER_2 = 1002;
 	private static final String GAME_NAME = "GAME";
 
 	@Before
@@ -23,7 +23,7 @@ public class LobbyTest {
 	@Test
 	public void testCreateGame() {
 
-		// Player 1 can create a game
+		// PlayerSummary 1 can create a game
 		GameData gameData = Lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
 		Assert.assertEquals(1L, gameData.getPlayers().countActivePlayers());
@@ -42,7 +42,7 @@ public class LobbyTest {
 	@Test
 	public void testJoiningGame() {
 
-		// Player 1 can't join a non-existent game
+		// PlayerSummary 1 can't join a non-existent game
 		try {
 			Lobby.joinGame(PLAYER_1, "Unknown Game");
 			Assert.fail("Should not be possible to join a non-existent game");
@@ -52,21 +52,21 @@ public class LobbyTest {
 
 		GameData gameData = Lobby.createGame(PLAYER_1, GAME_NAME, new Config());
 
-		// Player 1 can join another game
+		// PlayerSummary 1 can join another game
 		Lobby.createGame(0, "Another Game", new Config());
 		Lobby.joinGame(PLAYER_1, "Another Game");
 
-		// Player 2 can join
+		// PlayerSummary 2 can join
 		Lobby.joinGame(PLAYER_2, gameData.getName());
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
 		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
 
-		// Player 1 can leave
+		// PlayerSummary 1 can leave
 		Lobby.leaveGame(PLAYER_1, GAME_NAME);
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
 		Assert.assertEquals(1, gameData.getPlayers().countActivePlayers());
 
-		// Player 1 can rejoin
+		// PlayerSummary 1 can rejoin
 		Lobby.joinGame(PLAYER_1, gameData.getName());
 		Assert.assertEquals(PLAYER_2, gameData.getPlayers().getOwner());
 		Assert.assertEquals(2, gameData.getPlayers().countActivePlayers());
@@ -80,7 +80,7 @@ public class LobbyTest {
 		// 7 Players is too many
 		try {
 			Lobby.joinGame(gameData.getConfig().getMaxPlayers() + 1, GAME_NAME);
-			Assert.fail("Player countActivePlayers should not be able to go above the limit");
+			Assert.fail("PlayerSummary countActivePlayers should not be able to go above the limit");
 		} catch (GameLobbyException e) {
 			// Yay
 		}
@@ -102,10 +102,10 @@ public class LobbyTest {
 
 		Lobby.joinGame(PLAYER_2, game);
 
-		// Player 2 can't start the game
+		// PlayerSummary 2 can't start the game
 		try {
 			Lobby.startGame(PLAYER_2, game);
-			Assert.fail("Player 2 should not be able to start the game if not the gameOwner");
+			Assert.fail("PlayerSummary 2 should not be able to start the game if not the gameOwner");
 		} catch (GameLobbyException e) {
 			// Yay
 		}

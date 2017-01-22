@@ -1,0 +1,24 @@
+<ul class="controlList">
+    <li class="uiButton ctrl options" data-action="viewConfig" data-tooltip="View game options"></li>
+    <li class="uiButton ctrl surrender" data-action="surrender" data-tooltip="Surrender"></li>
+    <li class="uiButton ctrl cards" data-action="viewCards" data-tooltip="View risk cards" data-count="0"></li>
+    <li class="uiButton ctrl sounds" data-action="toggleMute" data-tooltip="Play all sounds"></li>
+</ul>
+
+<h1 class="currentPlayer" style="border-color: {{currentPlayer.colour}}">{{currentPlayer.name}}</h1>
+
+<ul class="playerList">
+    {{#each players}}
+        <li>
+            <span class="name" style="border-color: {{colour}};">{{name}}</span>
+            <span class="strength">{{territories.length}} territories</span>
+            <span class="cards">{{cardCount}} card(s)</span>
+            <span class="rank" style="width: {{strength}}%"></span>
+        </li>
+    {{/each}}
+</ul>
+
+<ul class="turnInfo">
+    <li class="uiButton turnPhase disabled">Finish reinforce phase</li>
+    <li class="message"><em>Private Parts: </em>4 battalions left to place</li>
+</ul>

@@ -1,4 +1,4 @@
-package org.beesden.risk.client.Model;
+package org.beesden.risk.client.model.lobby;
 
 import lombok.Data;
 
@@ -19,14 +19,26 @@ public class LobbyGame {
 
 	public LobbyGame(GameData gameData) {
 		this.id = gameData.getName();
-		this.owner = LobbyPlayer.lookup(gameData.getPlayers().getOwner()).getUsername();
 		this.state = gameData.getState();
+
 		this.players = gameData.getPlayers()
 			.getPlayerList()
 			.stream()
-			.map(player -> LobbyPlayer.lookup(player.getPlayerId()).getUsername())
+			.map(player -> {
+				LobbyPlayer lobbyPlayer = LobbyPlayer.lookup(player.getPlayerId());
+				if (lobbyPlayer != null) {
+					return lobbyPlayer.getUsername();
+				} else {
+					return "Unknown Player";
+				}
+			})
 			.collect(Collectors.toList());
 
 		this.created = gameData.getCreated().toInstant(ZoneOffset.UTC).toEpochMilli();
+
+		LobbyPlayer owner = LobbyPlayer.lookup(gameData.getPlayers().getOwner());
+		if (owner != null) {
+			this.owner = owner.getUsername();
+		}
 	}
 }

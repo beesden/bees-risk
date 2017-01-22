@@ -1,4 +1,4 @@
-package org.beesden.risk.client.Model;
+package org.beesden.risk.client.model.lobby;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class LobbyPlayer {
 	 * @param playerId player id
 	 * @param game     game data
 	 */
-	public static void joinGame(Integer playerId, GameData game) {
+	public static void joinGame(int playerId, GameData game) {
 		players.get(playerId).getGames().add(game);
 	}
 
@@ -55,7 +55,7 @@ public class LobbyPlayer {
 	 * @param playerId player id
 	 * @param gameId   game id
 	 */
-	public static void leaveGame(Integer playerId, String gameId) {
+	public static void leaveGame(int playerId, String gameId) {
 		players.get(playerId).getGames().removeIf(game -> game.getName().equals(gameId));
 	}
 
@@ -75,7 +75,7 @@ public class LobbyPlayer {
 	 * @param playerId player id
 	 * @return lobby player
 	 */
-	public static LobbyPlayer lookup(Integer playerId) {
+	public static LobbyPlayer lookup(int playerId) {
 		return players.get(playerId);
 	}
 

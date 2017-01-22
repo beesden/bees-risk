@@ -2,7 +2,7 @@ package org.beesden.risk.game.service;
 
 import com.google.gson.Gson;
 
-import org.beesden.risk.game.Exception.MapException;
+import org.beesden.risk.game.exception.MapException;
 import org.beesden.risk.game.data.GameMapDTO;
 import org.beesden.risk.game.model.GameMap;
 

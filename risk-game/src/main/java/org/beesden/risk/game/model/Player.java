@@ -9,14 +9,14 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class Player {
-	private Integer playerId;
+	private int playerId = -1;
 	private String colour;
 	private boolean isNeutral;
 	private boolean isSpectating;
 	private int reinforcements;
 	private Map<String, GameMap.Territory> territories = new HashMap<>();
 
-	public Player(Integer playerId) {
+	public Player(int playerId) {
 		this.playerId = playerId;
 	}
 

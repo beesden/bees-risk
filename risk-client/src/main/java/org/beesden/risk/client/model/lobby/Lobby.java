@@ -1,6 +1,6 @@
-package org.beesden.risk.client.Model;
+package org.beesden.risk.client.model.lobby;
 
-import org.beesden.risk.game.Exception.GameLobbyException;
+import org.beesden.risk.game.exception.GameLobbyException;
 import org.beesden.risk.game.model.Config;
 import org.beesden.risk.game.model.GameData;
 
@@ -35,7 +35,7 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param config   game config
 	 */
-	public static GameData createGame(Integer playerId, String gameId, Config config) {
+	public static GameData createGame(int playerId, String gameId, Config config) {
 
 		if (SESSION_GAMES.get(gameId) != null) {
 			throw new GameLobbyException("A game with that name already exists", playerId, gameId);
@@ -53,7 +53,7 @@ public class Lobby {
 	 * @param playerId player id
 	 * @param gameId   game id
 	 */
-	public static GameData joinGame(Integer playerId, String gameId) {
+	public static GameData joinGame(int playerId, String gameId) {
 
 		GameData gameData = SESSION_GAMES.get(gameId);
 
@@ -74,11 +74,11 @@ public class Lobby {
 	}
 
 	/**
-	 * Start a game
+	 * Leave a game
 	 *
 	 * @param playerId player
 	 */
-	public static GameData leaveGame(Integer playerId, String gameId) {
+	public static GameData leaveGame(int playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		// Remove player if game not yet started
@@ -86,7 +86,7 @@ public class Lobby {
 			gameData.getPlayers().remove(playerId, gameData.getState() != GameData.GameState.SETUP);
 
 			// Close the game if no playerIds remain
-			if (gameData.getPlayers().getOwner() == null) {
+			if (gameData.getPlayers().getOwner() == -1) {
 				SESSION_GAMES.remove(gameData.getName());
 			}
 		}
@@ -100,13 +100,13 @@ public class Lobby {
 	 * @param playerId player
 	 * @param gameId   game id
 	 */
-	public static GameData startGame(Integer playerId, String gameId) {
+	public static GameData startGame(int playerId, String gameId) {
 		GameData gameData = SESSION_GAMES.get(gameId);
 
 		if (gameData == null) {
 			throw new GameLobbyException("Game cannot be found", playerId, gameId);
-		} else if (!playerId.equals(gameData.getPlayers().getOwner())) {
-			throw new GameLobbyException("Player does not own game", playerId, gameId);
+		} else if (playerId != gameData.getPlayers().getOwner()) {
+			throw new GameLobbyException("PlayerSummary does not own game", playerId, gameId);
 		} else if (gameData.getPlayers().countActivePlayers() < gameData.getConfig().getMinPlayers()) {
 			throw new GameLobbyException("Insufficient playerIds to start game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {

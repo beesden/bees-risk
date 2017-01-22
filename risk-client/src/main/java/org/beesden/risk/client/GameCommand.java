@@ -1,5 +1,13 @@
 package org.beesden.risk.client;
 
 public enum GameCommand {
-	login, createGame, joinGame, leaveGame
+	// Lobby commands
+	login, createGame, joinGame, leaveGame, startGame,
+
+	// Card commands
+	showCards,
+
+	// Extra commands
+	showConfig, surrender
+
 }

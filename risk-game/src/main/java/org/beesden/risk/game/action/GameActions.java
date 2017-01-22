@@ -113,7 +113,7 @@ public class GameActions {
 	//		// Start populating the gamedata object
 	//		gameData.setGameReady(true);
 	//		Integer startForces = config.getStartForces()[gameData.getPlayersActive()];
-	//		for (Integer playerId : gameData.getPlayerList().keySet()) {
+	//		for (int playerId : gameData.getPlayerList().keySet()) {
 	//			GamePlayers player = gameData.getPlayerList().getByPlayerId(playerId);
 	//			player.setReinforcements(startForces);
 	//		}

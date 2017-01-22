@@ -7,11 +7,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import org.beesden.risk.client.Model.Lobby;
-import org.beesden.risk.client.Model.LobbyGame;
-import org.beesden.risk.client.Model.LobbyPlayer;
-import org.beesden.risk.client.Model.Message;
+import org.beesden.risk.client.model.Message;
+import org.beesden.risk.client.model.game.TurnSummary;
+import org.beesden.risk.client.model.lobby.Lobby;
+import org.beesden.risk.client.model.lobby.LobbyGame;
+import org.beesden.risk.client.model.lobby.LobbyPlayer;
 import org.beesden.risk.client.service.MessageService;
+import org.beesden.risk.game.exception.GameLobbyException;
 import org.beesden.risk.game.model.Config;
 import org.beesden.risk.game.model.GameData;
 
@@ -40,6 +42,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 		try {
 			Message message = MessageService.read(jsonTextMessage.getPayload());
+			GameData gameData;
 			String gameId = message.getGameId();
 
 			switch (message.getAction()) {
@@ -50,7 +53,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 					break;
 
 				case createGame:
-					GameData gameData = Lobby.createGame(player.getPlayerId(), player.getUsername() + "'s game", new Config());
+					gameData = Lobby.createGame(player.getPlayerId(), player.getUsername() + "'s game", new Config());
 					LobbyPlayer.joinGame(player.getPlayerId(), gameData);
 					MessageService.sendMessage(player, GameAction.gameSetup, new LobbyGame(gameData));
 					break;
@@ -67,9 +70,16 @@ public class GameSocketHandler extends TextWebSocketHandler {
 					MessageService.sendMessage(gameData, GameAction.gameSetup, new LobbyGame(gameData));
 					MessageService.sendMessage(player, GameAction.gameLobby, Lobby.listGames());
 					break;
+
+				case startGame:
+					gameData = Lobby.startGame(player.getPlayerId(), gameId);
+					MessageService.sendMessage(gameData, GameAction.startTurn, new TurnSummary(gameData));
+					break;
 			}
-		} catch (Exception e) {
+		} catch (GameLobbyException e) {
 			MessageService.sendMessage(player, GameAction.commandError, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

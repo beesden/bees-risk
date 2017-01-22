@@ -15,8 +15,6 @@ risk.popups = (function (d) {
 
     /**
      * Popup model
-     *
-     * @param template
      * @constructor
      */
     var Popup = function () {
@@ -58,7 +56,7 @@ risk.popups = (function (d) {
 
             _self.content.querySelectorAll(lookup).forEach(function (el) {
                 el.addEventListener(type, function (event) {
-                    callback(event, _self.content);
+                    callback(event, _self);
                 });
             });
 

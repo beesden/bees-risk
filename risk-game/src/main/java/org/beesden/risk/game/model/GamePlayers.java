@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 public class GamePlayers {
 
 	@Getter
-	private Integer owner;
+	private int owner;
 	@Getter
 	private List<Player> playerList;
 	@Getter
-	private Integer currentTurn = -1;
+	private int currentTurn = -1;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param playerId owner player id
 	 */
-	public GamePlayers(Integer playerId) {
+	public GamePlayers(int playerId) {
 		playerList = new ArrayList<>();
 		add(playerId);
 		owner = playerId;
@@ -29,7 +29,7 @@ public class GamePlayers {
 	/**
 	 * Add player
 	 */
-	public Player add(Integer playerId) {
+	public Player add(int playerId) {
 		Player player = getByPlayerId(playerId);
 		if (player == null) {
 			player = new Player(playerId);
@@ -65,8 +65,8 @@ public class GamePlayers {
 	/**
 	 * Get a player
 	 */
-	public Player getByPlayerId(Integer playerId) {
-		return playerList.stream().filter(p -> playerId.equals(p.getPlayerId())).findFirst().orElse(null);
+	public Player getByPlayerId(int playerId) {
+		return playerList.stream().filter(p -> playerId == p.getPlayerId()).findFirst().orElse(null);
 	}
 
 	/**
@@ -98,21 +98,21 @@ public class GamePlayers {
 	/**
 	 * Remove player
 	 */
-	public void remove(Integer playerId, boolean gameStarted) {
+	public void remove(int playerId, boolean gameStarted) {
 
 		// Remove or set inactive if game already started
 		if (gameStarted) {
-			playerList.stream().filter(player -> playerId.equals(player.getPlayerId())).forEach(player -> {
+			playerList.stream().filter(player -> playerId == player.getPlayerId()).forEach(player -> {
 				player.setNeutral(true);
 				player.setSpectating(true);
 			});
 		} else {
-			playerList.removeIf(player -> playerId.equals(player.getPlayerId()));
+			playerList.removeIf(player -> playerId == player.getPlayerId());
 		}
 
 		// Update game owner
-		if (playerId.equals(owner)) {
-			owner = null;
+		if (playerId == owner) {
+			owner = -1;
 			playerList.stream()
 				.filter(p -> !p.isNeutral())
 				.findFirst()

@@ -226,7 +226,7 @@ risk.map = (function (d) {
 		render: function (data) {
 			risk.mapData = data;
 			//Initiate a Kinetic stage
-			var mapWrapper = d.getElementById('riskMap') || utils.createElement('div', {'id':'riskMap'}, d.body);
+			d.getElementById('riskMap') || utils.createElement('div', {'id':'riskMap'}, d.body);
 			risk.mapWrapper = new Kinetic.Stage({
 				container: 'riskMap',
 				width: risk.gameConfig.mapSize[0],
