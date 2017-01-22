@@ -142,7 +142,6 @@
             wrapper.querySelectorAll('[data-action="toggleMute"]')
                 .forEach(el => el.addEventListener('click', function () {
                         let muteLevel = risk.sfx.toggleMute();
-                        console.log(muteLevel);
                         this.setAttribute('data-tooltip', config.muteLevel[muteLevel]);
                         this.setAttribute('data-mute', muteLevel);
                     })
