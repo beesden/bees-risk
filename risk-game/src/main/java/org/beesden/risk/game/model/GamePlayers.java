@@ -3,10 +3,13 @@ package org.beesden.risk.game.model;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GamePlayers {
+
+	private static final List<String> COLOURS = Arrays.asList("#33c", "#3c3", "#c33", "#c3c", "#3cc", "#cc3");
 
 	@Getter
 	private int owner;
@@ -35,7 +38,19 @@ public class GamePlayers {
 			player = new Player(playerId);
 			playerList.add(player);
 		}
+		changeColour(playerId);
 		return player;
+	}
+
+	/**
+	 * Update colour
+	 */
+	public void changeColour(int playerId) {
+		List<String> usedColours = playerList.stream().map(Player::getColour).collect(Collectors.toList());
+		getByPlayerId(playerId).setColour(COLOURS.stream()
+			.filter(colour -> !usedColours.contains(colour))
+			.findFirst()
+			.orElse(null));
 	}
 
 	/**
@@ -63,13 +78,6 @@ public class GamePlayers {
 	}
 
 	/**
-	 * Count active playerList.
-	 */
-	public Player getCurrentPlayer() {
-		return playerList.stream().filter(p -> p.getPlayerId() == currentTurn).findFirst().orElse(null);
-	}
-
-	/**
 	 * Get a player
 	 */
 	public Player getByPlayerId(int playerId) {
@@ -80,10 +88,7 @@ public class GamePlayers {
 	 * List all playerList
 	 */
 	public List<Integer> listActivePlayerIds() {
-		return playerList.stream()
-			.filter(p -> !p.isNeutral())
-			.map(Player::getPlayerId)
-			.collect(Collectors.toList());
+		return playerList.stream().filter(p -> !p.isNeutral()).map(Player::getPlayerId).collect(Collectors.toList());
 	}
 
 	/**

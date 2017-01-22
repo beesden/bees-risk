@@ -52,12 +52,16 @@ public class GameMap {
 	}
 
 	/**
-	 * Get unclaimed territories
+	 * Get territories by id
 	 */
 	public List<Territory> getTerritoriesByOwner(Integer ownerId) {
-		return territories.stream()
-			.filter(territory -> territory.getOwnerId().equals(ownerId))
-			.collect(Collectors.toList());
+		return territories.stream().filter(territory -> {
+			if (ownerId == null) {
+				return territory.getOwnerId() == null;
+			} else {
+				return ownerId.equals(territory.getOwnerId());
+			}
+		}).collect(Collectors.toList());
 	}
 
 	/**

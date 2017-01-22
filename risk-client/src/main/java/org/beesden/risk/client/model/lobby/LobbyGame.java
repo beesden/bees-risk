@@ -2,6 +2,7 @@ package org.beesden.risk.client.model.lobby;
 
 import lombok.Data;
 
+import org.beesden.risk.client.model.game.PlayerSummary;
 import org.beesden.risk.game.model.GameData;
 
 import java.time.ZoneOffset;
@@ -15,7 +16,7 @@ public class LobbyGame {
 	private String name;
 	private int owner;
 	private GameData.GameState state;
-	private List<String> players;
+	private List<PlayerSummary> players;
 	private long created;
 
 	public LobbyGame(GameData gameData) {
@@ -26,14 +27,8 @@ public class LobbyGame {
 		this.players = gameData.getPlayers()
 			.getPlayerList()
 			.stream()
-			.map(player -> {
-				LobbyPlayer lobbyPlayer = LobbyPlayer.lookup(player.getPlayerId());
-				if (lobbyPlayer != null) {
-					return lobbyPlayer.getUsername();
-				} else {
-					return "Unknown Player";
-				}
-			})
+			.filter(player -> LobbyPlayer.lookup(player.getPlayerId()) != null)
+			.map(PlayerSummary::new)
 			.collect(Collectors.toList());
 
 		this.created = gameData.getCreated().toInstant(ZoneOffset.UTC).toEpochMilli();

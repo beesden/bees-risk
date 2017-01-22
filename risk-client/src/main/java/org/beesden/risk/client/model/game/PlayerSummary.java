@@ -20,13 +20,14 @@ public class PlayerSummary {
 	private boolean active;
 	private int battalions;
 
-	PlayerSummary(Player player) {
+	public PlayerSummary(Player player) {
 		id = player.getPlayerId();
 		if (player.getPlayerId() != -1) {
 			name = LobbyPlayer.lookup(player.getPlayerId()).getUsername();
 		}
 
 		active = player.isNeutral() || player.isSpectating();
+		colour = player.getColour();
 		battalions = player.getStrength();
 
 		// cardCount
