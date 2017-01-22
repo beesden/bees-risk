@@ -148,9 +148,7 @@ risk.map = (function (d) {
                 territory.pathObject.setFill(config.mapColours.territory);
                 territory.group.moveTo(risk.mapLayer);
             }
-        }
-
-        ,
+        },
 
         /**
          *  Reset map to default for phase change
@@ -168,8 +166,7 @@ risk.map = (function (d) {
             config.updateMap = false;
             risk.mapLayer.draw();
             risk.topLayer.draw();
-        }
-        ,
+        },
 
         /**
          *  Create Kinetic map layers and append the territories into it.
@@ -220,8 +217,7 @@ risk.map = (function (d) {
             risk.mapWrapper.add(risk.topLayer);
 
             this.scale();
-        }
-        ,
+        },
 
         /**
          * Set available territory interactions
@@ -230,8 +226,7 @@ risk.map = (function (d) {
          */
         setInteractions: function (territories) {
             interactions = territories;
-        }
-        ,
+        },
 
         /**
          * Update a territory
@@ -243,8 +238,7 @@ risk.map = (function (d) {
 
             territory.colour.setFill('#000');
             territory.count.setText(territoryData.battalions);
-        }
-        ,
+        },
 
         /**
          *  Update the territory display
@@ -277,8 +271,7 @@ risk.map = (function (d) {
                 territory.playerStrength.setY(territory.playerColour.getY() - territory.playerStrength.getHeight() / 2);
             }
             this.reset();
-        }
-        ,
+        },
 
         /**
          *  Update map scale
