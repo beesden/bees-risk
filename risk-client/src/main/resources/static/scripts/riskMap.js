@@ -126,7 +126,9 @@ risk.map = (function (d) {
                     }
                 })
                 .on('click', function () {
-                    risk.setup.sendCommand({action: 'territorySelect', territory: data.id});
+                    if (interactions.find(t => t === data.id)) {
+                        risk.setup.sendCommand({action: 'territorySelect', territory: data.id});
+                    }
                 });
 
             return territory;
