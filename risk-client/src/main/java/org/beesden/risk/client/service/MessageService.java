@@ -29,7 +29,7 @@ public class MessageService {
 		Map<String, Object> message = new HashMap<>();
 		message.put("action", action);
 		message.put("message", data);
-		message.put("username", player.getUsername());
+		message.put("userId", player.getPlayerId());
 
 		try {
 			player.getSession().sendMessage(new TextMessage(GSON_READER.toJson(message)));

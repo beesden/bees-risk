@@ -12,22 +12,20 @@ import java.util.stream.Collectors;
 @Data
 public class PlayerSummary {
 
+	private int id;
 	private String name = "Neutral Player";
 	private String colour;
 	private Map<String, Integer> territories;
 	private int cardCount;
 	private boolean active;
-	private boolean current;
-	private int reinforcements;
 
 	PlayerSummary(Player player) {
+		id = player.getPlayerId();
 		if (player.getPlayerId() != -1) {
 			name = LobbyPlayer.lookup(player.getPlayerId()).getUsername();
 		}
 
 		active = player.isNeutral() || player.isSpectating();
-
-		reinforcements = player.getReinforcements();
 
 		// cardCount
 		territories = player.getTerritories()

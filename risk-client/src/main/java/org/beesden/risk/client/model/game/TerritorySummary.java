@@ -8,14 +8,16 @@ import org.beesden.risk.game.model.GameMap;
 public class TerritorySummary {
 
 	private String id;
+	private String name;
 	private String continentId;
 	private int battalions;
-	private int owner;
+	private Integer owner;
 	private String path;
 	private int[] center;
 
 	public TerritorySummary(GameMap.Territory territory) {
-		id = territory.getName();
+		id = territory.getId();
+		name = territory.getName();
 		continentId = territory.getContinent().getId();
 
 		// Player info

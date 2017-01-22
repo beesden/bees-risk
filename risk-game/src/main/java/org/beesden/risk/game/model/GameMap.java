@@ -4,8 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class GameMap {
@@ -49,6 +51,56 @@ public class GameMap {
 		return (int) Math.max(3, Math.floor(globalTerritories / 3)) + bonusReinforcement;
 	}
 
+	/**
+	 * Get valid territories
+	 */
+	public List<Territory> getValidTerritories(int playerId, TurnPhase phase, Territory current) {
+
+		switch (phase) {
+			case INITIAL:
+				return territories.stream()
+					.filter(territory -> territory.getOwnerId() == null)
+					.collect(Collectors.toList());
+			case DEPLOY:
+			case REINFORCE:
+				return territories.stream()
+					.filter(territory -> territory.getOwnerId() == playerId)
+					.collect(Collectors.toList());
+			case ATTACK:
+				if (current == null) {
+					return territories.stream()
+						.filter(territory -> territory.getOwnerId() == playerId)
+						.collect(Collectors.toList());
+				} else {
+					return current.neighbours.stream()
+						.filter(territory -> territory.getOwnerId() != playerId)
+						.collect(Collectors.toList());
+				}
+			case REDEPLOY:
+				if (current == null) {
+					return territories.stream()
+						.filter(territory -> territory.getOwnerId() == playerId)
+						.collect(Collectors.toList());
+				} else {
+					List<Territory> neighbours = getNeighboursRecursive(new ArrayList<>(), current);
+					neighbours.remove(current);
+					return neighbours;
+				}
+		}
+
+		return new ArrayList<>();
+	}
+
+	private List<Territory> getNeighboursRecursive(List<Territory> neighbours, Territory current) {
+		current.neighbours.stream().filter(n -> n.getOwnerId().equals(current.getOwnerId())).forEach(neighbour -> {
+			if (!neighbours.contains(neighbour)) {
+				neighbours.add(neighbour);
+				getNeighboursRecursive(neighbours, neighbour);
+			}
+		});
+		return neighbours;
+	}
+
 	@Data
 	public static final class Axis {
 		private int x;
@@ -64,6 +116,7 @@ public class GameMap {
 
 	@Data
 	@EqualsAndHashCode(exclude = { "territories" })
+	@ToString(exclude = "territories")
 	public static final class Continent {
 		private String id;
 		private String name;
@@ -83,7 +136,7 @@ public class GameMap {
 		private String id;
 		private String name;
 		private Collection<Territory> neighbours;
-		private int ownerId;
+		private Integer ownerId;
 		private String path;
 	}
 }

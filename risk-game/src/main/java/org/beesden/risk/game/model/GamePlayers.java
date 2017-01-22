@@ -63,6 +63,13 @@ public class GamePlayers {
 	}
 
 	/**
+	 * Count active playerList.
+	 */
+	public Player getCurrentPlayer() {
+		return playerList.stream().filter(p -> p.getPlayerId() == currentTurn).findFirst().orElse(null);
+	}
+
+	/**
 	 * Get a player
 	 */
 	public Player getByPlayerId(int playerId) {

@@ -16,7 +16,5 @@ risk.gameConfig = {
 	},
 	mapSize: [900, 615],
 	mute:1,
-	muteLevel: ['Play all sounds', 'Play sound effects only', 'Mute all sounds'],
-	server: 'ws://localhost:8080',
-	defaultNames: ['Captain Seaman', 'General Surgery', 'Major Pain', 'Private Parts', 'Corporal Punishment']
+	server: 'ws://localhost:8080'
 }

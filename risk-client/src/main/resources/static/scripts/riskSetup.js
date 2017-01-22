@@ -8,7 +8,7 @@
             console.log('-------');
             console.log('Receive game command', command.action, command.message);
 
-            risk.gameConfig.username = command.username;
+            config.userId = command.userId;
             risk.game[command.action](command.message);
         },
         sendCommand: function (command) {

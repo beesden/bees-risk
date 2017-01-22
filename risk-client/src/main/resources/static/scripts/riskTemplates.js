@@ -1,6 +1,4 @@
-(function () {
-    'use strict';
-
+{
     risk.templates = {
 
         /**
@@ -11,7 +9,7 @@
          * @returns {Popup}
          */
         popup: function (templateId, data) {
-            var template = this.render(templateId, data);
+            let template = this.render(templateId, data);
             risk.popups.removeAll();
             return risk.popups.show(template);
         },
@@ -20,17 +18,18 @@
          * Get a template and render it with data
          *
          * @param {String} templateId template ID
-         * @param {Object} [data] template data
+         * @param {Object} [dataModel] template data
          * @returns {String} templated HTML string
          */
-        render: function (templateId, data) {
-            console.log('Render template', templateId, data);
-            return Handlebars.templates[templateId.replace(/_/g, '/')](data);
+        render: function (templateId, dataModel) {
+            console.log('Render template', templateId, dataModel);
+
+            let template = Handlebars.templates[templateId.replace(/_/g, '/')];
+            if (template.constructor === Function) {
+                return template(dataModel);
+            }
         }
     };
 
-    Handlebars.registerHelper("xif", function (expression, options) {
-        return Handlebars.helpers["x"].apply(this, [expression, options]) ? options.fn(this) : options.inverse(this);
-    });
-
-})();
+    Handlebars.registerHelper("message", risk.messages);
+}

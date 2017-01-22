@@ -16,18 +16,14 @@ public class GameData {
 		SETUP, READY, STARTED, ENDED
 	}
 
-	public enum TurnPhase {
-		REINFORCE, ATTACK, REDEPLOY
-	}
-
 	private int[] startForces = DEFAULT_START_STRENGTH;
 
 	// Metadata
-	private String name;
+	private String id = UUID.randomUUID().toString();
 	private LocalDateTime created = LocalDateTime.now();
 
 	private GameState state = GameState.SETUP;
-	private TurnPhase phase;
+	private TurnPhase phase = TurnPhase.INITIAL;
 
 	// Game data objects
 	private Config config;
@@ -44,8 +40,8 @@ public class GameData {
 	 * @param config   game config
 	 */
 	public GameData(int playerId, String gameName, Config config) {
-		this.name = gameName;
 		this.config = config;
+		config.setName(gameName);
 
 		this.map = MapService.getMapById(config.getGameMap());
 		this.cards = new CardDeck(this.map);
@@ -87,6 +83,7 @@ public class GameData {
 				player.takeTerritory(territory);
 				player.reinforce(territory.getId());
 			}
+			phase = TurnPhase.DEPLOY;
 
 			// Automatically place starting battalions
 			if (config.isAutoPlaceBattalions()) {

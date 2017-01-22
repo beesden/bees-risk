@@ -2,7 +2,14 @@
 
     <div class="riskUser">
         <label for="username">Select a name to connect with</label>
-        <input id="username" name="username" placeholder="Enter name..." type="text">
+        <input id="username" name="username" placeholder="Enter name..." type="text" list="usernames">
+        <datalist id="usernames">
+            <option value="Captain Seaman">
+            <option value="General Surgery">
+            <option value="Major Pain">
+            <option value="Private Parts">
+            <option value="Corporal Punishment">
+        </datalist>
     </div>
 
     <button class="button confirm" data-action="login">Connect</button>

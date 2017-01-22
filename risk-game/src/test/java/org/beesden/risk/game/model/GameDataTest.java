@@ -20,7 +20,7 @@ public class GameDataTest {
 
 	@Test
 	public void testCreateData() {
-		Assert.assertEquals(GAME_NAME, gameData.getName());
+		Assert.assertEquals(GAME_NAME, gameData.getConfig().getName());
 		Assert.assertEquals("risk", gameData.getMap().getName());
 
 		Assert.assertNotNull(gameData.getConfig());
@@ -30,7 +30,7 @@ public class GameDataTest {
 		Assert.assertEquals(PLAYER_1, gameData.getPlayers().getOwner());
 
 		Assert.assertEquals(GameData.GameState.SETUP, gameData.getState());
-		Assert.assertNull(gameData.getPhase());
+		Assert.assertEquals(TurnPhase.INITIAL, gameData.getPhase());
 	}
 
 	@Test
@@ -79,6 +79,7 @@ public class GameDataTest {
 		Assert.assertEquals(11, gameData.getPlayers().getByPlayerId(PLAYER_2).getTerritories().size());
 		Assert.assertEquals(10, gameData.getPlayers().getByPlayerId(PLAYER_3).getTerritories().size());
 		Assert.assertEquals(10, gameData.getPlayers().getByPlayerId(PLAYER_4).getTerritories().size());
+		Assert.assertEquals(TurnPhase.DEPLOY, gameData.getPhase());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
 	}
 
@@ -94,7 +95,7 @@ public class GameDataTest {
 		gameData.startGame();
 		Assert.assertEquals(0, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
 		Assert.assertEquals(GameData.GameState.READY, gameData.getState());
-		Assert.assertNull(gameData.getPhase());
+		Assert.assertEquals(TurnPhase.INITIAL, gameData.getPhase());
 
 		config.setAutoAssignTerritories(true);
 		config.setAutoPlaceBattalions(true);
@@ -106,7 +107,7 @@ public class GameDataTest {
 		Assert.assertEquals(14, gameData.getPlayers().getByPlayerId(PLAYER_1).getTerritories().size());
 		Assert.assertEquals(40, gameData.getPlayers().getByPlayerId(PLAYER_1).getStrength());
 		Assert.assertEquals(GameData.GameState.STARTED, gameData.getState());
-		Assert.assertEquals(GameData.TurnPhase.REINFORCE, gameData.getPhase());
+		Assert.assertEquals(TurnPhase.REINFORCE, gameData.getPhase());
 	}
 
 	@Test

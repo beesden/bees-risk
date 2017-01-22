@@ -33,16 +33,13 @@ public class Lobby {
 	 * Create a game
 	 *
 	 * @param playerId player id
+	 * @param gameName game name
 	 * @param config   game config
 	 */
-	public static GameData createGame(int playerId, String gameId, Config config) {
+	public static GameData createGame(int playerId, String gameName, Config config) {
 
-		if (SESSION_GAMES.get(gameId) != null) {
-			throw new GameLobbyException("A game with that name already exists", playerId, gameId);
-		}
-
-		GameData gameData = new GameData(playerId, gameId, config);
-		SESSION_GAMES.put(gameId, gameData);
+		GameData gameData = new GameData(playerId, gameName, config);
+		SESSION_GAMES.put(gameData.getId(), gameData);
 
 		return gameData;
 	}
@@ -87,7 +84,7 @@ public class Lobby {
 
 			// Close the game if no playerIds remain
 			if (gameData.getPlayers().getOwner() == -1) {
-				SESSION_GAMES.remove(gameData.getName());
+				SESSION_GAMES.remove(gameData.getId());
 			}
 		}
 

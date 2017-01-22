@@ -13,5 +13,6 @@ public class Config {
 	private int maxPlayers = 6;
 	private int minPlayers = 2;
 	private boolean ascendingCardValues;
+	private String name;
 
 }

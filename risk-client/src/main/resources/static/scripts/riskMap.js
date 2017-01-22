@@ -7,26 +7,6 @@ risk.map = (function (d) {
         id;
 
     /**
-     * Server MapSummary response object
-     *
-     * @typedef {Object} ServerData~MapData
-     * @property {String} id map id
-     * @property {TerritoryData[]} territories map territories
-     * @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.
-     */
-
-    /**
-     * Server TerritorySummary response object
-     *
-     * @typedef {Object} TerritoryData
-     * @property {String} id id of territory
-     * @property {Integer} battalions strength of battalions at the territory
-     * @property {String} continentId id of continent this territory is part of
-     * @property {int[]} center co-ordinates of territory center
-     * @property {String} path path to draw territory from
-     */
-
-    /**
      * Territory object
      *
      * @typedef {Object} Territory
@@ -36,89 +16,14 @@ risk.map = (function (d) {
      * @property {Kinetic.Group} player holder for player info
      * @property {Kinetic.Circle} colour battalion background colour
      * @property {Kinetic.Text} count battalion count
+     */
 
-
-     /**
+    /**
      *
      * @type {Object.<String, Territory>}
      */
+    var interactions = [];
     const territories = {};
-
-    const mapService = {
-
-        /**
-         *  Build Kinetic object and add to the map.
-         *
-         *  @param mapLayer maplayer to add territories to
-         *  @param {TerritoryData} data territory data object
-         *  @return {Territory}
-         */
-        buildTerritory: function (mapLayer, data) {
-
-            let territory = {
-                data: data,
-                group: new Kinetic.Group(),
-                path: new Kinetic.Path({
-                    data: data.path,
-                    fill: config.mapColours.territory
-                }),
-                player: new Kinetic.Group(),
-                colour: new Kinetic.Circle({
-                    x: data.center[0],
-                    y: data.center[1],
-                    radius: 12,
-                    shadowColor: 'black',
-                    shadowBlur: 4,
-                    shadowOffset: {x: -2, y: 2},
-                    shadowOpacity: 0.3
-                }),
-                count: new Kinetic.Text({
-                    fontSize: 12,
-                    fontStyle: 'Bold',
-                    fill: '#fff'
-                })
-            };
-
-            // Construct groups
-            territory.group.add(territory.path);
-            territory.player.add(territory.colour);
-            territory.player.add(territory.count);
-            territory.group.add(territory.player);
-
-            return territory;
-        },
-
-        /**
-         * Highlight a territory
-         *
-         * @param {String} territoryId
-         * @param {Boolean} selected
-         */
-        highlightTerritory: function (territoryId, selected) {
-            let territory = territories[territoryId];
-
-            if (selected) {
-                territory.path.setFill(config.mapColours.neighbour);
-                territory.group.moveTo(risk.topLayer);
-            } else {
-                territory.pathObject.setFill(config.mapColours.territory);
-                territory.group.moveTo(risk.mapLayer);
-            }
-        },
-
-        /**
-         * Update a territory
-         *
-         * @param {TerritoryData} territoryData
-         */
-        updateTerritory: function (territoryData) {
-            let territory = territories[territoryId];
-
-            territory.colour.setFill('#000');
-            territory.count.setText(territoryData.battalions);
-        }
-
-    };
 
     /**
      *  Highlight neighbours to a specific territory
@@ -161,109 +66,92 @@ risk.map = (function (d) {
         }
     }
 
-    /**
-     *
-     * @param territory
-     */
-    function territoryInteractions(territory) {
-        // Territory variables
-        var group = territory.group,
-            territoryList = risk.mapLayer.children,
-            currentNeighbours;
-        // Hoverable if: during territory selection at start of game; territory owned by current player; territory is linked to active territory
-        var territoryHover = function (territory) {
-            var yourTurn = config.username === risk.config.playerTurn,
-                yourTerritory = !territory.player || territory.player == risk.config.playerTurn,
-                isActive = !config.activeTerritory || config.activeTerritory == territory.id,
-                isNeighbour = config.neighbours && config.neighbours[territory.id]
-            // Can only hover on your turn;
-            return yourTurn && ((isActive && yourTerritory) || isNeighbour);
-        };
-        // Set opacity to 1 on hover
-        group.on('mousemove', function () {
-            if (territoryHover(territory) && config.activeTerritory != territory.id) {
-                document.body.classList.add("select");
-                currentNeighbours = config.neighbours || {};
-                territory.pathObject.setFill(config.mapColours.hover);
-                group.moveTo(risk.topLayer);
-                risk.topLayer.draw();
-            }
-        });
-        // Set opacity to default on hoverend
-        group.on('mouseout', function () {
-            if (territoryHover(territory) && config.activeTerritory != territory.id) {
-                currentNeighbours = config.neighbours || {};
-                territory.pathObject.setFill(config.mapColours[currentNeighbours[territory.id] ? 'neighbour' : 'territory']);
-                // Move out of top layer unless a neighbour
-                if (!currentNeighbours[territory.id]) {
-                    group.moveTo(risk.mapLayer);
-                }
-                risk.topLayer.draw();
-                if (config.updateMap) {
-                    config.updateMap = false;
-                    risk.mapLayer.draw();
-                }
-            }
-            document.body.classList.remove("select");
-        });
-        // Run various game functions on click
-        group.on('click', function (e) {
-            if (territoryHover(territory)) {
-                var friendly = risk.config.turnPhase == 'redeploy',
-                    recursive = friendly && !risk.config.noRecursion;
-                switch (risk.config.turnPhase) {
-                    case 'deploy':
-                    case 'reinforce':
-                        risk.setup.sendCommand({'action': 'territoryInteract', 'territory': territory.id});
-                        break;
-                    case 'attack':
-                    case 'redeploy':
-                        // Insufficient battalions
-                        if (!config.activeTerritory && territory.battalions === 1) {
-                            console.log("insufficient force to interact"); // @TODO - move to info
-                        }
-                        // Select if no territory
-                        else if (!config.activeTerritory) {
-                            highlightNeighbours(territory, true, friendly, recursive);
-                            if (!Object.keys(config.neighbours).length) {
-                                console.log("no neighbours"); // @TODO - move to info
-                                return
-                            }
-                            config.activeTerritory = territory.id;
-                            territory.pathObject.setFill(config.mapColours.select);
-                            territory.group.moveTo(risk.topLayer);
-                            risk.topLayer.draw();
-                            console.log("Select neighbour"); // @TODO - move to info
-                        }
-                        // If already selected, deslect territory
-                        else if (config.activeTerritory == territory.id) {
-                            config.activeTerritory = null;
-                            territory.pathObject.setFill(config.mapColours.hover);
-                            highlightNeighbours(territory, false, friendly, recursive);
-                            risk.topLayer.draw();
-                            console.log("Territory deselected"); // @TODO - move to info
-                        }
-                        // Else interact with neighbour
-                        else if (config.neighbours && config.neighbours[territory.id]) {
-                            // Show the new redeploy popup
-                            if (friendly) {
-                                risk.game.redeploy(config.activeTerritory, territory.id);
-                            } else {
-                                risk.setup.sendCommand({
-                                    'action': 'territoryInteract',
-                                    'attack': 'start',
-                                    'attacker': config.activeTerritory,
-                                    'defender': territory.id
-                                });
-                            }
-                        }
-                        break;
-                }
-            }
-        });
-    }
-
     return {
+
+        /**
+         *  Build Kinetic object and add to the map.
+         *
+         *  @param mapLayer maplayer to add territories to
+         *  @param {TerritoryData} data territory data object
+         *  @return {Territory}
+         */
+        buildTerritory: function (mapLayer, data) {
+
+            let territory = {
+                data: data,
+                group: new Kinetic.Group(),
+                path: new Kinetic.Path({
+                    data: data.path,
+                    fill: config.mapColours.territory
+                }),
+                player: new Kinetic.Group(),
+                colour: new Kinetic.Circle({
+                    x: data.center[0],
+                    y: data.center[1],
+                    radius: 12,
+                    shadowColor: 'black',
+                    shadowBlur: 4,
+                    shadowOffset: {x: -2, y: 2},
+                    shadowOpacity: 0.3
+                }),
+                count: new Kinetic.Text({
+                    fontSize: 12,
+                    fontStyle: 'Bold',
+                    fill: '#fff'
+                })
+            };
+
+            // Construct groups
+            territory.group.add(territory.path);
+            territory.player.add(territory.colour);
+            territory.player.add(territory.count);
+            territory.group.add(territory.player);
+
+            // Add events
+            territory.group
+                .on('mousemove', function () {
+                    if (interactions.find(t => t === data.id)) {
+                        document.body.classList.add("select");
+                        territory.path.setFill(config.mapColours.hover);
+                        territory.group.moveTo(risk.topLayer);
+                        risk.topLayer.draw();
+                    }
+                })
+                .on('mouseout', function () {
+                    if (interactions.find(t => t === data.id)) {
+                        document.body.classList.remove("select");
+                        territory.path.setFill(config.mapColours.territory);
+                        territory.group.moveTo(risk.mapLayer);
+                        risk.topLayer.draw();
+                    }
+                })
+                .on('click', function () {
+                    risk.setup.sendCommand({action: 'territorySelect', territory: data.id});
+                });
+
+            return territory;
+        },
+
+        /**
+         * Highlight a territory
+         *
+         * @param {String} territoryId
+         * @param {Boolean} selected
+         */
+        highlightTerritory: function (territoryId, selected) {
+            let territory = territories[territoryId];
+
+            if (selected) {
+                territory.path.setFill(config.mapColours.neighbour);
+                territory.group.moveTo(risk.topLayer);
+            } else {
+                territory.pathObject.setFill(config.mapColours.territory);
+                territory.group.moveTo(risk.mapLayer);
+            }
+        }
+
+        ,
+
         /**
          *  Reset map to default for phase change
          *  @TODO
@@ -280,7 +168,8 @@ risk.map = (function (d) {
             config.updateMap = false;
             risk.mapLayer.draw();
             risk.topLayer.draw();
-        },
+        }
+        ,
 
         /**
          *  Create Kinetic map layers and append the territories into it.
@@ -322,7 +211,8 @@ risk.map = (function (d) {
             // Draw the territories and render the map
             mapData.territories
                 .forEach(function (territoryData) {
-                    territories[territoryData.id] = mapService.buildTerritory(risk.mapLayer, territoryData);
+                    territories[territoryData.id] = risk.map.buildTerritory(risk.mapLayer, territoryData);
+                    risk.mapLayer.add(territories[territoryData.id].group);
                 });
 
             risk.mapWrapper.add(risk.bgLayer);
@@ -330,7 +220,31 @@ risk.map = (function (d) {
             risk.mapWrapper.add(risk.topLayer);
 
             this.scale();
-        },
+        }
+        ,
+
+        /**
+         * Set available territory interactions
+         *
+         * @param {String[]} territories
+         */
+        setInteractions: function (territories) {
+            interactions = territories;
+        }
+        ,
+
+        /**
+         * Update a territory
+         *
+         * @param {TerritoryData} territoryData
+         */
+        updateTerritory: function (territoryData) {
+            let territory = territories[territoryId];
+
+            territory.colour.setFill('#000');
+            territory.count.setText(territoryData.battalions);
+        }
+        ,
 
         /**
          *  Update the territory display
@@ -363,17 +277,17 @@ risk.map = (function (d) {
                 territory.playerStrength.setY(territory.playerColour.getY() - territory.playerStrength.getHeight() / 2);
             }
             this.reset();
-        },
+        }
+        ,
 
         /**
          *  Update map scale
          *
-         *  @param {integer} level - level of zoom
-         *  @param {boolean} [animate] - Whether changes are animated
+         *  @param {Integer} level - level of zoom
+         *  @param {Boolean} [animate] - Whether changes are animated
          *  @todo
          */
-        scale: function (level, animate) {
-            level = level || 0;
+        scale: function (level = 0, animate = false) {
             let defaultScale = risk.gameConfig.mapSize[0] / (parseInt(mapData.size[0])),
                 currentScale = defaultScale + (risk.gameConfig.zoomLevel / 10),
                 targetScale = defaultScale + (level / 10),

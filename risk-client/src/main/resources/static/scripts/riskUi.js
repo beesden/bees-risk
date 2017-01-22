@@ -84,14 +84,12 @@
          *
          *  @param turnInfo turn information
          */
-        build: function (turnInfo) {
+        build: function () {
             this.clear();
 
             risk.ui.wrapper = document.createElement('nav');
             risk.ui.wrapper.className = 'uiWrapper';
             document.body.appendChild(risk.ui.wrapper);
-
-            this.update(turnInfo);
         },
 
         /**
@@ -142,7 +140,7 @@
             wrapper.querySelectorAll('[data-action="toggleMute"]')
                 .forEach(el => el.addEventListener('click', function () {
                         let muteLevel = risk.sfx.toggleMute();
-                        this.setAttribute('data-tooltip', config.muteLevel[muteLevel]);
+                        this.setAttribute('data-tooltip', risk.messages('mutelevel-' + muteLevel));
                         this.setAttribute('data-mute', muteLevel);
                     })
                 );
@@ -152,30 +150,32 @@
         /**
          *  Re-generate the UI
          *
-         *  @param turnInfo turn information
+         *  @param {TurnData} turnData turn information
          */
-        update: function (turnInfo) {
+        update: function (turnData) {
 
-            // Calculate strength
-            turnInfo.globalStrength = 0;
-
-            // Get the local player
-            turnInfo.currentPlayer = turnInfo.players.find(player => player.name === config.username);
+            let dataModel = {
+                activePlayer: turnData.players.find(player => player.id === turnData.current),
+                currentPlayer: turnData.players.find(player => player.id === config.id),
+                phase: 'turnphase.' + turnData.phase,
+                players: turnData.players,
+                globalStrength: 0
+            };
 
             // Calculate player and global strength values
-            turnInfo.players.forEach(player => {
+            dataModel.players.forEach(player => {
                 player.strength = 0;
                 Object.values(player.territories).forEach(territory => player.strength += territory);
-                turnInfo.globalStrength += player.strength;
+                dataModel.globalStrength += player.strength;
             });
 
             // Calculate percentage strength
-            turnInfo.players.forEach(function (player) {
-                player.strength = player.strength / turnInfo.globalStrength;
+            dataModel.players.forEach(function (player) {
+                player.strength = player.strength / Math.max(1, dataModel.globalStrength);
             });
 
             // Generate
-            risk.ui.wrapper.innerHTML = risk.templates.render('ui', turnInfo);
+            risk.ui.wrapper.innerHTML = risk.templates.render('ui', dataModel);
 
             this.registerControls(risk.ui.wrapper);
         }

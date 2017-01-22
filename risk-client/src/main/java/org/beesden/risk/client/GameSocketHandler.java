@@ -24,14 +24,14 @@ public class GameSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 		LobbyPlayer player = LobbyPlayer.lookup(session);
-		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getName()));
+		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getId()));
 		log.info("Connection closed: " + player.getUsername());
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable throwable) {
 		LobbyPlayer player = LobbyPlayer.lookup(session);
-		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getName()));
+		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getId()));
 		log.warning("Closing a connection due to error for user " + player.getUsername() + ": " + throwable.getMessage());
 	}
 

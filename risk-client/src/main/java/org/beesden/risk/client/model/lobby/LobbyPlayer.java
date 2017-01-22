@@ -56,7 +56,7 @@ public class LobbyPlayer {
 	 * @param gameId   game id
 	 */
 	public static void leaveGame(int playerId, String gameId) {
-		players.get(playerId).getGames().removeIf(game -> game.getName().equals(gameId));
+		players.get(playerId).getGames().removeIf(game -> game.getId().equals(gameId));
 	}
 
 	/**

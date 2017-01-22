@@ -1,5 +1,8 @@
 package org.beesden.risk.client;
 
+/**
+ * Commands sent from the Server to the UI
+ */
 public enum GameAction {
 
 	// Global actions
