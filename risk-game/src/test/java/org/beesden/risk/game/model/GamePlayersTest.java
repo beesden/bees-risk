@@ -40,10 +40,11 @@ public class GamePlayersTest {
 	public void testListPlayers() {
 
 		players.add(PLAYER_2);
+		players.addNeutralPlayer();
 		players.add(PLAYER_3);
 
 		// Player added on init
-		Assert.assertEquals(Arrays.asList(new Integer[]{ PLAYER_1, PLAYER_2, PLAYER_3 }), players.listIds());
+		Assert.assertEquals(Arrays.asList(new Integer[]{ PLAYER_1, PLAYER_2, PLAYER_3 }), players.listActivePlayerIds());
 	}
 
 	@Test
@@ -69,7 +70,7 @@ public class GamePlayersTest {
 		// Remove before start
 		players.remove(PLAYER_1, false);
 		Assert.assertEquals(2, players.countActivePlayers());
-		Assert.assertEquals(2, players.listIds().size());
+		Assert.assertEquals(2, players.listActivePlayerIds().size());
 		Assert.assertNull(players.getByPlayerId(PLAYER_1));
 
 		// Check owner updated
@@ -80,7 +81,7 @@ public class GamePlayersTest {
 		// Remove player after game start
 		players.remove(PLAYER_1, true);
 		Assert.assertEquals(2, players.countActivePlayers());
-		Assert.assertEquals(3, players.listIds().size());
+		Assert.assertEquals(2, players.listActivePlayerIds().size());
 		Assert.assertEquals(true, players.getByPlayerId(PLAYER_1).isNeutral());
 		Assert.assertEquals(true, players.getByPlayerId(PLAYER_1).isSpectating());
 

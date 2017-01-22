@@ -8,7 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import org.beesden.risk.client.model.Message;
-import org.beesden.risk.client.model.game.TurnSummary;
+import org.beesden.risk.client.model.game.GameSummary;
 import org.beesden.risk.client.model.lobby.Lobby;
 import org.beesden.risk.client.model.lobby.LobbyGame;
 import org.beesden.risk.client.model.lobby.LobbyPlayer;
@@ -73,7 +73,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 				case startGame:
 					gameData = Lobby.startGame(player.getPlayerId(), gameId);
-					MessageService.sendMessage(gameData, GameAction.startTurn, new TurnSummary(gameData));
+					MessageService.sendMessage(gameData, GameAction.startGame, new GameSummary(gameData));
 					break;
 			}
 		} catch (GameLobbyException e) {

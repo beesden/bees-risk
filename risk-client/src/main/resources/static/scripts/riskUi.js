@@ -1,7 +1,4 @@
-var risk = risk || {config: {}};
-
-risk.ui = (function (d) {
-
+{
     var config = risk.gameConfig,
         utils = risk.utils;
 
@@ -9,7 +6,7 @@ risk.ui = (function (d) {
      *  Creates the game button elements
      */
     function createChatWindow() {
-        // var chatUi = risk.ui.chat = utils.createElement('div', {'class':'chatBox'}, d.body);
+        // var chatUi = risk.ui.chat = utils.createElement('div', {'class':'chatBox'}, document.body);
         // // Rules button - displays custom rules
         // chatUi.heading = utils.createElement('span', {'class':'title'}, chatUi);
         // chatUi.heading.innerHTML = 'Game Chat';
@@ -34,57 +31,28 @@ risk.ui = (function (d) {
         // 	}
     }
 
-    /**
-     *  Creates the game button elements
-     */
-    function createButtons() {
-
-        // Config button
-        risk.ui.wrapper.querySelector('[data-action="showConfig').addEventListener('click', function () {
-            risk.setup.sendCommand('showConfig');
-        });
-
-        // Cards button
-        risk.ui.wrapper.querySelector('[data-action="showConfig').addEventListener('click', function () {
-            risk.setup.sendCommand('showCards');
-        });
-
-        risk.ui.wrapper.querySelector('[data-action="surrender').addEventListener('click', function () {
-            risk.templates.popup('surrender')
-                .on('click', '.confirm', function () {
-                    risk.setup.sendCommand({'action': 'surrender'});
-                })
-                .on('click', '.cancel', function (event, popup) {
-                    popup.close();
-                });
-        });
-
-        risk.ui.wrapper.querySelector('[data-action="toggleMute"]').addEventListener('click', function () {
-            var muteLevel = risk.sfx.toggleMute();
-            this.setAttribute('data-tooltip', config.muteLevel[muteLevel]);
-            this.setAttribute('data-mute-level', muteLevel);
-        });
-    }
 
     /**
      *  Assemble the minimap Ui elements
+     *
+     *  todo - merge with existing functions
      */
     function createMapUi() {
-        var mapUi = risk.ui.map = utils.createElement('ul', {'class': 'mapControls'}, d.body);
+        var mapUi = risk.ui.map = utils.createElement('ul', {'class': 'mapControls'}, document.body);
         // // Display zoom controls
         // mapUi.zoomIn = utils.createElement('li', {'class':'zoom zoomIn'}, mapUi);
         // mapUi.zoomIn.onclick = function() {
         // 	if (config.zoomLevel > 1) {
         // 		return false;
         // 	}
-        // 	risk.map.zoomMap(config.zoomLevel + 1, true);
+        // 	risk.map.scale(config.zoomLevel + 1, true);
         // }
         // mapUi.zoomOut = utils.createElement('li', {'class':'zoom zoomOut'}, mapUi);
         // mapUi.zoomOut.onclick = function() {
         // 	if (config.zoomLevel < -1) {
         // 		return false;
         // 	}
-        // 	risk.map.zoomMap(config.zoomLevel - 1, true);
+        // 	risk.map.scale(config.zoomLevel - 1, true);
         // }
     }
 
@@ -92,25 +60,25 @@ risk.ui = (function (d) {
      *  Assemble the various Ui elements
      */
     function createTurnUi() {
-        var turnUi = risk.ui.turn = utils.createElement('ul', {'class': 'turnInfo'}, d.body);
+        var turnUi = risk.ui.turn = utils.createElement('ul', {'class': 'turnInfo'}, document.body);
         // End turn phase button
         turnUi.turnPhase = utils.createElement('li', {'class': 'uiButton turnPhase'}, turnUi, 'End Turn');
         turnUi.turnPhase.onclick = function () {
-            if (config.username !== risk.config.playerTurn || (risk.config.turnPhase != 'attack' && risk.config.turnPhase != 'redeploy')) {
+            if (config.username !== config.playerTurn || (config.turnPhase != 'attack' && config.turnPhase != 'redeploy')) {
                 return false;
             }
             var confirm = utils.createElement('span');
-            confirm.innerHTML = "Are you sure you wish to end the " + risk.config.turnPhase + " phase?"
+            confirm.innerHTML = "Are you sure you wish to end the " + config.turnPhase + " phase?"
             risk.popups.show(confirm, 'Hold on...', 'Yes, I\'m sure', function (e) {
                 e.preventDefault();
                 risk.setup.sendCommand({'action': 'nextPhase'});
             });
 
-        }
+        };
         turnUi.turnMessage = utils.createElement('li', {'class': 'message'}, turnUi);
     }
 
-    return {
+    risk.ui = {
         /**
          *  Redeploy units from one army to another
          *
@@ -119,9 +87,9 @@ risk.ui = (function (d) {
         build: function (turnInfo) {
             this.clear();
 
-            risk.ui.wrapper = d.createElement('nav');
+            risk.ui.wrapper = document.createElement('nav');
             risk.ui.wrapper.className = 'uiWrapper';
-            d.body.appendChild(risk.ui.player);
+            document.body.appendChild(risk.ui.wrapper);
 
             this.update(turnInfo);
         },
@@ -131,9 +99,55 @@ risk.ui = (function (d) {
          */
         clear: function () {
             // TODO - move the game into it's own element, e.g. for embedding?
-            while (d.body.hasChildNodes()) {
-                d.body.removeChild(d.body.lastChild);
+            while (document.body.hasChildNodes()) {
+                document.body.removeChild(document.body.lastChild);
             }
+        },
+
+        /**
+         * Add listeners for controls, including sound control, view config, etc
+         *
+         * @param {HTMLElement} wrapper
+         */
+        registerControls: function (wrapper) {
+
+            // Config button
+            wrapper.querySelectorAll('[data-action="showConfig')
+                .forEach(el => el.addEventListener('click', function () {
+                        risk.setup.sendCommand({action: 'showConfig'});
+                    })
+                );
+
+            // Surrender button
+            wrapper.querySelectorAll('[data-action="surrender')
+                .forEach(el => el.addEventListener('click', function () {
+                        risk.templates.popup('surrender')
+                            .on('click', '.confirm', function () {
+                                risk.setup.sendCommand({'action': 'surrender'});
+                            })
+                            .on('click', '.cancel', function (event, popup) {
+                                popup.close();
+                            });
+                    })
+                );
+
+            // Cards button
+            wrapper.querySelectorAll('[data-action="showCards')
+                .forEach(el => el.addEventListener('click', function () {
+                        risk.setup.sendCommand({action: 'showCards'});
+                    })
+                );
+
+            // Toggle mute level button
+            wrapper.querySelectorAll('[data-action="toggleMute"]')
+                .forEach(el => el.addEventListener('click', function () {
+                        let muteLevel = risk.sfx.toggleMute();
+                        console.log(muteLevel);
+                        this.setAttribute('data-tooltip', config.muteLevel[muteLevel]);
+                        this.setAttribute('data-mute', muteLevel);
+                    })
+                );
+
         },
 
         /**
@@ -145,31 +159,27 @@ risk.ui = (function (d) {
 
             // Calculate strength
             turnInfo.globalStrength = 0;
-            var playerStrength = {};
-            turnInfo.territories
-                .filter(function (territory) {
-                    return territory.player;
-                }).forEach(function (territory) {
-                if (!playerStrength[territory.player]) {
-                    playerStrength[territory.player] = 0;
-                }
-                playerStrength[territory.player] += territory.battalions;
-                strength.global += territory.battalions;
-            });
 
             // Get the local player
-            turnInfo.currentPlayer = turnInfo.players.find(function (player) {
-                return config.username === player.name;
+            turnInfo.currentPlayer = turnInfo.players.find(player => player.name === config.username);
+
+            // Calculate player and global strength values
+            turnInfo.players.forEach(player => {
+                player.strength = 0;
+                Object.values(player.territories).forEach(territory => player.strength += territory);
+                turnInfo.globalStrength += player.strength;
             });
 
-            // Add additional player info
+            // Calculate percentage strength
             turnInfo.players.forEach(function (player) {
-                player.strength = playerStrength[player.id] / turnInfo.globalStrength;
+                player.strength = player.strength / turnInfo.globalStrength;
             });
 
             // Generate
             risk.ui.wrapper.innerHTML = risk.templates.render('ui', turnInfo);
+
+            this.registerControls(risk.ui.wrapper);
         }
     }
 
-})(document);
+}

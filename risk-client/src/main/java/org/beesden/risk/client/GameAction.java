@@ -6,7 +6,7 @@ public enum GameAction {
 	chatMessage, commandError,
 
 	// Lobby actions
-	gameLobby, gameSetup,
+	gameLobby, gameSetup, startGame,
 
 	// Turn actions
 	startTurn, deploy, attack, redeploy,

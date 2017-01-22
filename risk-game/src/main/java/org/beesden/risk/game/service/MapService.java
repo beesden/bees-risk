@@ -24,7 +24,7 @@ public class MapService {
 	/**
 	 * List all available maps
 	 *
-	 * @return listIds of map IDs
+	 * @return listActivePlayerIds of map IDs
 	 */
 	public static List<String> getAvailableMaps() {
 		List<String> mapFiles = new ArrayList<>();

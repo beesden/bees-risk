@@ -122,7 +122,7 @@ public class GameActions {
 	//		String mapId = request.getString("mapId");
 	//		GameMap gameMap = MapService.generateMap(mapId);
 	//		gameData.setGameMap(gameMap);
-	//		// Generate the risk cards listIds
+	//		// Generate the risk cards listActivePlayerIds
 	//		for (String territoryId : gameMap.getTerritories().keySet()) {
 	//			Territory territory = gameMap.getTerritories().getByPlayerId(territoryId);
 	//			gameData.getRiskCards().add(territory.getId());

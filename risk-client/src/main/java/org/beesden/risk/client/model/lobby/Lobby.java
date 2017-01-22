@@ -23,7 +23,7 @@ public class Lobby {
 	/**
 	 * List all available games in the lobby
 	 *
-	 * @return listIds of games
+	 * @return list of player games
 	 */
 	public static Collection<LobbyGame> listGames() {
 		return SESSION_GAMES.values().stream().map(LobbyGame::new).collect(Collectors.toList());

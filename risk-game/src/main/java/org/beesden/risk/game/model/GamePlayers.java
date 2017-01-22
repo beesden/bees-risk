@@ -72,8 +72,11 @@ public class GamePlayers {
 	/**
 	 * List all playerList
 	 */
-	public List<Integer> listIds() {
-		return playerList.stream().map(Player::getPlayerId).collect(Collectors.toList());
+	public List<Integer> listActivePlayerIds() {
+		return playerList.stream()
+			.filter(p -> !p.isNeutral())
+			.map(Player::getPlayerId)
+			.collect(Collectors.toList());
 	}
 
 	/**

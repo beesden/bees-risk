@@ -21,7 +21,7 @@ public class MessageService {
 	private static final Gson GSON_READER = new Gson();
 
 	public static void sendMessage(GameData gameData, GameAction action, Object data) {
-		gameData.getPlayers().listIds().forEach(playerId -> sendMessage(LobbyPlayer.lookup(playerId), action, data));
+		gameData.getPlayers().listActivePlayerIds().forEach(playerId -> sendMessage(LobbyPlayer.lookup(playerId), action, data));
 	}
 
 	public static void sendMessage(LobbyPlayer player, GameAction action, Object data) {

@@ -12,7 +12,6 @@ public class TurnSummary {
 
 	private GameData.TurnPhase phase;
 	private List<PlayerSummary> players;
-	private List<TerritorySummary> territories;
 
 	public TurnSummary(GameData gameData) {
 		phase = gameData.getPhase();
@@ -24,12 +23,6 @@ public class TurnSummary {
 			}
 			return summary;
 		}).collect(Collectors.toList());
-
-		territories = gameData.getMap()
-			.getTerritories()
-			.stream()
-			.map(TerritorySummary::new)
-			.collect(Collectors.toList());
 	}
 
 }

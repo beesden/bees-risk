@@ -1,25 +1,25 @@
-var risk = risk || {};
+{
+    let config = risk.gameConfig;
 
-risk.setup = (function (d) {
-
-    var config = risk.gameConfig,
-        utils = risk.utils,
-        id;
-
-    var response = {
+     risk.setup = {
         receiveCommand: function (command) {
             command = JSON.parse(command.data);
-            console.log('Receive command', command.action, command)
-            // console.log(command);
+
+            console.log('-------');
+            console.log('Receive game command', command.action, command.message);
+
             risk.gameConfig.username = command.username;
             risk.game[command.action](command.message);
         },
         sendCommand: function (command) {
             console.log('To server', command);
+            console.log('-------');
+
             command = JSON.stringify(command);
             risk.socket.send(command);
         },
         start: function () {
+
             // Reset the data
             risk.config = {};
             risk.gameData = {};
@@ -27,25 +27,18 @@ risk.setup = (function (d) {
             if (config.mute === 0) {
                 risk.sfx.music();
             }
-            risk.game.login();
+
+            console.info("Establishing connection to server...");
+
+            risk.socket = new WebSocket(risk.gameConfig.server + '/game');
+            risk.socket.onmessage = this.receiveCommand;
+            risk.socket.onopen = risk.game.login;
+            risk.socket.onclose = this.start;
         }
     };
 
-    var connectToServer = function() {
-        console.info("Establishing connection to server...");
+    document.addEventListener('DOMContentLoaded', function () {
+        risk.setup.start();
+    });
 
-        risk.socket = new WebSocket(risk.gameConfig.server + '/game');
-        risk.socket.onmessage = response.receiveCommand;
-        risk.socket.onclose = connectToServer;
-    };
-
-    connectToServer();
-
-
-    return response;
-
-})(document);
-
-document.addEventListener('DOMContentLoaded', function () {
-    risk.setup.start();
-});
+};

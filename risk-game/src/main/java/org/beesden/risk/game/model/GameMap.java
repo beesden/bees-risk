@@ -70,11 +70,6 @@ public class GameMap {
 		private int bonusReinforcements;
 		private String color;
 		private Collection<Territory> territories;
-
-		@Override
-		public String toString() {
-			return "{continent: " + name + "}";
-		}
 	}
 
 	@Data

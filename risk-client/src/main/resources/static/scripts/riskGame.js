@@ -155,9 +155,10 @@ risk.game = (function (d) {
          *
          * @param gameData
          */
-        gameStart: function (gameData) {
+        startGame: function (gameData) {
             risk.gameData = gameData;
-            risk.ui.build(gameData);
+            risk.ui.build(gameData.turn);
+            risk.map.render(gameData.map);
         },
         /**
          *  Show player defeated popup

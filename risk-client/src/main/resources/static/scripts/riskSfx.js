@@ -10,7 +10,7 @@ risk.sfx = (function (d) {
     	music: function(muteLevel) {
             var musicObj = risk.sfx.musicObj;
     		if (!musicObj) {
-    			musicObj = d.createElement('audio');
+    			musicObj =document.createElement('audio');
                 musicObj.track = 0;
                 musicObj.src = './sounds/music.mp3';
     			musicObj.volume = 0.3;
@@ -36,7 +36,7 @@ risk.sfx = (function (d) {
     		if (config.mute === 2) {
     			return;
     		}
-    		var audio = d.createElement('audio');
+    		var audio =document.createElement('audio');
     		audio.src = './sounds/' + file + '.mp3';
     		audio.play();
     	},

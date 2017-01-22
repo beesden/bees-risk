@@ -58,7 +58,7 @@ public class CardDeck {
 	 * List all cards for a player
 	 *
 	 * @param playerId player id
-	 * @return listIds of cards
+	 * @return listActivePlayerIds of cards
 	 */
 	public List<Card> getPlayerCards(int playerId) {
 		return cards.stream()

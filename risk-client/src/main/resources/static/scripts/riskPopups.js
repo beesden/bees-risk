@@ -73,7 +73,7 @@ risk.popups = (function (d) {
 
             _self.refresh(content);
 
-            d.body.appendChild(_self.content);
+           document.body.appendChild(_self.content);
             if (!overlay.parentNode) {
                 toggleOverlay();
             }
@@ -157,8 +157,8 @@ risk.popups = (function (d) {
             // // Display the popup content
             // popup.replaceChild(content, popup.content)
             // popup.content = content;
-            // d.body.appendChild(popupOverlay);
-            // d.body.appendChild(popup);
+            //document.body.appendChild(popupOverlay);
+            //document.body.appendChild(popup);
         }
     }
 
