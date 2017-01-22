@@ -30,7 +30,7 @@
 
             console.info("Establishing connection to server...");
 
-            risk.socket = new WebSocket('ws:' + window.location.host + '/game');
+            risk.socket = new WebSocket((window.location.port === 'https' ? 'wss:' : 'ws') + window.location.host + '/game');
             risk.socket.onmessage = risk.setup.receiveCommand;
             risk.socket.onopen = risk.game.login;
             risk.socket.onclose = risk.setup.start;
