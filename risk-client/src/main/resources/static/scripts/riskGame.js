@@ -73,13 +73,8 @@ risk.game = (function (d) {
          */
         startTurn: function (turnData) {
             risk.ui.update(turnData);
-            risk.map.setInteractions(config.userId === turnData.current ? turnData.interactive : []);
+            risk.map.update(turnData);
         },
-
-
-
-
-
 
 
         /**

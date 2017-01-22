@@ -29,6 +29,7 @@ public class MessageService {
 		Map<String, Object> message = new HashMap<>();
 		message.put("action", action);
 		message.put("message", data);
+		message.put("gameId", player.getCurrentGame());
 		message.put("userId", player.getPlayerId());
 
 		try {

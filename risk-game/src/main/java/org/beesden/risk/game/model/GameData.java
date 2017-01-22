@@ -31,7 +31,6 @@ public class GameData {
 	private CardDeck cards;
 	private GamePlayers players;
 
-
 	/**
 	 * Create a new game
 	 *
@@ -116,6 +115,20 @@ public class GameData {
 
 		Player currentPlayer = players.nextPlayer();
 
+		switch (phase) {
+			case INITIAL:
+				if (map.getTerritoriesByOwner(null).isEmpty()) {
+					phase = TurnPhase.DEPLOY;
+				}
+				break;
+			case DEPLOY:
+				if (currentPlayer.getReinforcements() > 0) {
+					break;
+				}
+				phase = TurnPhase.REINFORCE;
+				state = GameState.STARTED;
+		}
+
 		// Generic start turn - e.g. calculate reinforcements
 		if (state == GameState.STARTED) {
 			phase = TurnPhase.REINFORCE;
@@ -124,6 +137,14 @@ public class GameData {
 
 		return currentPlayer;
 
+	}
+
+	public GameMap.Territory getValidTerritory(int playerId, String territoryId) {
+		return map.getValidTerritories(playerId, phase, null)
+			.stream()
+			.filter(territory -> territory.getId().equals(territoryId))
+			.findFirst()
+			.orElse(null);
 	}
 
 }

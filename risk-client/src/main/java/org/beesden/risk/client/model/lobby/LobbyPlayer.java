@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
 
-import org.beesden.risk.game.model.GameData;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +19,7 @@ public class LobbyPlayer {
 	private int playerId;
 	@Setter(AccessLevel.PUBLIC)
 	private String username;
-	private List<GameData> games = new ArrayList<>();
+	private String currentGame;
 	private WebSocketSession session;
 
 	/**
@@ -40,23 +36,32 @@ public class LobbyPlayer {
 	}
 
 	/**
+	 * Add a player into the lobby. This should only be used for tests
+	 */
+	public static void connectPlayer(Integer playerId) {
+		LobbyPlayer player = new LobbyPlayer();
+		player.setPlayerId(playerId);
+		player.setUsername(playerId.toString());
+		players.put(playerId, player);
+	}
+
+	/**
 	 * Add a game to a player
 	 *
 	 * @param playerId player id
-	 * @param game     game data
+	 * @param gameId   game id
 	 */
-	public static void joinGame(int playerId, GameData game) {
-		players.get(playerId).getGames().add(game);
+	public static void joinGame(int playerId, String gameId) {
+		players.get(playerId).setCurrentGame(gameId);
 	}
 
 	/**
 	 * Leave a game
 	 *
 	 * @param playerId player id
-	 * @param gameId   game id
 	 */
-	public static void leaveGame(int playerId, String gameId) {
-		players.get(playerId).getGames().removeIf(game -> game.getId().equals(gameId));
+	public static void leaveGame(int playerId) {
+		players.get(playerId).setCurrentGame(null);
 	}
 
 	/**

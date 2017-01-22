@@ -40,6 +40,7 @@ public class Lobby {
 
 		GameData gameData = new GameData(playerId, gameName, config);
 		SESSION_GAMES.put(gameData.getId(), gameData);
+		LobbyPlayer.joinGame(playerId, gameData.getId());
 
 		return gameData;
 	}
@@ -58,14 +59,21 @@ public class Lobby {
 			throw new GameLobbyException("Game cannot be found", playerId, gameId);
 		}
 
-		// Check if player has already joined the game
+		// Check if game is full
 		if (gameData.getPlayers().countActivePlayers() >= gameData.getConfig().getMaxPlayers()) {
 			throw new GameLobbyException("No more space in the game", playerId, gameId);
-		} else if (gameData.getState() != GameData.GameState.SETUP) {
+		}
+		// Check if player has already joined a game
+		else if (LobbyPlayer.lookup(playerId).getCurrentGame() != null) {
+			throw new GameLobbyException("Unable to join multiple games", playerId, gameId);
+		}
+		// Check if game has started
+		else if (gameData.getState() != GameData.GameState.SETUP) {
 			throw new GameLobbyException("The game has already started", playerId, gameId);
 		}
 
 		gameData.getPlayers().add(playerId);
+		LobbyPlayer.joinGame(playerId, gameId);
 
 		return gameData;
 	}
@@ -88,7 +96,16 @@ public class Lobby {
 			}
 		}
 
+		LobbyPlayer.leaveGame(playerId);
+
 		return gameData;
+	}
+
+	/**
+	 * Get a game
+	 */
+	public static GameData getGame(String gameId) {
+		return SESSION_GAMES.get(gameId);
 	}
 
 	/**
@@ -103,7 +120,7 @@ public class Lobby {
 		if (gameData == null) {
 			throw new GameLobbyException("Game cannot be found", playerId, gameId);
 		} else if (playerId != gameData.getPlayers().getOwner()) {
-			throw new GameLobbyException("PlayerSummary does not own game", playerId, gameId);
+			throw new GameLobbyException("Player does not own game", playerId, gameId);
 		} else if (gameData.getPlayers().countActivePlayers() < gameData.getConfig().getMinPlayers()) {
 			throw new GameLobbyException("Insufficient playerIds to start game", playerId, gameId);
 		} else if (gameData.getState() != GameData.GameState.SETUP) {

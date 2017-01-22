@@ -89,6 +89,7 @@ risk.map = (function (d) {
                     x: data.center[0],
                     y: data.center[1],
                     radius: 12,
+                    fill: '#000',
                     shadowColor: 'black',
                     shadowBlur: 4,
                     shadowOffset: {x: -2, y: 2},
@@ -97,7 +98,8 @@ risk.map = (function (d) {
                 count: new Kinetic.Text({
                     fontSize: 12,
                     fontStyle: 'Bold',
-                    fill: '#fff'
+                    fill: '#fff',
+                    text: '1'
                 })
             };
 
@@ -106,6 +108,11 @@ risk.map = (function (d) {
             territory.player.add(territory.colour);
             territory.player.add(territory.count);
             territory.group.add(territory.player);
+
+            territory.count.setX(territory.colour.getX() - territory.count.getWidth() / 2);
+            territory.count.setY(territory.colour.getY() - territory.count.getHeight() / 2);
+
+            territory.player.hide();
 
             // Add events
             territory.group
@@ -127,7 +134,7 @@ risk.map = (function (d) {
                 })
                 .on('click', function () {
                     if (interactions.find(t => t === data.id)) {
-                        risk.setup.sendCommand({action: 'territorySelect', territory: data.id});
+                        risk.setup.sendCommand({action: 'territorySelect', territoryId: data.id});
                     }
                 });
 
@@ -150,24 +157,6 @@ risk.map = (function (d) {
                 territory.pathObject.setFill(config.mapColours.territory);
                 territory.group.moveTo(risk.mapLayer);
             }
-        },
-
-        /**
-         *  Reset map to default for phase change
-         *  @TODO
-         */
-        reset: function () {
-            // Empty the top layer
-            for (id in mapData.territories) {
-                var territory = mapData.territories[id];
-                territory.group.moveTo(risk.mapLayer);
-                territory.pathObject.setFill(config.mapColours.territory)
-            }
-            // Reset all maps and config
-            config.activeTerritory = config.neighbours = null;
-            config.updateMap = false;
-            risk.mapLayer.draw();
-            risk.topLayer.draw();
         },
 
         /**
@@ -222,57 +211,36 @@ risk.map = (function (d) {
         },
 
         /**
-         * Set available territory interactions
-         *
-         * @param {String[]} territories
-         */
-        setInteractions: function (territories) {
-            interactions = territories;
-        },
-
-        /**
-         * Update a territory
-         *
-         * @param {TerritoryData} territoryData
-         */
-        updateTerritory: function (territoryData) {
-            let territory = territories[territoryId];
-
-            territory.colour.setFill('#000');
-            territory.count.setText(territoryData.battalions);
-        },
-
-        /**
          *  Update the territory display
-         *  @param {object} territory - territory data object
-         *  @TODO
+         *
+         *  @param {TurnData} turnData new turn data
          */
-        update: function (mapData) {
-            // Check if the map needs constructing
-            if (!mapData) {
-                this.render(mapData);
-            }
-            for (id in mapData.territories) {
-                var territory = mapData.territories[id],
-                    update = mapData.territories[id];
-                // Don't update unclaimed territories
-                if (!update.player) {
-                    continue;
-                }
-                // Deploy if previously unclaimed
-                if (!territory.playerColour) {
-                    deployTerritory(update);
-                }
-                // Update territory information
-                territory.playerColour.setFill(risk.playerData[update.player].colour);
-                territory.playerStrength.setText(update.battalions || 1);
-                territory.battalions = update.battalions;
-                territory.player = update.player;
-                // Adjust territory icon
-                territory.playerStrength.setX(territory.playerColour.getX() - territory.playerStrength.getWidth() / 2);
-                territory.playerStrength.setY(territory.playerColour.getY() - territory.playerStrength.getHeight() / 2);
-            }
-            this.reset();
+        update: function (turnData) {
+            interactions = config.userId === turnData.current ? turnData.interactive : [];
+
+            // Update territory data
+            turnData.players
+                .forEach(player => Object.keys(player.territories)
+                    .forEach(territoryId => {
+                        let territory = territories[territoryId];
+
+                        if (territory.player) {
+                            territory.colour.setFill(player.colour);
+                            territory.count.setText(player.territories[territoryId]);
+                            territory.player.show();
+                        }
+                    })
+                );
+
+            // Remove interaction states from territories
+            Object.values(territories).forEach( territory => {
+                territory.path.setFill(config.mapColours.territory);
+                territory.group.moveTo(risk.mapLayer);
+            });
+
+            // Redraw layers
+            risk.mapLayer.draw();
+            risk.topLayer.draw();
         },
 
         /**

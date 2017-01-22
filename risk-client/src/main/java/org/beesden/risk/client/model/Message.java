@@ -10,4 +10,5 @@ public class Message {
 	private GameCommand action;
 	private String description;
 	private String gameId;
+	private String territoryId;
 }

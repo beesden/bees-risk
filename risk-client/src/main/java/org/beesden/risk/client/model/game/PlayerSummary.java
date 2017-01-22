@@ -18,6 +18,7 @@ public class PlayerSummary {
 	private Map<String, Integer> territories;
 	private int cardCount;
 	private boolean active;
+	private int battalions;
 
 	PlayerSummary(Player player) {
 		id = player.getPlayerId();
@@ -26,6 +27,7 @@ public class PlayerSummary {
 		}
 
 		active = player.isNeutral() || player.isSpectating();
+		battalions = player.getStrength();
 
 		// cardCount
 		territories = player.getTerritories()

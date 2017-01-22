@@ -51,7 +51,7 @@
  * @property {PlayerData[]} players current player info
  * @property {Integer} current player id whose turn it is
  * @property {Integer} reinforcements available reinforcements
- * @property {String[]} list of interactive territory IDs
+ * @property {String[]} interactive list of interactive territory IDs
  */
 
 class MapSummary {

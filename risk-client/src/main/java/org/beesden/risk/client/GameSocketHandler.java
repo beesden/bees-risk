@@ -9,13 +9,13 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import org.beesden.risk.client.model.Message;
 import org.beesden.risk.client.model.game.GameSummary;
+import org.beesden.risk.client.model.game.TurnSummary;
 import org.beesden.risk.client.model.lobby.Lobby;
 import org.beesden.risk.client.model.lobby.LobbyGame;
 import org.beesden.risk.client.model.lobby.LobbyPlayer;
 import org.beesden.risk.client.service.MessageService;
 import org.beesden.risk.game.exception.GameLobbyException;
-import org.beesden.risk.game.model.Config;
-import org.beesden.risk.game.model.GameData;
+import org.beesden.risk.game.model.*;
 
 @Component
 @Log
@@ -24,14 +24,18 @@ public class GameSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
 		LobbyPlayer player = LobbyPlayer.lookup(session);
-		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getId()));
+		if (player.getCurrentGame() != null) {
+			Lobby.leaveGame(player.getPlayerId(), player.getCurrentGame());
+		}
 		log.info("Connection closed: " + player.getUsername());
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable throwable) {
 		LobbyPlayer player = LobbyPlayer.lookup(session);
-		player.getGames().forEach(game -> Lobby.leaveGame(player.getPlayerId(), game.getId()));
+		if (player.getCurrentGame() != null) {
+			Lobby.leaveGame(player.getPlayerId(), player.getCurrentGame());
+		}
 		log.warning("Closing a connection due to error for user " + player.getUsername() + ": " + throwable.getMessage());
 	}
 
@@ -54,19 +58,16 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
 				case createGame:
 					gameData = Lobby.createGame(player.getPlayerId(), player.getUsername() + "'s game", new Config());
-					LobbyPlayer.joinGame(player.getPlayerId(), gameData);
 					MessageService.sendMessage(player, GameAction.gameSetup, new LobbyGame(gameData));
 					break;
 
 				case joinGame:
 					gameData = Lobby.joinGame(player.getPlayerId(), gameId);
-					LobbyPlayer.joinGame(player.getPlayerId(), gameData);
 					MessageService.sendMessage(gameData, GameAction.gameSetup, new LobbyGame(gameData));
 					break;
 
 				case leaveGame:
 					gameData = Lobby.leaveGame(player.getPlayerId(), gameId);
-					LobbyPlayer.leaveGame(player.getPlayerId(), gameId);
 					MessageService.sendMessage(gameData, GameAction.gameSetup, new LobbyGame(gameData));
 					MessageService.sendMessage(player, GameAction.gameLobby, Lobby.listGames());
 					break;
@@ -74,6 +75,35 @@ public class GameSocketHandler extends TextWebSocketHandler {
 				case startGame:
 					gameData = Lobby.startGame(player.getPlayerId(), gameId);
 					MessageService.sendMessage(gameData, GameAction.startGame, new GameSummary(gameData));
+					break;
+
+				case territorySelect:
+					gameData = Lobby.getGame(player.getCurrentGame());
+					Player gamePlayer = gameData.getPlayers().getByPlayerId(player.getPlayerId());
+					GameMap.Territory territory = gameData.getValidTerritory(player.getPlayerId(), message.getTerritoryId());
+
+					if (territory == null) {
+						return;
+					}
+
+					switch (gameData.getPhase()) {
+						case INITIAL:
+							gamePlayer.takeTerritory(territory);
+							gamePlayer.reinforce(territory.getId());
+							gameData.startTurn();
+							MessageService.sendMessage(gameData, GameAction.startTurn, new TurnSummary(gameData));
+							break;
+						case DEPLOY:
+							gamePlayer.reinforce(territory.getId());
+							gameData.startTurn();
+							MessageService.sendMessage(gameData, GameAction.startTurn, new TurnSummary(gameData));
+							break;
+						case REINFORCE:
+							gamePlayer.reinforce(territory.getId());
+							MessageService.sendMessage(gameData, GameAction.startTurn, new TurnSummary(gameData));
+							break;
+					}
+
 					break;
 			}
 		} catch (GameLobbyException e) {

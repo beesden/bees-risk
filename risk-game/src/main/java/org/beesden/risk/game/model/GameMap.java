@@ -52,25 +52,28 @@ public class GameMap {
 	}
 
 	/**
+	 * Get unclaimed territories
+	 */
+	public List<Territory> getTerritoriesByOwner(Integer ownerId) {
+		return territories.stream()
+			.filter(territory -> territory.getOwnerId().equals(ownerId))
+			.collect(Collectors.toList());
+	}
+
+	/**
 	 * Get valid territories
 	 */
 	public List<Territory> getValidTerritories(int playerId, TurnPhase phase, Territory current) {
 
 		switch (phase) {
 			case INITIAL:
-				return territories.stream()
-					.filter(territory -> territory.getOwnerId() == null)
-					.collect(Collectors.toList());
+				return getTerritoriesByOwner(null);
 			case DEPLOY:
 			case REINFORCE:
-				return territories.stream()
-					.filter(territory -> territory.getOwnerId() == playerId)
-					.collect(Collectors.toList());
+				return getTerritoriesByOwner(playerId);
 			case ATTACK:
 				if (current == null) {
-					return territories.stream()
-						.filter(territory -> territory.getOwnerId() == playerId)
-						.collect(Collectors.toList());
+					return getTerritoriesByOwner(playerId);
 				} else {
 					return current.neighbours.stream()
 						.filter(territory -> territory.getOwnerId() != playerId)
@@ -78,9 +81,7 @@ public class GameMap {
 				}
 			case REDEPLOY:
 				if (current == null) {
-					return territories.stream()
-						.filter(territory -> territory.getOwnerId() == playerId)
-						.collect(Collectors.toList());
+					return getTerritoriesByOwner(playerId);
 				} else {
 					List<Territory> neighbours = getNeighboursRecursive(new ArrayList<>(), current);
 					neighbours.remove(current);

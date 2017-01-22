@@ -156,18 +156,14 @@
 
             let dataModel = {
                 activePlayer: turnData.players.find(player => player.id === turnData.current),
-                currentPlayer: turnData.players.find(player => player.id === config.id),
+                currentPlayer: turnData.players.find(player => player.id === config.userId),
                 phase: 'turnphase.' + turnData.phase,
                 players: turnData.players,
                 globalStrength: 0
             };
 
             // Calculate player and global strength values
-            dataModel.players.forEach(player => {
-                player.strength = 0;
-                Object.values(player.territories).forEach(territory => player.strength += territory);
-                dataModel.globalStrength += player.strength;
-            });
+            dataModel.players.forEach(player => dataModel.globalStrength += player.strength);
 
             // Calculate percentage strength
             dataModel.players.forEach(function (player) {
